@@ -112,9 +112,9 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public Propietario ObtenerPorId(int id)
+        public Propietario? ObtenerPorId(int id)
         {
-            Propietario p = null;
+            Propietario? p=null;
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, eMail, Clave 

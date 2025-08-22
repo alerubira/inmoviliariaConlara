@@ -107,9 +107,9 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public Inquilino ObtenerPorId(int id)
+        public Inquilino? ObtenerPorId(int id)
         {
-            Inquilino i = null;
+            Inquilino? i = null;
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
