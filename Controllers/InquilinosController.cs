@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace Inmobiliaria.Controllers
 {
-    public class PropietariosController : Controller
+    public class InquilinosController : Controller
     {
-        private readonly RepositorioPropietario repo;
+        private readonly RepositorioInquilino repo;
 
-        public PropietariosController(IConfiguration configuration)
+        public InquilinosController(IConfiguration configuration)
         {
-            repo = new RepositorioPropietario(configuration);
+            repo = new RepositorioInquilino(configuration);
         }
 
         public IActionResult Index()
@@ -25,14 +25,14 @@ namespace Inmobiliaria.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Propietario propietario)
+        public IActionResult Create(Inquilino inquilino)
         {
             if (ModelState.IsValid)
             {
-                repo.Alta(propietario);
+                repo.Alta(inquilino);
                 return RedirectToAction(nameof(Index));
             }
-            return View(propietario);
+            return View(inquilino);
         }
 
         public IActionResult Edit(int id)
@@ -47,37 +47,37 @@ namespace Inmobiliaria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Propietario propietario)
+        public IActionResult Edit(int id, Inquilino inquilino)
         {
-            if (id != propietario.IdPropietario)
+            if (id != inquilino.IdInquilino)
                 return NotFound();
 
             if (ModelState.IsValid)
             {
-                repo.Modificacion(propietario);
+                repo.Modificacion(inquilino);
                 return RedirectToAction(nameof(Index));
             }
-            return View(propietario);
+            return View(inquilino);
         }
         public IActionResult Delete(int id)
         {
-            var propietario = repo.ObtenerPorId(id);
-            if (propietario == null)
+            var inquilino = repo.ObtenerPorId(id);
+            if (inquilino == null)
             {
                 return NotFound();
             }
-            return View(propietario);
+            return View(inquilino);
         }
           [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id,String bandera)
         {
-            var propietario = repo.ObtenerPorId(id);
-            if (propietario == null)
+            var inquilino = repo.ObtenerPorId(id);
+            if (inquilino == null)
             {
                 return NotFound();
             }
-            if (id != propietario.IdPropietario)
+            if (id != inquilino.IdInquilino)
                 return NotFound();
 
             if (ModelState.IsValid)
@@ -85,7 +85,7 @@ namespace Inmobiliaria.Controllers
                 repo.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            return View(propietario);
+            return View(inquilino);
         }
 }
     }

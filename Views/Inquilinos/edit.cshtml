@@ -1,0 +1,44 @@
+@model Inmobiliaria.Models.Inquilino
+@{
+    ViewData["Title"] = "editar inquilino";
+}
+<h4>Editar Inquilino</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" name="IdInquilino" value="@Model.IdInquilino" />
+			
+			<div class="form-group">
+				<label asp-for="Apellido" class="control-label"></label>
+				<input asp-for="Apellido" class="form-control" />
+				<span asp-validation-for="Apellido" class="text-danger"></span>
+			</div>
+            <div class="form-group">
+				<label asp-for="Nombre" class="control-label"></label>
+				<input asp-for="Nombre" class="form-control" />
+				<span asp-validation-for="Nombre" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Dni" class="control-label"></label>
+				<input asp-for="Dni" class="form-control" />
+				<span asp-validation-for="Dni" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Telefono" class="control-label"></label>
+				<input asp-for="Telefono" class="form-control" />
+				<span asp-validation-for="Telefono" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="eMail" class="control-label"></label>
+				<input asp-for="eMail" class="form-control" />
+				<span asp-validation-for="eMail" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="Guardar" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
