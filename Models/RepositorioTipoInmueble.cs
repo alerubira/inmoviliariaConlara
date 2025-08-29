@@ -10,7 +10,7 @@ namespace Inmobiliaria.Models
 
         public RepositorioTipoInmueble(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("DefaultConnection");
+            connectionString = configuration.GetConnectionString("DefaultConnection")  ?? string.Empty;
         }
 
         public int Alta(TipoInmueble ti)
@@ -87,8 +87,8 @@ namespace Inmobiliaria.Models
                     {
                         var ti = new TipoInmueble
                         {
-                            IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Nombre = reader["Nombre"].ToString()
+                            IdTipoInmueble  = Convert.ToInt32(reader["IdTipoInmueble"]),
+                            Nombre  = reader["Nombre"].ToString()  ?? string.Empty
                         };
                         res.Add(ti);
                     }

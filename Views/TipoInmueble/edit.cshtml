@@ -1,0 +1,28 @@
+@model Inmobiliaria.Models.TipoInmueble;
+@{
+    ViewData["Title"] = "editar Tipo Inmueble";
+}
+<h4>Editar Tipo Inmueble</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" name="IdTipoInmueble" value="@Model.IdTipoInmueble" />
+			
+			
+            <div class="form-group">
+				<label asp-for="Nombre" class="control-label"></label>
+				<input asp-for="Nombre" class="form-control" />
+				<span asp-validation-for="Nombre" class="text-danger"></span>
+			</div>
+			
+			
+			
+
+			<div class="form-group">
+				<input type="submit" value="Guardar" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
