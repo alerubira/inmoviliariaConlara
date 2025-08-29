@@ -8,7 +8,7 @@ namespace Inmobiliaria.Models
 
         public RepositorioInquilino(IConfiguration configuration)
         {
-            connectionString = configuration.GetConnectionString("DefaultConnection");
+            connectionString = configuration.GetConnectionString("DefaultConnection")  ?? string.Empty;
         }
 
         public int Alta(Inquilino i)

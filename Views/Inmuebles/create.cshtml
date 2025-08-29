@@ -1,0 +1,63 @@
+@model Inmobiliaria.Models.Inmuebles
+@using Inmobiliaria.Models
+@using System.Collections.Generic
+@{
+    ViewData["Title"] = "Create";
+    var tiposInmuebles = (IList<TipoInmueble>)ViewBag.TipoInmuebles;
+}
+
+<h4>Nuevo Inmueble</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="Superficie" class="control-label"></label>
+                <input asp-for="Superficie" class="form-control" />
+                <span asp-validation-for="Superficie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Latitud" class="control-label"></label>
+                <input asp-for="Latitud" class="form-control" />
+                <span asp-validation-for="Latitud" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Longitud" class="control-label"></label>
+                <input asp-for="Longitud" class="form-control" />
+                <span asp-validation-for="Longitud" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+				<label class="control-label">Tipo Inmueble</label>
+				<select class="form-control" name="idTipoInmueble">
+					@foreach (var item in tiposInmuebles)
+                    {
+                        <option value="@item.IdTipoInmueble">@item.Nombre</option>
+
+                    }
+				
+				</select>
+				<span asp-validation-for="IdTipoInmueble" class="text-danger"></span>
+			</div>
+          
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Regresar a la lista</a>
+</div>

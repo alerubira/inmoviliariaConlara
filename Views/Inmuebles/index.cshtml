@@ -1,0 +1,92 @@
+@model IEnumerable<Inmobiliaria.Models.Inmuebles>
+@{
+	ViewData["Title"] = "Inmuebles";
+}
+
+<h1>
+	Inmuebles
+	<div class="btn-group pull-right">
+		<a class="btn btn-primary" asp-action="Create" title="Crear">Crear Inmueble<i class="fa-solid fa-plus"></i></a>
+	</div>
+</h1>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.IdInmueble)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Direccion)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Ambientes)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Superficie)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Latitud)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Longitud)
+			</th>
+            <th>
+				@Html.DisplayNameFor(model => model.idPropietario)
+			</th>
+            <th>
+				@Html.DisplayNameFor(model => model.IdTipoInmueble)
+			</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+			<th>
+              <th>
+                @Html.DisplayNameFor(model => model.Habilitado)
+			<th>    
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdInmueble)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Direccion)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Superficie)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Latitud)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Longitud)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.idPropietario)
+				</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdTipoInmueble)
+				<td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Precio)
+				<td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Habilitado)
+				<td>        
+
+					<div class="btn-group" role="group">
+						<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdInmueble" title="Editar">
+							<i class="fa-solid fa-pen"></i>
+						</a>
+						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdInmueble" title="Eliminar">
+							<i class="fa-solid fa-trash-can"></i>
+						</a>
+						
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

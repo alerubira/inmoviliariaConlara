@@ -3,13 +3,15 @@ using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 namespace Inmobiliaria.Controllers{
-    public class TipoInmuebleController : Controller
+    public class InmueblesController : Controller
     {
-        private readonly RepositorioTipoInmueble repo;
+        private readonly RepositorioInmuebles repo;
+        private readonly RepositorioTipoInmueble repositorioTipoInmueble;
 
-        public TipoInmuebleController(IConfiguration configuration)
+        public InmueblesController(IConfiguration configuration)
         {
-            repo = new RepositorioTipoInmueble(configuration);
+            repo = new RepositorioInmuebles(configuration);
+            repositorioTipoInmueble = new RepositorioTipoInmueble(configuration);
         }
 
         public IActionResult Index()
@@ -19,63 +21,65 @@ namespace Inmobiliaria.Controllers{
         }
         public IActionResult Create()
         {
+               var tiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
+               ViewBag.TipoInmuebles = tiposInmuebles;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TipoInmueble tipoInmueble)
+        public IActionResult Create(Inmuebles inmueble)
         {
             if (ModelState.IsValid)
             {
-                repo.Alta(tipoInmueble);
+                repo.Alta(inmueble);
                 return RedirectToAction(nameof(Index));
             }
-            return View(tipoInmueble);
+            return View(inmueble);
         }
 
         public IActionResult Edit(int id)
         {
-            var tipoInmueble = repo.ObtenerPorId(id);
-            if (tipoInmueble == null)
+            var inmueble = repo.ObtenerPorId(id);
+            if (inmueble == null)
             {
                 return NotFound();
             }
-            return View(tipoInmueble);
+            return View(inmueble);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, TipoInmueble tipoInmueble)
+        public IActionResult Edit(int id, Inmuebles inmueble)
         {
-            if (id != tipoInmueble.IdTipoInmueble)
+            if (id != inmueble.IdInmueble)
                 return NotFound();
 
             if (ModelState.IsValid)
             {
-                repo.Modificacion(tipoInmueble);
+                repo.Modificacion(inmueble);
                 return RedirectToAction(nameof(Index));
             }
-            return View(tipoInmueble);
+            return View(inmueble);
         }
         public IActionResult Delete(int id)
         {
-            var tipoInmueble = repo.ObtenerPorId(id);
-            if (tipoInmueble == null)
+            var inmueble = repo.ObtenerPorId(id);
+            if (inmueble == null)
             {
                 return NotFound();
             }
-            return View(tipoInmueble);
+            return View(inmueble);
         }
           [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id,String bandera)
         {
-            var tipoInmueble = repo.ObtenerPorId(id);
-            if (tipoInmueble == null)
+            var inmueble = repo.ObtenerPorId(id);
+            if (inmueble == null)
             {
                 return NotFound();
             }
-            if (id != tipoInmueble.IdTipoInmueble)
+            if (id != inmueble.IdInmueble)
                 return NotFound();
 
             if (ModelState.IsValid)
@@ -83,7 +87,7 @@ namespace Inmobiliaria.Controllers{
                 repo.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            return View(tipoInmueble);
+            return View(inmueble);
         }
 }
 }

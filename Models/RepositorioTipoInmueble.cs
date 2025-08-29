@@ -116,7 +116,7 @@ namespace Inmobiliaria.Models
                         ti = new TipoInmueble
                         {
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Nombre = reader["Nombre"].ToString()
+                            Nombre = reader["Nombre"].ToString() ?? string.Empty
                         };
                     }
                     connection.Close();
