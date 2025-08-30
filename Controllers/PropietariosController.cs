@@ -68,24 +68,25 @@ namespace Inmobiliaria.Controllers
             }
             return View(propietario);
         }
-          [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id,String bandera)
+        
+        [HttpGet]
+        public IActionResult BuscarPropietarioPorFraccionApellido( String term)
         {
-            var propietario = repo.ObtenerPorId(id);
-            if (propietario == null)
-            {
-                return NotFound();
-            }
-            if (id != propietario.IdPropietario)
-                return NotFound();
+              if (string.IsNullOrEmpty(term) || term.Length < 3)
+                    {
+                        return Json(new { success = false, data = new List<object>() });
+                    }
 
-            if (ModelState.IsValid)
-            {
-                repo.Baja(id);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(propietario);
+                 var lista = repo.BuscarPorFraccionApellido(term);
+
+                 var resultado = lista.Select(p => new
+                        {
+                            id = p.IdPropietario,
+                            texto = p.ToString() // Usa el override
+                        });
+
+                return Json(new { success = true, data = resultado });
         }
+        
 }
     }
