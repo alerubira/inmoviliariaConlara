@@ -19,6 +19,11 @@
                 <span asp-validation-for="Direccion" class="text-danger"></span>
             </div>
              <div class="form-group">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+             <div class="form-group">
                 <label asp-for="Superficie" class="control-label"></label>
                 <input asp-for="Superficie" class="form-control" />
                 <span asp-validation-for="Superficie" class="text-danger"></span>
@@ -40,7 +45,8 @@
             </div>
             <div class="form-group">
 				<label class="control-label">Tipo Inmueble</label>
-				<select class="form-control" name="idTipoInmueble">
+				<select class="form-control" name="IdTipoInmueble">
+                     <option value="" disabled selected>Seleccione un tipo de inmueble</option>
 					@foreach (var item in tiposInmuebles)
                     {
                         <option value="@item.IdTipoInmueble">@item.Nombre</option>
@@ -52,10 +58,10 @@
 			</div>
             <div class="form-group">
                     <label class="control-label">Propietario</label>
-                    <input type="text" id="propietarioInput" class="form-control" list="propietariosList" autocomplete="off" />
+                    <input type="text" id="propietarioInput" class="form-control" placeholder="Busque por apellido" list="propietariosList" autocomplete="off" />
                     <datalist id="propietariosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
-                    <input type="hidden" id="idPropietario" name="idPropietario" />
+                    <input type="hidden" id="IdPropietario" name="IdPropietario" />
             </div>
 
                         <script>
@@ -70,11 +76,12 @@
                                             dl.innerHTML = "";
 
                                             if (data.success) {
-                                                console.log(data.data);
+                                                
                                                 data.data.forEach(p => {
                                                     let option = document.createElement("option");
+                                                    console.log(p);
                                                     option.value = p.texto;   // se muestra Nombre Apellido (DNI)
-                                                    option.dataset.id = p.idPropietario; // guardamos el ID
+                                                    option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
                                             }
@@ -87,7 +94,7 @@
                                 let dl = document.getElementById("propietariosList").options;
                                 for (let i = 0; i < dl.length; i++) {
                                     if (dl[i].value === valor) {
-                                        document.getElementById("idPropietario").value = dl[i].dataset.id;
+                                        document.getElementById("IdPropietario").value = dl[i].dataset.id;
                                     }
                                 }
                             });

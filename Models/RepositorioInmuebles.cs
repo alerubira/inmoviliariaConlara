@@ -28,7 +28,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
                     command.Parameters.AddWithValue("@latitud", inmueble.Latitud);
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
-                    command.Parameters.AddWithValue("@idPropietario", inmueble.idPropietario);
+                    command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
                     command.Parameters.AddWithValue("@IdTipoInmueble", inmueble.IdTipoInmueble);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@habilitado", 1);
@@ -46,7 +46,7 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM Inmuebles WHERE IdInmueble = @id";
+                string sql = "DELETE FROM Inmuebles WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -65,7 +65,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"UPDATE Inmuebles SET 
                         direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,@habilitado
-                        WHERE IdInmueble = @id";
+                        WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", inmueble.IdInmueble);
@@ -74,7 +74,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
                     command.Parameters.AddWithValue("@latitud", inmueble.Latitud);
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
-                    command.Parameters.AddWithValue("@idPropietario", inmueble.idPropietario);
+                    command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
                     command.Parameters.AddWithValue("@idTipoInmueble", inmueble.IdTipoInmueble);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@habilitado", inmueble.Habilitado);
@@ -102,13 +102,13 @@ namespace Inmobiliaria.Models
                     {
                         var inmueble = new Inmuebles
                         {
-                            IdInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Direccion = reader["Domicilio"].ToString() ?? string.Empty,
+                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            Direccion = reader["Direccion"].ToString() ?? string.Empty,
                             Ambientes = Convert.ToInt32(reader["Ambientes"]),
                             Superficie = Convert.ToInt32(reader["Superficie"]),
                             Latitud = Convert.ToDecimal(reader["Latitud"]),
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
-                            idPropietario = Convert.ToInt32(reader["idPropietario"]),
+                            IdPropietario = Convert.ToInt32(reader["idPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
                             Precio = Convert.ToDecimal(reader["precio"]),
                             Habilitado = Convert.ToBoolean(reader["habilitado"])
@@ -124,12 +124,14 @@ namespace Inmobiliaria.Models
 
         public Inmuebles? ObtenerPorId(int id)
         {
+
+
             Inmuebles? inmueble = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdInmueble,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
+                string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
                             FROM Inmuebles
-                            WHERE IdInmueble = @id";
+                            WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -139,13 +141,13 @@ namespace Inmobiliaria.Models
                     {
                         inmueble = new Inmuebles
                         {
-                            IdInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Direccion = reader["Domicilio"].ToString() ?? string.Empty,
+                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            Direccion = reader["Direccion"].ToString() ?? string.Empty,
                             Ambientes = Convert.ToInt32(reader["Ambientes"]),
                             Superficie = Convert.ToInt32(reader["Superficie"]),
                             Latitud = Convert.ToDecimal(reader["Latitud"]),
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
-                            idPropietario = Convert.ToInt32(reader["idPropietario"]),
+                            IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
                             Precio = Convert.ToDecimal(reader["precio"]),
                             Habilitado = Convert.ToBoolean(reader["habilitado"])

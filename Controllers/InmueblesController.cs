@@ -17,6 +17,8 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
+          
+
             return View(lista);
         }
         public IActionResult Create()
@@ -29,11 +31,13 @@ namespace Inmobiliaria.Controllers{
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inmuebles inmueble)
         {
+           
             if (ModelState.IsValid)
             {
                 repo.Alta(inmueble);
                 return RedirectToAction(nameof(Index));
             }
+             ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 

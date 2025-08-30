@@ -31,7 +31,7 @@
 				@Html.DisplayNameFor(model => model.Longitud)
 			</th>
             <th>
-				@Html.DisplayNameFor(model => model.idPropietario)
+				@Html.DisplayNameFor(model => model.Duenio)
 			</th>
             <th>
 				@Html.DisplayNameFor(model => model.IdTipoInmueble)
@@ -55,6 +55,9 @@
 					@Html.DisplayFor(modelItem => item.Direccion)
 				</td>
 				<td>
+					@Html.DisplayFor(modelItem => item.Ambientes)
+				</td>
+				<td>
 					@Html.DisplayFor(modelItem => item.Superficie)
 				</td>
 				<td>
@@ -64,7 +67,7 @@
 					@Html.DisplayFor(modelItem => item.Longitud)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.idPropietario)
+					@Html.DisplayFor(modelItem => item.Duenio)
 				</td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IdTipoInmueble)

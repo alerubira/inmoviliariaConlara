@@ -18,12 +18,12 @@ namespace Inmobiliaria.Models
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
     [Display(Name = "Dueño")]
-    public int idPropietario { get; set; }
+    public int IdPropietario { get; set; }
     [Display(Name = "Tipo de Inmueble")]
     public int IdTipoInmueble { get; set; }
     public decimal Precio { get; set; }
     public bool Habilitado{ get; set; }
-
+    public Propietario? Duenio { get; set; }
 		/*[ForeignKey(nameof(idPropietario))]
    [BindNever]
     public Propietario? Duenio { get; set; }
