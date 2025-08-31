@@ -22,8 +22,11 @@ namespace Inmobiliaria.Models
     [Display(Name = "Tipo de Inmueble")]
     public int IdTipoInmueble { get; set; }
     public decimal Precio { get; set; }
-    public bool Habilitado{ get; set; }
+    public bool Habilitado { get; set; }
+    [Display(Name = "Dueño")]
     public Propietario? Duenio { get; set; }
+    [Display(Name = "Tipo de Inmueble")]
+    public String? TipoInmueble { get; set; }
 		/*[ForeignKey(nameof(idPropietario))]
    [BindNever]
     public Propietario? Duenio { get; set; }

@@ -7,17 +7,24 @@ namespace Inmobiliaria.Controllers{
     {
         private readonly RepositorioInmuebles repo;
         private readonly RepositorioTipoInmueble repositorioTipoInmueble;
-
+        private readonly RepositorioPropietario repoPropietario;
         public InmueblesController(IConfiguration configuration)
         {
             repo = new RepositorioInmuebles(configuration);
             repositorioTipoInmueble = new RepositorioTipoInmueble(configuration);
+            repoPropietario = new RepositorioPropietario(configuration);
         }
 
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
-          
+
+            // Asigna el propietario a cada inmueble
+            foreach (var inmueble in lista)
+            {
+                inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;  
+            }
 
             return View(lista);
         }
@@ -44,10 +51,13 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Edit(int id)
         {
             var inmueble = repo.ObtenerPorId(id);
+             inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+            inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             if (inmueble == null)
             {
                 return NotFound();
             }
+            ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 
@@ -63,6 +73,7 @@ namespace Inmobiliaria.Controllers{
                 repo.Modificacion(inmueble);
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
         public IActionResult Delete(int id)

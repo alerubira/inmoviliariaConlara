@@ -34,7 +34,7 @@
 				@Html.DisplayNameFor(model => model.Duenio)
 			</th>
             <th>
-				@Html.DisplayNameFor(model => model.IdTipoInmueble)
+				@Html.DisplayNameFor(model => model.TipoInmueble)
 			</th>
             <th>
                 @Html.DisplayNameFor(model => model.Precio)
@@ -67,10 +67,10 @@
 					@Html.DisplayFor(modelItem => item.Longitud)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Duenio)
+				     @(item.Duenio != null ? item.Duenio.ToString() : "Sin propietario")
 				</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdTipoInmueble)
+                    @Html.DisplayFor(modelItem => item.TipoInmueble)
 				<td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Precio)
