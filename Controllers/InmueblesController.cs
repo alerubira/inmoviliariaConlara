@@ -64,9 +64,15 @@ namespace Inmobiliaria.Controllers{
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Inmuebles inmueble)
-        {
+        { 
+            Console.WriteLine(inmueble.IdInmueble);
+            Console.WriteLine(inmueble.IdTipoInmueble);
+            Console.WriteLine(inmueble.IdPropietario);
+
             if (id != inmueble.IdInmueble)
+            {
                 return NotFound();
+            }
 
             if (ModelState.IsValid)
             {

@@ -64,7 +64,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Inmuebles SET 
-                        direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,@habilitado
+                        direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,habilitado=@habilitado
                         WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
