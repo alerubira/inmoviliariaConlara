@@ -159,6 +159,51 @@ namespace Inmobiliaria.Models
             }
             return inmueble;
         }
+          public IList<Inmuebles> BuscarPorFraccionDireccion(string fraccion)
+        {
+                    IList<Inmuebles> res = new List<Inmuebles>();
+
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        string sql = @"
+                            SELECT IdInmuebles, Direccion, Precio,Habilitado
+                            FROM Inmuebles
+                            WHERE direccion LIKE @fraccion
+                        ";
+
+                        using (var command = new MySqlCommand(sql, connection))
+                        {
+                            // Agregamos los comodines para LIKE
+                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                            connection.Open();
+                            var reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                
+                                if (reader.GetBoolean("Habilitado"))
+                                    {
+                                    Inmuebles i = new Inmuebles
+                                    {
+                                        IdInmueble = reader.GetInt32("IdInmuebles"),
+                                        Direccion = reader.GetString("Direccion"),
+                                        Precio = reader.GetDecimal("Precio"),
+                                        Habilitado = reader.GetBoolean("Habilitado")
+                                    };
+                                        res.Add(i);
+                                    }
+                                
+                              
+                                
+                            }
+
+                              connection.Close();
+                            }
+                    } 
+
+                               return res;
+        }
     }
 }
         

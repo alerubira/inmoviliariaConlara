@@ -23,35 +23,36 @@ namespace Inmobiliaria.Controllers{
             foreach (var inmueble in lista)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;  
+                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
 
             return View(lista);
         }
         public IActionResult Create()
         {
-               var tiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
-               ViewBag.TipoInmuebles = tiposInmuebles;
+            var tiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            ViewBag.TipoInmuebles = tiposInmuebles;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inmuebles inmueble)
         {
-           
+
             if (ModelState.IsValid)
             {
+                inmueble.Habilitado = true;
                 repo.Alta(inmueble);
                 return RedirectToAction(nameof(Index));
             }
-             ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 
         public IActionResult Edit(int id)
         {
             var inmueble = repo.ObtenerPorId(id);
-             inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+            inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
             inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             if (inmueble == null)
             {
@@ -64,10 +65,8 @@ namespace Inmobiliaria.Controllers{
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Inmuebles inmueble)
-        { 
-            Console.WriteLine(inmueble.IdInmueble);
-            Console.WriteLine(inmueble.IdTipoInmueble);
-            Console.WriteLine(inmueble.IdPropietario);
+        {
+
 
             if (id != inmueble.IdInmueble)
             {
@@ -91,9 +90,9 @@ namespace Inmobiliaria.Controllers{
             }
             return View(inmueble);
         }
-          [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id,String bandera)
+        public IActionResult Delete(int id, String bandera)
         {
             var inmueble = repo.ObtenerPorId(id);
             if (inmueble == null)
@@ -109,6 +108,24 @@ namespace Inmobiliaria.Controllers{
                 return RedirectToAction(nameof(Index));
             }
             return View(inmueble);
+        }
+        public IActionResult BuscarInmueblePorFraccionDireccion( String term)
+        {
+              if (string.IsNullOrEmpty(term) || term.Length < 3)
+                    {
+                        return Json(new { success = false, data = new List<object>() });
+                    }
+
+                 var lista = repo.BuscarPorFraccionDireccion(term);
+
+                 var resultado = lista.Select(i => new
+                 {
+                     id = i.IdInmueble,
+                     direccion = i.Direccion,
+                     precio=i.Precio
+                });
+
+                return Json(new { success = true, data = resultado });
         }
 }
 }

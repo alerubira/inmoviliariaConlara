@@ -1,0 +1,148 @@
+@model Inmobiliaria.Models.Contratos
+@using Inmobiliaria.Models
+@using System.Collections.Generic
+@{
+    ViewData["Title"] = "Editar Contrato";
+   // var tiposInmuebles = (IList<TipoInmueble>)ViewBag.TipoInmuebles;
+}
+
+<h4>Editar Contrato</h4>
+<div class="row">
+    <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+           
+            <div class="form-group">
+                    <label class="control-label">Inquilino</label>
+                    <input type="text" id="inquilinoInput" class="form-control"value=@Model.IdInquilino placeholder="Busque por apellido" list="inquilinosList" autocomplete="off" />
+                    <datalist id="inquilinosList"></datalist>
+                    <!-- Campo oculto para enviar el ID -->
+                    <input type="hidden" id="IdInquilino" name="IdInquilino" />
+            </div>
+
+                        <script>
+                            document.getElementById("inquilinoInput").addEventListener("input", function () {
+                                let valor = this.value;
+                                
+                                if (valor.length >= 3) {
+                                    fetch(`/Inquilinos/BuscarInquilinoPorFraccionApellido?term=${valor}`)
+                                        .then(r => r.json())
+                                        .then(data => {
+                                            let dl = document.getElementById("inquilinosList");
+                                            dl.innerHTML = "";
+
+                                            if (data.success) {
+                                                
+                                                data.data.forEach(p => {
+                                                    let option = document.createElement("option");
+                                                    option.value = p.texto;   // se muestra Nombre Apellido (DNI)
+                                                    option.dataset.id = p.id; // guardamos el ID
+                                                    dl.appendChild(option);
+                                                });
+                                            }
+                                        });
+                                }
+                            });
+
+                            document.getElementById("inquilinoInput").addEventListener("change", function () {
+                                let valor = this.value;
+                                let dl = document.getElementById("inquilinosList").options;
+                                for (let i = 0; i < dl.length; i++) {
+                                    if (dl[i].value === valor) {
+                                        document.getElementById("IdInquilino").value = dl[i].dataset.id;
+                                    }
+                                }
+                            });
+                        </script>
+            <div class="form-group">
+            <label class="control-label">Inmueble</label>
+            <input type="text" id="inmuebleInput" class="form-control"value=@Model.IdInmuebles placeholder="Busque por direccion" list="inmueblesList" autocomplete="off" />
+            <datalist id="inmueblesList"></datalist>
+            <!-- Campo oculto para enviar el ID -->
+            <input type="hidden" id="IdInmuebles" name="IdInmuebles" />
+            </div>
+
+                        <script>
+                            document.getElementById("inmuebleInput").addEventListener("input", function () {
+                                let valor = this.value;
+                                if (valor.length >= 3) {
+                                    fetch(`/Inmuebles/BuscarInmueblePorFraccionDireccion?term=${valor}`)
+                                        .then(r => r.json())
+                                        .then(data => {
+                                            let dl = document.getElementById("inmueblesList");
+                                            dl.innerHTML = "";
+
+                                            if (data.success) {
+                                                console.log(data.data);
+                                                data.data.forEach(p => {
+                                                    let option = document.createElement("option");
+                                                    option.value = p.direccion;   // se muestra direccion
+                                                    option.dataset.id = p.id; // guardamos el ID
+                                                    document.getElementById("precio").value = p.precio; // guardamos el precio
+                                                    dl.appendChild(option);
+                                                });
+                                            }
+                                        });
+                                }
+                            });
+
+                            document.getElementById("inmuebleInput").addEventListener("change", function () {
+                                let valor = this.value;
+                                let dl = document.getElementById("inmueblesList").options;
+                                for (let i = 0; i < dl.length; i++) {
+                                    if (dl[i].value === valor) {
+                                        document.getElementById("IdInmuebles").value = dl[i].dataset.id;
+                                    }
+                                }
+                            });
+                        </script>
+             <div class="form-group">
+                <label asp-for="Monto" class="control-label"></label>
+                <input asp-for="Monto" class="form-control" readonly/>
+                <span asp-validation-for="Monto" class="text-danger"></span>
+                 <input type="hidden" id="precio" name="precio" />
+            </div>  
+             <div class="form-group">
+                <label asp-for="FechaDesde" class="control-label"></label>
+                <input asp-for="FechaDesde" class="form-control" />
+                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaHasta" class="control-label"></label>
+                <input asp-for="FechaHasta" class="form-control" />
+                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+            </div>
+            <script>
+                        function calcularMeses() {
+                            const desde = document.getElementById("FechaDesde").value;
+                            const hasta = document.getElementById("FechaHasta").value;
+                            if (desde && hasta) 
+                            {
+                                const fechaDesde = new Date(desde);
+                                const fechaHasta = new Date(hasta);
+                                let meses = (fechaHasta.getFullYear() - fechaDesde.getFullYear()) * 12;
+                                meses += fechaHasta.getMonth() - fechaDesde.getMonth();
+                                meses += 1; // incluir ambos meses
+                                if (meses < 0) meses = 0;
+                                precio=document.getElementById("precio").value;
+                                monto=precio*meses;
+                                document.getElementById("Monto").value = monto;
+                            } else {
+                                document.getElementById("Monto").value = "";
+                            }
+                        }
+
+                        document.getElementById("FechaDesde").addEventListener("change", calcularMeses);
+                        document.getElementById("FechaHasta").addEventListener("change", calcularMeses);
+            </script>          
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Regresar a la lista</a>
+</div>

@@ -1,0 +1,78 @@
+@model IEnumerable<Inmobiliaria.Models.Contratos>
+@{
+	ViewData["Title"] = "Contratos";
+}
+
+<h1>
+	Contratos
+	<div class="btn-group pull-right">
+		<a class="btn btn-primary" asp-action="Create" title="Crear">Crear Contratos<i class="fa-solid fa-plus"></i></a>
+	</div>
+</h1>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.IdContrato)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IdInquilino)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IdInmuebles)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Monto)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FechaDesde)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FechaHasta)
+			</th>
+            <th>
+				@Html.DisplayNameFor(model => model.Vigente)
+			</th>
+            
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdContrato)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdInquilino)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdInmuebles)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Monto)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FechaDesde)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FechaHasta)
+				</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vigente)
+				<td>        
+
+					<div class="btn-group" role="group">
+						<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">
+							<i class="fa-solid fa-pen"></i>
+						</a>
+						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdContrato" title="Eliminar">
+							<i class="fa-solid fa-trash-can"></i>
+						</a>
+						
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

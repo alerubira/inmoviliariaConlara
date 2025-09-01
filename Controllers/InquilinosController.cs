@@ -68,9 +68,9 @@ namespace Inmobiliaria.Controllers
             }
             return View(inquilino);
         }
-          [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id,String bandera)
+        public IActionResult Delete(int id, String bandera)
         {
             var inquilino = repo.ObtenerPorId(id);
             if (inquilino == null)
@@ -86,6 +86,24 @@ namespace Inmobiliaria.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(inquilino);
+        }
+         [HttpGet]
+        public IActionResult BuscarInquilinoPorFraccionApellido( String term)
+        {
+              if (string.IsNullOrEmpty(term) || term.Length < 3)
+                    {
+                        return Json(new { success = false, data = new List<object>() });
+                    }
+
+                 var lista = repo.BuscarPorFraccionApellido(term);
+
+                 var resultado = lista.Select(i => new
+                        {
+                            id =i.IdInquilino,
+                            texto = i.ToString() // Usa el override
+                        });
+
+                return Json(new { success = true, data = resultado });
         }
 }
     }
