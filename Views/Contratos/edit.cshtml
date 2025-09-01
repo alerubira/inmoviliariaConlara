@@ -11,14 +11,14 @@
     <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
+           <input type="hidden" name="IdContrato" value="@Model.IdContrato" />
            
             <div class="form-group">
                     <label class="control-label">Inquilino</label>
-                    <input type="text" id="inquilinoInput" class="form-control"value=@Model.IdInquilino placeholder="Busque por apellido" list="inquilinosList" autocomplete="off" />
+                    <input type="text" id="inquilinoInput" class="form-control"value=@Model.NombreInquilino placeholder="Busque por apellido" list="inquilinosList" autocomplete="off" />
                     <datalist id="inquilinosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
-                    <input type="hidden" id="IdInquilino" name="IdInquilino" />
+                    <input type="hidden" id="IdInquilino" name="IdInquilino"value=@Model.IdInquilino />
             </div>
 
                         <script>
@@ -57,10 +57,10 @@
                         </script>
             <div class="form-group">
             <label class="control-label">Inmueble</label>
-            <input type="text" id="inmuebleInput" class="form-control"value=@Model.IdInmuebles placeholder="Busque por direccion" list="inmueblesList" autocomplete="off" />
+            <input type="text" id="inmuebleInput" class="form-control"value=@Model.DireccionInmueble placeholder="Busque por direccion" list="inmueblesList" autocomplete="off" />
             <datalist id="inmueblesList"></datalist>
             <!-- Campo oculto para enviar el ID -->
-            <input type="hidden" id="IdInmuebles" name="IdInmuebles" />
+            <input type="hidden" id="IdInmuebles" name="IdInmuebles"value=@Model.IdInmuebles />
             </div>
 
                         <script>
@@ -101,7 +101,7 @@
                 <label asp-for="Monto" class="control-label"></label>
                 <input asp-for="Monto" class="form-control" readonly/>
                 <span asp-validation-for="Monto" class="text-danger"></span>
-                 <input type="hidden" id="precio" name="precio" />
+                 <input type="hidden" id="precio" name="precio"value=@Model.Precio />
             </div>  
              <div class="form-group">
                 <label asp-for="FechaDesde" class="control-label"></label>

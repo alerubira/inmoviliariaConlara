@@ -69,7 +69,7 @@ namespace Inmobiliaria.Models
                 {
                     command.Parameters.AddWithValue("@id", contrato.IdContrato);
                     command.Parameters.AddWithValue("@idInquilino", contrato.IdInquilino);
-                    command.Parameters.AddWithValue("@idInmueble", contrato.IdInmuebles);
+                    command.Parameters.AddWithValue("@idInmuebles", contrato.IdInmuebles);
                     command.Parameters.AddWithValue("@monto", contrato.Monto);
                     command.Parameters.AddWithValue("@fechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@fechaHasta", contrato.FechaHasta);

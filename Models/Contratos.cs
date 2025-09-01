@@ -22,5 +22,10 @@ namespace Inmobiliaria.Models
         public DateTime FechaHasta { get; set; }
         [Display(Name = "Vigente")]
         public bool Vigente { get; set; }
+        public decimal? Precio { get; set; }
+        [Display(Name = "Inquilino")]
+        public String? NombreInquilino { get; set; }
+        [Display(Name = "Direccion del Inmueble")]
+        public String? DireccionInmueble { get; set; }
     }
 }

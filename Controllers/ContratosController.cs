@@ -6,25 +6,36 @@ namespace Inmobiliaria.Controllers{
     public class ContratosController : Controller
     {
         private readonly RepositorioContratos repo;
-       // private readonly RepositorioTipoInmueble repositorioTipoInmueble;
-       // private readonly RepositorioPropietario repoPropietario;
+        private readonly RepositorioInquilino repositorioInquilino;
+        private readonly RepositorioInmuebles repositorioInmuebles;
         public ContratosController(IConfiguration configuration)
         {
             repo = new RepositorioContratos(configuration);
-           // repositorioTipoInmueble = new RepositorioTipoInmueble(configuration);
-            //repoPropietario = new RepositorioPropietario(configuration);
+            repositorioInquilino = new RepositorioInquilino(configuration);
+            repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
 
-            // Asigna el propietario a cada inmueble
-           /* foreach (var inmueble in lista)
+            // Asigna el contrato el nombre del inquilino , la direccion del inmueble y el precio del inmueble a cada contrato
+            foreach (var contrato in lista)
             {
-                inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;  
-            }*/
+                 if (contrato.IdInquilino.HasValue)
+                 {
+                     Inquilino nI = repositorioInquilino.ObtenerPorId(contrato.IdInquilino.Value);
+                     contrato.NombreInquilino = nI != null ? nI.ToString() : "";
+                 }
+                 else
+                 {
+                     contrato.NombreInquilino = "";
+                 }
+              //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
+                var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+                contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+                contrato.Precio = inm != null ? inm.Precio : 0;
+            }
 
             return View(lista);
         }
@@ -52,12 +63,25 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Edit(int id)
         {
             var contrato = repo.ObtenerPorId(id);
-             //contrato.Duenio = repoPropietario.ObtenerPorId(contrato.IdPropietario);
-            //contrato.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(contrato.IdTipoInmueble)?.Nombre;
+           
             if (contrato == null)
             {
                 return NotFound();
             }
+              if (contrato.IdInquilino.HasValue)
+                 {
+                     Inquilino nI = repositorioInquilino.ObtenerPorId(contrato.IdInquilino.Value);
+                     contrato.NombreInquilino = nI != null ? nI.ToString() : "";
+                 }
+                 else
+                 {
+                     contrato.NombreInquilino = "";
+                 }
+              //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
+                var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+                contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+                contrato.Precio = inm != null ? inm.Precio : 0;
+
            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
@@ -72,9 +96,11 @@ namespace Inmobiliaria.Controllers{
             {
                 return NotFound();
             }
+           
 
             if (ModelState.IsValid)
             {
+                contrato.Vigente = true;
                 repo.Modificacion(contrato);
                 return RedirectToAction(nameof(Index));
             }
