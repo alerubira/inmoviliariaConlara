@@ -74,7 +74,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@fechaHasta", contrato.FechaHasta);
                     command.Parameters.AddWithValue("@vigente", contrato.Vigente);
-                   
+
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -100,13 +100,13 @@ namespace Inmobiliaria.Models
                         var contrato = new Contratos
                         {
                             IdContrato = Convert.ToInt32(reader["IdContrato"]),
-                            IdInquilino =Convert.ToInt32(reader["idInquilino"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
                             IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
                             Monto = Convert.ToDecimal(reader["monto"]),
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
-                           
+
 
                         };
                         res.Add(contrato);
@@ -137,13 +137,13 @@ namespace Inmobiliaria.Models
                         contrato = new Contratos
                         {
                             IdContrato = Convert.ToInt32(reader["IdContrato"]),
-                            IdInquilino =Convert.ToInt32(reader["idInquilino"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
                             IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
                             Monto = Convert.ToDecimal(reader["monto"]),
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
-                           
+
 
                         };
                     }
@@ -151,6 +151,40 @@ namespace Inmobiliaria.Models
                 }
             }
             return contrato;
+        }
+        public Inmuebles obtenerDireccionPrecioInmueblePorIdContrato(int id){
+             Inmuebles? inmueble = null;
+             //continuar para abajo hacer yoin,para usar en el controller de pagos
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente
+                            FROM contratos
+                            WHERE IdContrato = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        contrato = new Contratos
+                        {
+                            IdContrato = Convert.ToInt32(reader["IdContrato"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
+                            IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
+                            Monto = Convert.ToDecimal(reader["monto"]),
+                            FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
+                            FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
+                            Vigente = Convert.ToBoolean(reader["vigente"]),
+
+
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return contrato;
+        }
         }
     }
 }
