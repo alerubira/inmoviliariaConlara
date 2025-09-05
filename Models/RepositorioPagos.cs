@@ -19,7 +19,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"INSERT INTO Pagos
                     ( idContratos, fechaPago, importe)
-                    VALUES ( @IdIContratos, @fechaPago, @fechaHasta,@importe);
+                    VALUES ( @IdContratos, @fechaPago,@importe);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {

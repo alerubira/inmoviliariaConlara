@@ -37,9 +37,9 @@
                                                 
                                                 data.data.forEach(p => {
                                                     let option = document.createElement("option");
-                                                    option.value = p.DireccionInmueble;   // se muestra Nombre Apellido (DNI)
-                                                    option.dataset.id = p.idContrato; // guardamos el ID
-                                                    option.dataset.precio = p.Precio; // guardamos el precio
+                                                    option.value = p.direccion;   // se muestra Nombre Apellido (DNI)
+                                                    option.dataset.id = p.id; // guardamos el ID
+                                                    option.dataset.precio = p.precio; // guardamos el precio
                                                     dl.appendChild(option);
                                                 });
                                             }
@@ -53,7 +53,7 @@
                                 for (let i = 0; i < dl.length; i++) {
                                     if (dl[i].value === valor) {
                                         document.getElementById("IdContratos").value = dl[i].dataset.id;
-                                        document.getElementById("precio").value = dl[i].dataset.precio;
+                                        document.getElementById("Importe").value = dl[i].dataset.precio;
                                     }
                                 }
                             });
@@ -63,7 +63,7 @@
                 <label asp-for="Importe" class="control-label"></label>
                 <input asp-for="Importe" class="form-control" readonly/>
                 <span asp-validation-for="Importe" class="text-danger"></span>
-                 <input type="hidden" id="precio" name="precio" />
+                <!--<input type="hidden" id="importe" name="importe" /> --> 
             </div>  
              <div class="form-group">
                 <label asp-for="FechaPago" class="control-label"></label>
