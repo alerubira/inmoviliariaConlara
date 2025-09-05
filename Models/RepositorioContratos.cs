@@ -74,7 +74,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@fechaHasta", contrato.FechaHasta);
                     command.Parameters.AddWithValue("@vigente", contrato.Vigente);
-                   
+
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -100,13 +100,13 @@ namespace Inmobiliaria.Models
                         var contrato = new Contratos
                         {
                             IdContrato = Convert.ToInt32(reader["IdContrato"]),
-                            IdInquilino =Convert.ToInt32(reader["idInquilino"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
                             IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
                             Monto = Convert.ToDecimal(reader["monto"]),
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
-                           
+
 
                         };
                         res.Add(contrato);
@@ -137,13 +137,13 @@ namespace Inmobiliaria.Models
                         contrato = new Contratos
                         {
                             IdContrato = Convert.ToInt32(reader["IdContrato"]),
-                            IdInquilino =Convert.ToInt32(reader["idInquilino"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
                             IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
                             Monto = Convert.ToDecimal(reader["monto"]),
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
-                           
+
 
                         };
                     }
@@ -152,7 +152,84 @@ namespace Inmobiliaria.Models
             }
             return contrato;
         }
-    }
+        public Contratos obtenerDireccionPrecioInmueblePorIdContrato(int id)
+        {
+            Contratos? contrato = null;
+            //continuar para abajo hacer yoin,para usar en el controller de pagos
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT con.idContrato direccion,precio FROM `contratos` con
+                                JOIN inmuebles inm
+                                ON inm.idInmuebles=con.idInmuebles
+                                WHERE con.idContrato= @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        contrato = new Contratos
+                        {
+                            IdContrato = Convert.ToInt32(reader["idContrato"]),
+                            Precio = Convert.ToDecimal(reader["precio"]),
+                            DireccionInmueble = Convert.ToString(reader["direccion"]) ?? "",
+
+
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return contrato;
+        }
+          public IList<Contratos> buscarPorFraccionDireccion(string fraccion)
+        {
+                    IList<Contratos> res = new List<Contratos>();
+
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        string sql = @"
+                            SELECT  inm.Direccion, inm.Precio,cont.idContrato
+                            FROM Contratos cont
+                            join Inmuebles inm on cont.idInmuebles = inm.idInmuebles
+
+                            WHERE direccion LIKE @fraccion ";
+
+                        using (var command = new MySqlCommand(sql, connection))
+                        {
+                            // Agregamos los comodines para LIKE
+                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                            connection.Open();
+                            var reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                
+                                
+                                    Contratos c= new Contratos
+                                    {
+                                        IdContrato = reader.GetInt32("IdContrato"),
+                                        DireccionInmueble = reader.GetString("Direccion"),
+                                        Precio = reader.GetDecimal("Precio"),
+                                        
+                                    };
+                                        res.Add(c);
+                                    
+                                
+                              
+                                
+                            }
+
+                              connection.Close();
+                            }
+                    } 
+
+                               return res;
+        }
+        }
+    
 }
         
     
