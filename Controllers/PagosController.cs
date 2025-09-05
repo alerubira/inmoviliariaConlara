@@ -8,10 +8,11 @@ namespace Inmobiliaria.Controllers{
         private readonly RepositorioPagos repo;
         
         private readonly RepositorioContratos repositorioContratos;
+       // private readonly RepositorioInmuebles repositorioInmuebles;
         public PagosController(IConfiguration configuration)
         {
             repo = new RepositorioPagos(configuration);
-    
+
             repositorioContratos = new RepositorioContratos(configuration);
         }
 
@@ -22,20 +23,10 @@ namespace Inmobiliaria.Controllers{
             // Asigna al pago la direccion del inmueble 
             foreach (var pago in lista)
             {
-                if (pago.IdPagos.HasValue)
-                {//hacer en el repositoriContratos obtenetpor idContrato la direccion del inmueble
-                    Inmuebles in = repositorioInmuebles.ObtenerPorId(pago.IdInquilino.Value);
-                    pago.NombreInquilino = nI != null ? nI.ToString() : "";
-                }
-                else
-                {
-
-                    pago.DireccionInmueble = null;
-                 }
-              //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
-                var inm = repositorioInmuebles.ObtenerPorId(pago.IdInmuebles);
-                pago.DireccionInmueble = inm != null ? inm.Direccion : "";
-                pago.Precio = inm != null ? inm.Precio : 0;
+                var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
+              
+                pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
+                pago.Importe = contrato != null ? (contrato.Precio ?? 0) : 0;
             }
 
             return View(lista);
@@ -48,52 +39,43 @@ namespace Inmobiliaria.Controllers{
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Contratos contrato)
+        public IActionResult Create(Pagos pago)
         {
            
             if (ModelState.IsValid)
             {
-                contrato.Vigente = true;
-                repo.Alta(contrato);
+               
+                repo.Alta(pago);
                 return RedirectToAction(nameof(Index));
             }
              //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-            return View(contrato);
+            return View(pago);
         }
 
         public IActionResult Edit(int id)
         {
-            var contrato = repo.ObtenerPorId(id);
+            var pago = repo.ObtenerPorId(id);
            
-            if (contrato == null)
+            if (pago == null)
             {
                 return NotFound();
             }
-              if (contrato.IdInquilino.HasValue)
-                 {
-                     Inquilino nI = repositorioInquilino.ObtenerPorId(contrato.IdInquilino.Value);
-                     contrato.NombreInquilino = nI != null ? nI.ToString() : "";
-                 }
-                 else
-                 {
-                     contrato.NombreInquilino = "";
-                 }
-              //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
-                var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
-                contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-                contrato.Precio = inm != null ? inm.Precio : 0;
+             
+                var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
+                pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
+                pago.Importe =contrato != null ? (contrato.Precio ?? 0) : 0;
 
            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-            return View(contrato);
+            return View(pago);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Contratos contrato)
+        public IActionResult Edit(int id, Pagos pago)
         { 
             
 
-            if (id != contrato.IdContrato)
+            if (id != pago.IdPagos)
             {
                 return NotFound();
             }
@@ -101,32 +83,32 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
-                contrato.Vigente = true;
-                repo.Modificacion(contrato);
+              
+                repo.Modificacion(pago);
                 return RedirectToAction(nameof(Index));
             }
            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-            return View(contrato);
+            return View(pago);
         }
         public IActionResult Delete(int id)
         {
-            var contrato = repo.ObtenerPorId(id);
-            if (contrato == null)
+            var pago = repo.ObtenerPorId(id);
+            if (pago == null)
             {
                 return NotFound();
             }
-            return View(contrato);
+            return View(pago);
         }
           [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id,String bandera)
         {
-            var contrato = repo.ObtenerPorId(id);
-            if (contrato == null)
+            var pago = repo.ObtenerPorId(id);
+            if (pago == null)
             {
                 return NotFound();
             }
-            if (id != contrato.IdContrato)
+            if (id != pago.IdPagos)
                 return NotFound();
 
             if (ModelState.IsValid)
@@ -134,7 +116,7 @@ namespace Inmobiliaria.Controllers{
                 repo.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            return View(contrato);
+            return View(pago);
         }
 }
 }

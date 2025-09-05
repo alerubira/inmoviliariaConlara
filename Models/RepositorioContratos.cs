@@ -152,14 +152,16 @@ namespace Inmobiliaria.Models
             }
             return contrato;
         }
-        public Inmuebles obtenerDireccionPrecioInmueblePorIdContrato(int id){
-             Inmuebles? inmueble = null;
-             //continuar para abajo hacer yoin,para usar en el controller de pagos
+        public Contratos obtenerDireccionPrecioInmueblePorIdContrato(int id)
+        {
+            Contratos? contrato = null;
+            //continuar para abajo hacer yoin,para usar en el controller de pagos
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente
-                            FROM contratos
-                            WHERE IdContrato = @id";
+                string sql = @"SELECT con.idContratos direccion,precio FROM `contratos` con
+                                JOIN inmuebles inm
+                                ON inm.idInmuebles=con.idInmuebles
+                                WHERE con.idContrato= @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -169,13 +171,9 @@ namespace Inmobiliaria.Models
                     {
                         contrato = new Contratos
                         {
-                            IdContrato = Convert.ToInt32(reader["IdContrato"]),
-                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
-                            IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
-                            Monto = Convert.ToDecimal(reader["monto"]),
-                            FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
-                            FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
-                            Vigente = Convert.ToBoolean(reader["vigente"]),
+                            IdContrato = Convert.ToInt32(reader["idContratos"]),
+                            Precio = Convert.ToDecimal(reader["precio"]),
+                            DireccionInmueble = Convert.ToString(reader["direccion"]) ?? "",
 
 
                         };
@@ -185,8 +183,53 @@ namespace Inmobiliaria.Models
             }
             return contrato;
         }
+          public IList<Contratos> buscarPorFraccionDireccion(string fraccion)
+        {
+                    IList<Contratos> res = new List<Contratos>();
+
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        string sql = @"
+                            SELECT  inm.Direccion, inm.Precio,cont.idContrato
+                            FROM Contratos cont
+                            join Inmuebles inm on cont.idInmuebles = inm.idInmuebles
+
+                            WHERE direccion LIKE @fraccion && inm.Habilitado";
+
+                        using (var command = new MySqlCommand(sql, connection))
+                        {
+                            // Agregamos los comodines para LIKE
+                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                            connection.Open();
+                            var reader = command.ExecuteReader();
+
+                            while (reader.Read())
+                            {
+                                
+                                
+                                    Contratos c= new Contratos
+                                    {
+                                        IdContrato = reader.GetInt32("IdContrato"),
+                                        DireccionInmueble = reader.GetString("Direccion"),
+                                        Precio = reader.GetDecimal("Precio"),
+                                        
+                                    };
+                                        res.Add(c);
+                                    
+                                
+                              
+                                
+                            }
+
+                              connection.Close();
+                            }
+                    } 
+
+                               return res;
         }
-    }
+        }
+    
 }
         
     

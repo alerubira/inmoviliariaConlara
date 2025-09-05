@@ -13,6 +13,7 @@ namespace Inmobiliaria.Models
     [Required]
     public DateTime FechaPago { get; set; }
     [Required]
+    [Display(Name = "Importe Sugerido")]
       public decimal Importe { get; set; }
   
    
