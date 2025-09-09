@@ -76,14 +76,17 @@
                                             dl.innerHTML = "";
 
                                             if (data.success) {
-                                                
                                                 data.data.forEach(p => {
                                                     let option = document.createElement("option");
-                                                    console.log(p);
                                                     option.value = p.texto;   // se muestra Nombre Apellido (DNI)
                                                     option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
+                                            }else{
+                                                let option = document.createElement("option");
+                                                option.value = data.message;
+                                                option.dataset=data.message;
+                                                dl.appendChild(option);
                                             }
                                         });
                                 }

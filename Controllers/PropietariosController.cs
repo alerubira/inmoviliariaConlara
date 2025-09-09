@@ -74,11 +74,14 @@ namespace Inmobiliaria.Controllers
         {
               if (string.IsNullOrEmpty(term) || term.Length < 3)
                     {
-                        return Json(new { success = false, data = new List<object>() });
+                        return Json(new { success = false,message = "Ingrese al menos tres caracteres", data = new List<object>() });
                     }
 
                  var lista = repo.BuscarPorFraccionApellido(term);
-
+                    if (lista == null || lista.Count == 0)
+                        {
+                            return Json(new { success = false, message = "No se encontraron resultados para la búsqueda.", data = new List<object>() });
+                        }
                  var resultado = lista.Select(p => new
                         {
                             id = p.IdPropietario,
