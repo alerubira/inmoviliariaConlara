@@ -14,11 +14,23 @@ namespace Inmobiliaria.Controllers
             repo = new RepositorioInquilino(configuration);
         }
 
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
             return View(lista);
-        }
+        }*/
+        public IActionResult Index(int pageNumber = 1, int pageSize = 5)
+            {
+                var lista = repo.ObtenerPaginado(pageNumber, pageSize);
+                var totalRegistros = repo.ContarInquilinos();
+                var totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
+
+                ViewBag.PaginaActual = pageNumber;
+                ViewBag.TotalPaginas = totalPaginas;
+
+                return View(lista);
+            }
+
         public IActionResult Create()
         {
             return View();
@@ -96,6 +108,10 @@ namespace Inmobiliaria.Controllers
                     }
 
                  var lista = repo.BuscarPorFraccionApellido(term);
+                 if(lista==null||lista.Count==0)
+                 {
+                    return Json(new { success = false, message = "No se encontraron Inquilinos.", data = new List<object>() });
+                 }
 
                  var resultado = lista.Select(i => new
                         {

@@ -52,12 +52,15 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Edit(int id)
         {
             var inmueble = repo.ObtenerPorId(id);
-            inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-            inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
-            if (inmueble == null)
+              if (inmueble == null)
             {
                 return NotFound();
             }
+                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+            
+           
+            inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+          
             ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
@@ -117,7 +120,10 @@ namespace Inmobiliaria.Controllers{
                     }
 
                  var lista = repo.BuscarPorFraccionDireccion(term);
-
+                if (lista == null || lista.Count == 0)
+                    {
+                        return Json(new { success = false, message = "No se encontraron Inmuebles." });
+                    }
                  var resultado = lista.Select(i => new
                  {
                      id = i.IdInmueble,

@@ -62,31 +62,31 @@
                     <datalist id="propietariosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
                     <input type="hidden" id="IdPropietario" name="IdPropietario" />
+                    <p id="pNoEncontradoPropietario" class="text-danger"></p>
             </div>
 
                         <script>
                             document.getElementById("propietarioInput").addEventListener("input", function () {
                                 let valor = this.value;
-                                
+                                let pNoEncontrado = document.getElementById("pNoEncontradoPropietario");
+                                pNoEncontrado.textContent = ""; // Limpiar mensaje de no encontrado
                                 if (valor.length >= 3) {
                                     fetch(`/Propietarios/BuscarPropietarioPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {
                                             let dl = document.getElementById("propietariosList");
                                             dl.innerHTML = "";
-
+                                             let option = document.createElement("option");
                                             if (data.success) {
-                                                data.data.forEach(p => {
-                                                    let option = document.createElement("option");
+                                                     data.data.forEach(p => {
+                                                    
                                                     option.value = p.texto;   // se muestra Nombre Apellido (DNI)
                                                     option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
                                             }else{
-                                                let option = document.createElement("option");
-                                                option.value = data.message;
-                                                option.dataset=data.message;
-                                                dl.appendChild(option);
+                                                pNoEncontrado.textContent =data.message;
+                                                
                                             }
                                         });
                                 }

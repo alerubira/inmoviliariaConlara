@@ -80,7 +80,7 @@ namespace Inmobiliaria.Controllers
                  var lista = repo.BuscarPorFraccionApellido(term);
                     if (lista == null || lista.Count == 0)
                         {
-                            return Json(new { success = false, message = "No se encontraron resultados para la búsqueda.", data = new List<object>() });
+                            return Json(new { success = false, message = "No se encontraron Propietarios.", data = new List<object>() });
                         }
                  var resultado = lista.Select(p => new
                         {

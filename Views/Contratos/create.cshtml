@@ -20,12 +20,14 @@
                     <datalist id="inquilinosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
                     <input type="hidden" id="IdInquilino" name="IdInquilino" />
+                    <p id="pNoEncontradoInquilino"class="text-danger"></p>
             </div>
 
                         <script>
                             document.getElementById("inquilinoInput").addEventListener("input", function () {
                                 let valor = this.value;
-                                
+                                let pNoEncontrado = document.getElementById("pNoEncontradoInquilino");
+                                pNoEncontrado.textContent = ""; // Limpiar mensaje de no encontrado
                                 if (valor.length >= 3) {
                                     fetch(`/Inquilinos/BuscarInquilinoPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
@@ -41,6 +43,8 @@
                                                     option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
+                                            }else{
+                                                pNoEncontrado.textContent =data.message;
                                             }
                                         });
                                 }
@@ -62,11 +66,14 @@
             <datalist id="inmueblesList"></datalist>
             <!-- Campo oculto para enviar el ID -->
             <input type="hidden" id="IdInmuebles" name="IdInmuebles" />
+            <p id="pNoEncontradoDomicilio"class=text-danger></p>
             </div>
 
                         <script>
                             document.getElementById("inmuebleInput").addEventListener("input", function () {
                                 let valor = this.value;
+                                let pNoEncontrado=document.getElementById("pNoEncontradoDomicilio");
+                                pNoEncontrado.textContent=""; // Limpiar mensaje de no encontrado
                                 if (valor.length >= 3) {
                                     fetch(`/Inmuebles/BuscarInmueblePorFraccionDireccion?term=${valor}`)
                                         .then(r => r.json())
@@ -83,6 +90,8 @@
                                                     document.getElementById("precio").value = p.precio; // guardamos el precio
                                                     dl.appendChild(option);
                                                 });
+                                            }else{
+                                                pNoEncontrado.textContent =data.message;
                                             }
                                         });
                                 }
