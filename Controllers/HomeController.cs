@@ -1,31 +1,29 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using inmoviliariaConlara.Models;
+using System.Diagnostics;
+using InmobiliariaConlara.Models;
 
-namespace inmoviliariaConlara.Controllers;
-
-public class HomeController : Controller
+namespace Inmobiliaria.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error(string? mensaje)
+        {
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                TempData["Error"] = mensaje;
+            }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }
+
