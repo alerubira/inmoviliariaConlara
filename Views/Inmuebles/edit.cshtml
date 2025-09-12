@@ -68,7 +68,7 @@
                             document.getElementById("propietarioInput").addEventListener("input", function () {
                                 let valor = this.value;
                                 
-                                if (valor.length >= 3) {
+                                if (valor.length >= 3&&valor.length<6) {
                                     fetch(`/Propietarios/BuscarPropietarioPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {

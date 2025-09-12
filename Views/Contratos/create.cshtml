@@ -28,7 +28,7 @@
                                 let valor = this.value;
                                 let pNoEncontrado = document.getElementById("pNoEncontradoInquilino");
                                 pNoEncontrado.textContent = ""; // Limpiar mensaje de no encontrado
-                                if (valor.length >= 3) {
+                                if (valor.length >= 3&&valor.length<6) {
                                     fetch(`/Inquilinos/BuscarInquilinoPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {
@@ -74,7 +74,7 @@
                                 let valor = this.value;
                                 let pNoEncontrado=document.getElementById("pNoEncontradoDomicilio");
                                 pNoEncontrado.textContent=""; // Limpiar mensaje de no encontrado
-                                if (valor.length >= 3) {
+                                if (valor.length >= 3&&valor.length<6) {
                                     fetch(`/Inmuebles/BuscarInmueblePorFraccionDireccion?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {
