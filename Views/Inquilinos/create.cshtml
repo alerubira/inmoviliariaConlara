@@ -46,3 +46,6 @@
 <div>
     <a asp-action="Index">Regresar a la Lista</a>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

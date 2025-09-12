@@ -108,7 +108,7 @@ namespace Inmobiliaria.Models
         }
         public IList<Inquilino> ObtenerPaginado(int pageNumber, int pageSize)
                         { // TEMP: simular error para test
-                           throw new Exception("Prueba: esto es un error de prueba para el toast");
+                          // throw new Exception("Prueba: esto es un error de prueba para el toast");
                             IList<Inquilino> res = new List<Inquilino>();
                             using (var connection = new MySqlConnection(connectionString))
                             {
