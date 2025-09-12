@@ -188,42 +188,71 @@ namespace Inmobiliaria.Models
             }
             return i;
         }
+        public Inquilino? ObtenerPorDni(String dni)
+        {
+            Inquilino? i = null;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
+                    FROM Inquilino WHERE Dni=@dni";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@dni", dni);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        i = new Inquilino
+                        {
+                            IdInquilino = reader.GetInt32("IdInquilino"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido"),
+                            Dni = reader.GetString("Dni"),
+                            Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
+                            eMail = reader.GetString("eMail")
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return i;
+        }
          public IList<Inquilino> BuscarPorFraccionApellido(string fraccion)
         {
-                    IList<Inquilino> res = new List<Inquilino>();
+            IList<Inquilino> res = new List<Inquilino>();
 
-                    using (var connection = new MySqlConnection(connectionString))
-                    {
-                        string sql = @"
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
                             SELECT IdInquilino, Nombre, Apellido
                             FROM Inquilino
                             WHERE Apellido LIKE @fraccion
                         ";
 
-                        using (var command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    // Agregamos los comodines para LIKE
+                    command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Inquilino i = new Inquilino
                         {
-                            // Agregamos los comodines para LIKE
-                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+                            IdInquilino = reader.GetInt32("IdInquilino"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido")
+                        };
+                        res.Add(i);
+                    }
 
-                            connection.Open();
-                            var reader = command.ExecuteReader();
+                    connection.Close();
+                }
+            }
 
-                            while (reader.Read())
-                            {
-                                Inquilino i = new Inquilino
-                                {
-                                    IdInquilino = reader.GetInt32("IdInquilino"),
-                                    Nombre = reader.GetString("Nombre"),
-                                    Apellido = reader.GetString("Apellido")
-                                };
-                                res.Add(i);
-                       }
-
-                              connection.Close();
-                            }
-                    } 
-
-                               return res;
+            return res;
         }
     }    
     

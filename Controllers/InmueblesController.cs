@@ -37,8 +37,15 @@ namespace Inmobiliaria.Controllers{
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inmuebles inmueble)
+        
         {
-
+            
+            var inm= repo.ObtenerPorDireccion(inmueble.Direccion);
+            if (inm != null)
+            {
+                ModelState.AddModelError("Direccion", "Ya existe un inmueble con esa dirección.");
+                return View(inmueble);
+            }
             if (ModelState.IsValid)
             {
                 inmueble.Habilitado = true;

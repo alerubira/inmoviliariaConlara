@@ -27,6 +27,12 @@ namespace Inmobiliaria.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Propietario propietario)
         {
+            var p=repo.ObtenerPorDni(propietario.Dni);
+            if (p != null)
+            {
+                ModelState.AddModelError("Dni", "Ya existe un propietario con este DNI.");
+                return View(propietario);
+            }
             if (ModelState.IsValid)
             {
                 repo.Alta(propietario);

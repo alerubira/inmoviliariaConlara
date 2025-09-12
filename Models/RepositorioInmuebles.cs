@@ -159,50 +159,88 @@ namespace Inmobiliaria.Models
             }
             return inmueble;
         }
+        public Inmuebles? ObtenerPorDireccion(String dir)
+        {
+
+
+            Inmuebles? inmueble = null;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
+                            FROM Inmuebles
+                            WHERE Direccion = @dir";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@dir", dir);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        inmueble = new Inmuebles
+                        {
+                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            Direccion = reader["Direccion"].ToString() ?? string.Empty,
+                            Ambientes = Convert.ToInt32(reader["Ambientes"]),
+                            Superficie = Convert.ToInt32(reader["Superficie"]),
+                            Latitud = Convert.ToDecimal(reader["Latitud"]),
+                            Longitud = Convert.ToDecimal(reader["Longitud"]),
+                            IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
+                            IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
+                            Precio = Convert.ToDecimal(reader["precio"]),
+                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return inmueble;
+        }
+
           public IList<Inmuebles> BuscarPorFraccionDireccion(string fraccion)
         {
-                    IList<Inmuebles> res = new List<Inmuebles>();
+            IList<Inmuebles> res = new List<Inmuebles>();
 
-                    using (var connection = new MySqlConnection(connectionString))
-                    {
-                        string sql = @"
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
                             SELECT IdInmuebles, Direccion, Precio,Habilitado
                             FROM Inmuebles
                             WHERE direccion LIKE @fraccion
                         ";
 
-                        using (var command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    // Agregamos los comodines para LIKE
+                    command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+
+                        if (reader.GetBoolean("Habilitado"))
                         {
-                            // Agregamos los comodines para LIKE
-                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
-
-                            connection.Open();
-                            var reader = command.ExecuteReader();
-
-                            while (reader.Read())
+                            Inmuebles i = new Inmuebles
                             {
-                                
-                                if (reader.GetBoolean("Habilitado"))
-                                    {
-                                    Inmuebles i = new Inmuebles
-                                    {
-                                        IdInmueble = reader.GetInt32("IdInmuebles"),
-                                        Direccion = reader.GetString("Direccion"),
-                                        Precio = reader.GetDecimal("Precio"),
-                                        Habilitado = reader.GetBoolean("Habilitado")
-                                    };
-                                        res.Add(i);
-                                    }
-                                
-                              
-                                
-                            }
+                                IdInmueble = reader.GetInt32("IdInmuebles"),
+                                Direccion = reader.GetString("Direccion"),
+                                Precio = reader.GetDecimal("Precio"),
+                                Habilitado = reader.GetBoolean("Habilitado")
+                            };
+                            res.Add(i);
+                        }
 
-                              connection.Close();
-                            }
-                    } 
 
-                               return res;
+
+                    }
+
+                    connection.Close();
+                }
+            }
+
+            return res;
         }
     }
 }
