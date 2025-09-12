@@ -42,8 +42,9 @@ namespace Inmobiliaria.Controllers{
             
             var inm= repo.ObtenerPorDireccion(inmueble.Direccion);
             if (inm != null)
-            {
+            { 
                 ModelState.AddModelError("Direccion", "Ya existe un inmueble con esa dirección.");
+                 ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos(); 
                 return View(inmueble);
             }
             if (ModelState.IsValid)
