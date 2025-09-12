@@ -63,7 +63,7 @@ namespace Inmobiliaria.Controllers{
              
                 var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
                 pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
-                pago.Importe =contrato != null ? (contrato.Precio ?? 0) : 0;
+            //    pago.Importe =contrato != null ? (contrato.Precio ?? 0) : 0;
 
            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(pago);

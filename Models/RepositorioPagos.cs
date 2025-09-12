@@ -77,36 +77,44 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public IList<Pagos> ObtenerTodos()
+public IList<Pagos> ObtenerTodos()
+{
+    var res = new List<Pagos>();
+    using (var connection = new MySqlConnection(connectionString))
+    {
+        string sql = @"
+            SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,
+                   i.Direccion AS DireccionInmueble
+            FROM pagos p
+            INNER JOIN contratos c ON p.idContratos = c.IdContrato
+            INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
+            ORDER BY p.fechaPago;
+        ";
+
+        using (var command = new MySqlCommand(sql, connection))
         {
-            var res = new List<Pagos>();
-            using (var connection = new MySqlConnection(connectionString))
+            connection.Open();
+            var reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                string sql = @"SELECT IdPagos,idContratos,fechaPago,importe
-                            FROM pagos
-                            ORDER BY fechaPago";
-                using (var command = new MySqlCommand(sql, connection))
+                var pago = new Pagos
                 {
-                    connection.Open();
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var pago = new Pagos
-                        {
-                            IdPagos = Convert.ToInt32(reader["IdPagos"]),
-                            IdContratos = Convert.ToInt32(reader["idContratos"]),
-                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
-                            Importe = Convert.ToDecimal(reader["importe"]),
-                           
-                        };
-                      
-                        res.Add(pago);
-                    }
-                    connection.Close();
-                }
+                    IdPagos = Convert.ToInt32(reader["IdPagos"]),
+                    IdContratos = Convert.ToInt32(reader["idContratos"]),
+                    FechaPago = Convert.ToDateTime(reader["fechaPago"]),
+                    Importe = Convert.ToDecimal(reader["importe"]),
+                    DireccionInmueble = reader["DireccionInmueble"].ToString()
+                };
+
+                res.Add(pago);
             }
-            return res;
+            connection.Close();
         }
+    }
+    return res;
+}
+
+
 
         public Pagos? ObtenerPorId(int id)
         {

@@ -1,0 +1,45 @@
+@model Inmobiliaria.Models.Pagos
+@using Inmobiliaria.Models
+
+@{
+    ViewData["Title"] = "Editar Pago";
+}
+
+<h4>Editar Pago</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Campo oculto para el ID -->
+            <input type="hidden" asp-for="IdPagos" />
+
+            <div class="form-group">
+                <label class="control-label">Dirección del Inmueble</label>
+                <!-- Mostramos la dirección como texto sin editar -->
+                <input type="text" class="form-control" value="@Model.DireccionInmueble" disabled />
+                
+                <!-- Mantenemos la relación con el contrato -->
+                <input type="hidden" asp-for="IdContratos" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Importe" class="control-label"></label>
+                <input asp-for="Importe" class="form-control" />
+                <span asp-validation-for="Importe" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FechaPago" class="control-label"></label>
+                <input asp-for="FechaPago" class="form-control" />
+                <span asp-validation-for="FechaPago" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar Cambios" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
