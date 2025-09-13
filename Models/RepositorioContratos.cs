@@ -158,10 +158,10 @@ namespace Inmobiliaria.Models
             //continuar para abajo hacer yoin,para usar en el controller de pagos
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT con.idContrato direccion,precio FROM `contratos` con
-                                JOIN inmuebles inm
-                                ON inm.idInmuebles=con.idInmuebles
-                                WHERE con.idContrato= @id";
+                string sql = @"SELECT con.idContrato, inm.direccion, inm.precio
+                                FROM contratos con
+                                JOIN inmuebles inm ON inm.idInmuebles = con.idInmuebles
+                                WHERE con.idContrato = @id;";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -174,8 +174,6 @@ namespace Inmobiliaria.Models
                             IdContrato = Convert.ToInt32(reader["idContrato"]),
                             Precio = Convert.ToDecimal(reader["precio"]),
                             DireccionInmueble = Convert.ToString(reader["direccion"]) ?? "",
-
-
                         };
                     }
                     connection.Close();

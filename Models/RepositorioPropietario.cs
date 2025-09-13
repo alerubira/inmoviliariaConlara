@@ -142,42 +142,72 @@ namespace Inmobiliaria.Models
             }
             return p;
         }
+         public Propietario? ObtenerPorDni(String dni)
+        {
+            Propietario? p = null;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, eMail, Clave 
+                    FROM Propietario WHERE Dni=@dni";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@dni", dni);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        p = new Propietario
+                        {
+                            IdPropietario = reader.GetInt32("IdPropietario"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido"),
+                            Dni = reader.GetString("Dni"),
+                            Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
+                            eMail = reader.GetString("eMail"),
+                            Clave = reader.GetString("Clave"),
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return p;
+        }
         public IList<Propietario> BuscarPorFraccionApellido(string fraccion)
         {
-                    IList<Propietario> res = new List<Propietario>();
+            IList<Propietario> res = new List<Propietario>();
 
-                    using (var connection = new MySqlConnection(connectionString))
-                    {
-                        string sql = @"
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
                             SELECT IdPropietario, Nombre, Apellido
                             FROM Propietario
                             WHERE Apellido LIKE @fraccion
                         ";
 
-                        using (var command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    // Agregamos los comodines para LIKE
+                    command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Propietario p = new Propietario
                         {
-                            // Agregamos los comodines para LIKE
-                            command.Parameters.AddWithValue("@fraccion", "%" + fraccion + "%");
+                            IdPropietario = reader.GetInt32("IdPropietario"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido")
+                        };
+                        res.Add(p);
+                    }
 
-                            connection.Open();
-                            var reader = command.ExecuteReader();
+                    connection.Close();
+                }
+            }
 
-                            while (reader.Read())
-                            {
-                                Propietario p = new Propietario
-                                {
-                                    IdPropietario = reader.GetInt32("IdPropietario"),
-                                    Nombre = reader.GetString("Nombre"),
-                                    Apellido = reader.GetString("Apellido")
-                                };
-                                res.Add(p);
-                       }
-
-                              connection.Close();
-                            }
-                    } 
-
-                               return res;
+            return res;
         }
 
     }    

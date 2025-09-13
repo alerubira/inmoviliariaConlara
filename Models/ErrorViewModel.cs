@@ -1,4 +1,4 @@
-namespace inmoviliariaConlara.Models;
+namespace InmobiliariaConlara.Models;
 
 public class ErrorViewModel
 {

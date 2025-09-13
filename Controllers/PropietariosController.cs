@@ -27,6 +27,12 @@ namespace Inmobiliaria.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Propietario propietario)
         {
+            var p=repo.ObtenerPorDni(propietario.Dni);
+            if (p != null)
+            {
+                ModelState.AddModelError("Dni", "Ya existe un propietario con este DNI.");
+                return View(propietario);
+            }
             if (ModelState.IsValid)
             {
                 repo.Alta(propietario);
@@ -74,11 +80,14 @@ namespace Inmobiliaria.Controllers
         {
               if (string.IsNullOrEmpty(term) || term.Length < 3)
                     {
-                        return Json(new { success = false, data = new List<object>() });
+                        return Json(new { success = false,message = "Ingrese al menos tres caracteres", data = new List<object>() });
                     }
 
                  var lista = repo.BuscarPorFraccionApellido(term);
-
+                    if (lista == null || lista.Count == 0)
+                        {
+                            return Json(new { success = false, message = "No se encontraron Propietarios.", data = new List<object>() });
+                        }
                  var resultado = lista.Select(p => new
                         {
                             id = p.IdPropietario,

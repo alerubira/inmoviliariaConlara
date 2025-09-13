@@ -9,10 +9,11 @@ namespace Inmobiliaria.Models
     public int IdPagos { get; set; }
     //[Required]
     [Display(Name = "Codigo de Contrato")]
+    [Required(ErrorMessage = "El contrato es obligatorio")]
     public int IdContratos { get; set; }
-    [Required]
+    [Required(ErrorMessage = "La fecha de pago es obligatoria")]
     public DateTime FechaPago { get; set; }
-    [Required]
+    [Required(ErrorMessage = "El importe es obligatorio")]
     [Display(Name = "Importe Sugerido")]
       public decimal Importe { get; set; }
   

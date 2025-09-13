@@ -1,6 +1,7 @@
 @model IEnumerable<Inmobiliaria.Models.Inquilino>
 @{
 	ViewData["Title"] = "Inquilinos";
+	
 }
 
 <h1>
@@ -63,8 +64,8 @@
 						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdInquilino" title="Eliminar">
 							<i class="fa-solid fa-trash-can"></i>
 						</a>
-						<a class="btn btn-secondary" asp-action="PorPropietario" asp-controller="Inmuebles" asp-route-id="@item.IdInquilino" title="Mis Propiedades">
-							<i class="fa-solid fa-building"></i>
+						<a class="btn btn-secondary" asp-action="PorInquilino" asp-controller="Pagos" asp-route-id="@item.IdInquilino" title="Mis Pagos">
+							 <i class="fa-solid fa-credit-card me-2"></i>
 						</a>
 					</div>
 				</td>
@@ -72,3 +73,29 @@
 		}
 	</tbody>
 </table>
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.PaginaActual > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.PaginaActual - 1)">Anterior</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.PaginaActual + 1)">Siguiente</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
