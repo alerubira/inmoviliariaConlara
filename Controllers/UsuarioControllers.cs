@@ -78,7 +78,7 @@ namespace InmobiliariaConlara.Controllers
 			u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
 			//var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
 			int res = repositorio.Alta(u);
-			/*if (u.AvatarFile != null && u.IdUsuario > 0)
+			if (u.AvatarFile != null && u.IdUsuario > 0)
 			{
 				string wwwPath = environment.WebRootPath;
 				string path = Path.Combine(wwwPath, "Uploads");
@@ -96,7 +96,13 @@ namespace InmobiliariaConlara.Controllers
 					u.AvatarFile.CopyTo(stream);
 				}
 				repositorio.Modificacion(u);
-			}*/
+			}
+			if (u.AvatarFile == null && u.IdUsuario > 0)
+			{
+				u.Avatar = "/Uploads/avatar_0.png";
+				repositorio.Modificacion(u);
+			}
+			
 			return RedirectToAction(nameof(Index));
 
 
