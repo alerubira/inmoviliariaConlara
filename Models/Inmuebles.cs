@@ -6,7 +6,7 @@ namespace Inmobiliaria.Models
   public class Inmuebles
   {
     [Display(Name = "Codigo Interno")]
-    public int IdInmueble { get; set; }
+    public int IdInmuebles { get; set; }
     //[Required]
     [Display(Name = "Dirección")]
     [Required(ErrorMessage = "La dirección es requerida")]
