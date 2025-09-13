@@ -62,28 +62,31 @@
                     <datalist id="propietariosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
                     <input type="hidden" id="IdPropietario" name="IdPropietario" />
+                    <p id="pNoEncontradoPropietario" class="text-danger"></p>
             </div>
 
                         <script>
                             document.getElementById("propietarioInput").addEventListener("input", function () {
                                 let valor = this.value;
-                                
-                                if (valor.length >= 3) {
+                                let pNoEncontrado = document.getElementById("pNoEncontradoPropietario");
+                                pNoEncontrado.textContent = ""; // Limpiar mensaje de no encontrado
+                                if (valor.length >= 3&&valor.length<6) {
                                     fetch(`/Propietarios/BuscarPropietarioPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {
                                             let dl = document.getElementById("propietariosList");
                                             dl.innerHTML = "";
-
+                                             let option = document.createElement("option");
                                             if (data.success) {
-                                                
-                                                data.data.forEach(p => {
-                                                    let option = document.createElement("option");
-                                                    console.log(p);
+                                                     data.data.forEach(p => {
+                                                    
                                                     option.value = p.texto;   // se muestra Nombre Apellido (DNI)
                                                     option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
+                                            }else{
+                                                pNoEncontrado.textContent =data.message;
+                                                
                                             }
                                         });
                                 }
@@ -95,6 +98,8 @@
                                 for (let i = 0; i < dl.length; i++) {
                                     if (dl[i].value === valor) {
                                         document.getElementById("IdPropietario").value = dl[i].dataset.id;
+                                        
+                                        break;
                                     }
                                 }
                             });

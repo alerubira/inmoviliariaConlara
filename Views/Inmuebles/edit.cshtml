@@ -57,32 +57,35 @@
 			</div>
             <div class="form-group">
                     <label class="control-label">Propietario</label>
-                    <input type="text" id="propietarioInput" class="form-control"  value="@Model.Duenio.ToString()"  list="propietariosList" autocomplete="off" />
+                    <input type="text" id="propietarioInput" class="form-control"  value="@(Model.Duenio != null ? Model.Duenio.ToString() :"")"  list="propietariosList" autocomplete="off" />
                     <datalist id="propietariosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
                     <input type="hidden" id="IdPropietario" name="IdPropietario"value="@Model.IdPropietario" />
+                    <p id="pNoEncontradoPropietario"class="text-danger"></p>
             </div>
 
                         <script>
                             document.getElementById("propietarioInput").addEventListener("input", function () {
                                 let valor = this.value;
                                 
-                                if (valor.length >= 3) {
+                                if (valor.length >= 3&&valor.length<6) {
                                     fetch(`/Propietarios/BuscarPropietarioPorFraccionApellido?term=${valor}`)
                                         .then(r => r.json())
                                         .then(data => {
                                             let dl = document.getElementById("propietariosList");
                                             dl.innerHTML = "";
-
+                                            let pNoEncontrado=document.getElementById("pNoEncontradoPropietario");  
+                                            pNoEncontrado.innerText="";
                                             if (data.success) {
                                                 
                                                 data.data.forEach(p => {
                                                     let option = document.createElement("option");
-                                                    console.log(p);
                                                     option.value = p.texto;   // se muestra Nombre Apellido (DNI)
                                                     option.dataset.id = p.id; // guardamos el ID
                                                     dl.appendChild(option);
                                                 });
+                                            }else{
+                                                pNoEncontrado.innerText=data.message;
                                             }
                                         });
                                 }
