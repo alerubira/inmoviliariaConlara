@@ -132,16 +132,16 @@ namespace InmobiliariaConlara.Controllers
 		{
 			var vista = nameof(Edit);//de que vista provengo
 			if (!User.IsInRole("Administrador"))//no soy admin
-				{
-					vista = nameof(Perfil);//solo puedo ver mi perfil
-					var usuarioActual = repositorio.ObtenerPorEmail(User.Identity.Name);
-					if (usuarioActual.IdUsuario != id)//si no es admin, solo puede modificarse él mismo
-						return RedirectToAction(nameof(Index), "Home");
-				}
-				// TODO: Add update logic here
+			{
+				vista = nameof(Perfil);//solo puedo ver mi perfil
+				var usuarioActual = repositorio.ObtenerPorEmail(User.Identity.Name);
+				if (usuarioActual.IdUsuario != id)//si no es admin, solo puede modificarse él mismo
+					return RedirectToAction(nameof(Index), "Home");
+			}
+			// TODO: Add update logic here
 
-				return RedirectToAction(vista);
-			
+			return RedirectToAction(vista);
+
 		}
 
 		// GET: Usuarios/Delete/5
@@ -171,7 +171,83 @@ namespace InmobiliariaConlara.Controllers
 				return View();
 			}
 		}
+			[AllowAnonymous]
+		// GET: Usuarios/Login/
+		public ActionResult LoginModal()
+		{
+			return PartialView("_LoginModal", new Login());
+		}
 
+		[AllowAnonymous]
+		// GET: Usuarios/Login/
+		public ActionResult Login(string returnUrl)
+		{
+			TempData["returnUrl"] = returnUrl;
+			return View();
+		}
 
-    }
+		// POST: Usuarios/Login/
+		[HttpPost]
+		[AllowAnonymous]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Login(Login login)
+		{
+			try
+			{
+				var returnUrl = String.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
+				if (ModelState.IsValid)
+				{
+					string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+						password: login.Clave,
+						salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+						prf: KeyDerivationPrf.HMACSHA1,
+						iterationCount: 1000,
+						numBytesRequested: 256 / 8));
+
+					var e = repositorio.ObtenerPorEmail(login.Usuario);
+					if (e == null || e.Clave != hashed)
+					{
+						ModelState.AddModelError("", "El email o la clave no son correctos");
+						TempData["returnUrl"] = returnUrl;
+						return View();
+					}
+
+					var claims = new List<Claim>
+					{
+						new Claim(ClaimTypes.Name, e.Email),
+						new Claim("FullName", e.Nombre + " " + e.Apellido),
+						new Claim(ClaimTypes.Role, e.RolNombre),
+					};
+
+					var claimsIdentity = new ClaimsIdentity(
+							claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+					await HttpContext.SignInAsync(
+							CookieAuthenticationDefaults.AuthenticationScheme,
+							new ClaimsPrincipal(claimsIdentity));
+					TempData.Remove("returnUrl");
+					return Redirect(returnUrl);
+				}
+				TempData["returnUrl"] = returnUrl;
+				return View();
+			}
+			catch (Exception ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View();
+			}
+		}
+
+		// GET: /salir
+		[Route("salir", Name = "logout")]
+		public async Task<ActionResult> Logout()
+		{
+			await HttpContext.SignOutAsync(
+					CookieAuthenticationDefaults.AuthenticationScheme);
+			return RedirectToAction("Index", "Home");
+		}
+	}
 }
+
+
+    
