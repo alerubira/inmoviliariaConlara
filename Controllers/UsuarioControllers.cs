@@ -171,6 +171,79 @@ namespace InmobiliariaConlara.Controllers
 				return View();
 			}
 		}
+			[Authorize]
+		public IActionResult Avatar()
+		{
+			var u = repositorio.ObtenerPorEmail(User.Identity.Name);
+			string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.Avatar);
+			string wwwPath = environment.WebRootPath;
+			string path = Path.Combine(wwwPath, "Uploads");
+			string pathCompleto = Path.Combine(path, fileName);
+
+			//leer el archivo
+			byte[] fileBytes = System.IO.File.ReadAllBytes(pathCompleto);
+			//devolverlo
+			return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+		}
+
+		[Authorize]
+		public string AvatarBase64()
+		{
+			var u = repositorio.ObtenerPorEmail(User.Identity.Name);
+			string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.Avatar);
+			string wwwPath = environment.WebRootPath;
+			string path = Path.Combine(wwwPath, "Uploads");
+			string pathCompleto = Path.Combine(path, fileName);
+
+			//leer el archivo
+			byte[] fileBytes = System.IO.File.ReadAllBytes(pathCompleto);
+			//devolverlo
+			return Convert.ToBase64String(fileBytes);
+		}
+
+		[Authorize]
+		[HttpPost("[controller]/[action]/{fileName}")]
+		public IActionResult FromBase64([FromBody] string imagen, [FromRoute] string fileName)
+		{
+			//arma el path
+			string wwwPath = environment.WebRootPath;
+			string path = Path.Combine(wwwPath, "Uploads");
+			string pathCompleto = Path.Combine(path, fileName);
+			//convierto a arreglo de bytes
+			var bytes = Convert.FromBase64String(imagen);
+			//lo escribe
+			System.IO.File.WriteAllBytes(pathCompleto, bytes);
+			return Ok();
+		}
+
+		[Authorize]
+		public ActionResult Foto()
+		{
+			
+				var u = repositorio.ObtenerPorEmail(User.Identity.Name);
+				var stream = System.IO.File.Open(
+						Path.Combine(environment.WebRootPath, u.Avatar.Substring(1)),
+						FileMode.Open,
+						FileAccess.Read);
+				var ext = Path.GetExtension(u.Avatar);
+				return new FileStreamResult(stream, $"image/{ext.Substring(1)}");
+			
+		}
+
+		[Authorize]
+		public ActionResult Datos()
+		{
+			
+				var u = repositorio.ObtenerPorEmail(User.Identity.Name);
+				string buffer = "Nombre;Apellido;Email" + Environment.NewLine +
+						$"{u.Nombre};{u.Apellido};{u.Email}";
+				var stream = new MemoryStream(System.Text.Encoding.Unicode.GetBytes(buffer));
+				var res = new FileStreamResult(stream, "text/plain");
+				res.FileDownloadName = "Datos.csv";
+				return res;
+			
+		}
+
 			[AllowAnonymous]
 		// GET: Usuarios/Login/
 		public ActionResult LoginModal()
