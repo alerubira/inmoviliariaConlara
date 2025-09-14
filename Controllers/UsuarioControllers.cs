@@ -65,7 +65,7 @@ namespace InmobiliariaConlara.Controllers
 				ViewBag.Roles = Usuario.ObtenerRoles();
 				return View();
 			}
-
+      
 
 
 			string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
