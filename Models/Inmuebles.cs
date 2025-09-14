@@ -16,13 +16,13 @@ namespace Inmobiliaria.Models
     [Range(1, 20, ErrorMessage = "La cantidad de ambientes debe estar entre 1 y 20")]
     public int Ambientes { get; set; }
     [Required(ErrorMessage = "La superficie es obligatoria")]
-    
+
     public int Superficie { get; set; }
     [Required(ErrorMessage = "La latitud es obligatoria")]
-  
+
     public decimal Latitud { get; set; }
     [Required(ErrorMessage = "La longitud es obligatoria")]
-  
+
     public decimal Longitud { get; set; }
     [Display(Name = "Dueño")]
     [Required(ErrorMessage = "El propietario es obligatorio")]

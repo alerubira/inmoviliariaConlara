@@ -1,0 +1,30 @@
+@model IEnumerable<Inmobiliaria.Models.Pagos>
+@{
+    ViewData["Title"] = "Pagos del Inquilino";
+}
+
+<h1>Pagos del Inquilino</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().IdPagos)</th>
+            <th>@Html.DisplayNameFor(model => model.IdContratos)</th>
+            <th>@Html.DisplayNameFor(model => model.First().FechaPago)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Importe)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DireccionInmueble)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pago in Model)
+        {
+            <tr>
+                <td>@pago.IdPagos</td>
+                <td>@pago.IdContratos</td>
+                <td>@pago.FechaPago.ToShortDateString()</td>
+                <td>@pago.Importe.ToString("C")</td>
+                <td>@pago.DireccionInmueble</td>
+            </tr>
+        }
+    </tbody>
+</table>
