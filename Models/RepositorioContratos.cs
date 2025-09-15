@@ -19,8 +19,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Contratos
-                    ( idInquilino, idInmuebles, monto, fechadesde, fechahasta,vigente)
-                    VALUES ( @IdInquilino, @idInmuebles,@monto, @fechaDesde, @fechaHasta,@vigente);
+                    ( idInquilino, idInmuebles, monto, fechadesde, fechahasta,vigente,cantidadCuotas,cuotasPagas)
+                    VALUES ( @IdInquilino, @idInmuebles,@monto, @fechaDesde, @fechaHasta,@vigente,@cantidadCuotas,@cuotasPagas);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -30,6 +30,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@fechaHasta", contrato.FechaHasta);
                     command.Parameters.AddWithValue("@vigente", contrato.Vigente);
+                    command.Parameters.AddWithValue("@cantidadCuotas", contrato.CantidadCuotas);
+                    command.Parameters.AddWithValue("@cuotasPagas", contrato.CuotasPagas);
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
@@ -63,7 +65,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Contratos SET 
-                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente
+                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente,cantidadCuotas=@cantidadCuotas,cuotasPagas=@cuotasPagas
                         WHERE IdContrato = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -74,6 +76,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@fechaHasta", contrato.FechaHasta);
                     command.Parameters.AddWithValue("@vigente", contrato.Vigente);
+                    command.Parameters.AddWithValue("@cantidadCuotas", contrato.CantidadCuotas);
+                    command.Parameters.AddWithValue("@cuotasPagas", contrato.CuotasPagas);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -88,7 +92,7 @@ namespace Inmobiliaria.Models
             var res = new List<Contratos>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdContrato,idInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente
+                string sql = @"SELECT IdContrato,idInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas
                             FROM Contratos
                             ORDER BY fechaDesde";
                 using (var command = new MySqlCommand(sql, connection))
@@ -106,6 +110,9 @@ namespace Inmobiliaria.Models
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
+                            CantidadCuotas = Convert.ToInt32(reader["cantidadCuotas"]),
+                            CuotasPagas = Convert.ToInt32(reader["cuotasPagas"])
+
 
 
                         };
@@ -124,7 +131,7 @@ namespace Inmobiliaria.Models
             Contratos? contrato = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente
+                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas
                             FROM contratos
                             WHERE IdContrato = @id";
                 using (var command = new MySqlCommand(sql, connection))
@@ -143,6 +150,8 @@ namespace Inmobiliaria.Models
                             FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
                             FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
                             Vigente = Convert.ToBoolean(reader["vigente"]),
+                            CantidadCuotas = Convert.ToInt32(reader["cantidadCuotas"]),
+                            CuotasPagas = Convert.ToInt32(reader["cuotasPagas"])
 
 
                         };

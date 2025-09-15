@@ -15,6 +15,7 @@ namespace Inmobiliaria.Models
         [Required(ErrorMessage =" El inmueble es obligatorio")]
         public int IdInmuebles { get; set; }
         [Required(ErrorMessage = "El monto es obligatorio")]
+        [Display(Name = "Monto de la cuota")]
         public decimal Monto { get; set; }
         [Display(Name = "Ingreso")]
         [Required(ErrorMessage = "La fecha de ingreso es obligatoria")]
@@ -25,6 +26,11 @@ namespace Inmobiliaria.Models
         public DateTime FechaHasta { get; set; }
         [Display(Name = "Vigente")]
         public bool Vigente { get; set; }
+        [Display(Name = "Cantidad de Cuotas")]
+        [Required(ErrorMessage = "La cantidad de cuotas es obligatoria")]
+        public Int32 CantidadCuotas { get; set; }
+        public Int32 CuotasPagas { get; set; }
+
         public decimal? Precio { get; set; }
         [Display(Name = "Inquilino")]
         public String? NombreInquilino { get; set; }
