@@ -68,7 +68,7 @@ namespace Inmobiliaria.Models
                         WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", inmueble.IdInmueble);
+                    command.Parameters.AddWithValue("@id", inmueble.IdInmuebles);
                     command.Parameters.AddWithValue("@direccion", inmueble.Direccion);
                     command.Parameters.AddWithValue("@ambientes", inmueble.Ambientes);
                     command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
@@ -102,7 +102,7 @@ namespace Inmobiliaria.Models
                     {
                         var inmueble = new Inmuebles
                         {
-                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            IdInmuebles = Convert.ToInt32(reader["IdInmuebles"]),
                             Direccion = reader["Direccion"].ToString() ?? string.Empty,
                             Ambientes = Convert.ToInt32(reader["Ambientes"]),
                             Superficie = Convert.ToInt32(reader["Superficie"]),
@@ -141,7 +141,7 @@ namespace Inmobiliaria.Models
                     {
                         inmueble = new Inmuebles
                         {
-                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            IdInmuebles = Convert.ToInt32(reader["IdInmuebles"]),
                             Direccion = reader["Direccion"].ToString() ?? string.Empty,
                             Ambientes = Convert.ToInt32(reader["Ambientes"]),
                             Superficie = Convert.ToInt32(reader["Superficie"]),
@@ -178,7 +178,7 @@ namespace Inmobiliaria.Models
                     {
                         inmueble = new Inmuebles
                         {
-                            IdInmueble = Convert.ToInt32(reader["IdInmuebles"]),
+                            IdInmuebles = Convert.ToInt32(reader["IdInmuebles"]),
                             Direccion = reader["Direccion"].ToString() ?? string.Empty,
                             Ambientes = Convert.ToInt32(reader["Ambientes"]),
                             Superficie = Convert.ToInt32(reader["Superficie"]),
@@ -197,7 +197,7 @@ namespace Inmobiliaria.Models
             return inmueble;
         }
 
-          public IList<Inmuebles> BuscarPorFraccionDireccion(string fraccion)
+        public IList<Inmuebles> BuscarPorFraccionDireccion(string fraccion)
         {
             IList<Inmuebles> res = new List<Inmuebles>();
 
@@ -224,7 +224,7 @@ namespace Inmobiliaria.Models
                         {
                             Inmuebles i = new Inmuebles
                             {
-                                IdInmueble = reader.GetInt32("IdInmuebles"),
+                                IdInmuebles = reader.GetInt32("IdInmuebles"),
                                 Direccion = reader.GetString("Direccion"),
                                 Precio = reader.GetDecimal("Precio"),
                                 Habilitado = reader.GetBoolean("Habilitado")
@@ -242,6 +242,45 @@ namespace Inmobiliaria.Models
 
             return res;
         }
+        
+        public IList<Inmuebles> ObtenerPorPropietario(int idPropietario)
+        {
+            var res = new List<Inmuebles>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
+                            FROM Inmuebles
+                            WHERE idPropietario = @idPropietario
+                            ORDER BY Direccion";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@idPropietario", idPropietario);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var inmueble = new Inmuebles
+                        {
+                            IdInmuebles = Convert.ToInt32(reader["IdInmuebles"]),
+                            Direccion = reader["Direccion"].ToString() ?? string.Empty,
+                            Ambientes = Convert.ToInt32(reader["Ambientes"]),
+                            Superficie = Convert.ToInt32(reader["Superficie"]),
+                            Latitud = Convert.ToDecimal(reader["Latitud"]),
+                            Longitud = Convert.ToDecimal(reader["Longitud"]),
+                            IdPropietario = Convert.ToInt32(reader["idPropietario"]),
+                            IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
+                            Precio = Convert.ToDecimal(reader["precio"]),
+                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+
+                        };
+                        res.Add(inmueble);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
     }
 }
         

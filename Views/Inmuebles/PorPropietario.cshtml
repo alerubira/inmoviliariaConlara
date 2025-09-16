@@ -1,0 +1,39 @@
+@model IEnumerable<Inmobiliaria.Models.Inmuebles>
+@{
+    var propietario = ViewBag.Propietario as Inmobiliaria.Models.Propietario;
+    ViewData["Title"] = "Propiedades de " + propietario?.Nombre + " " + propietario?.Apellido;
+}
+
+<h2>Propiedades de @propietario?.Nombre @propietario?.Apellido</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.First().IdInmuebles)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Direccion)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Ambientes)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Superficie)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Precio)</th>
+            <th>@Html.DisplayNameFor(m => m.First().TipoInmueble)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Habilitado)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdInmuebles</td>
+                <td>@item.Direccion</td>
+                <td>@item.Ambientes</td>
+                <td>@item.Superficie m²</td>
+                <td>@item.Precio.ToString("C")</td>
+                <td>@item.TipoInmueble</td>
+                <td>@(item.Habilitado ? "Sí" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" asp-controller="Propietarios" class="btn btn-secondary">
+    <i class="fa-solid fa-arrow-left"></i> Volver a Propietarios
+</a>
