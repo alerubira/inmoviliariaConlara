@@ -1,0 +1,54 @@
+@model IEnumerable<InmobiliariaConlara.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+    var rnd = new Random();
+}
+
+<h1>Usuarios</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear nuevo</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.IdUsuario)</th>
+            <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+            <th>@Html.DisplayNameFor(m => m.Apellido)</th>
+            <th>@Html.DisplayNameFor(m => m.Email)</th>
+            <th>Avatar</th>
+            <th>Rol</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.IdUsuario</td>
+            <td>@item.Nombre</td>
+            <td>@item.Apellido</td>
+            <td>@item.Email</td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Avatar))
+                {
+                    <img src="@($"{item.Avatar}?{rnd.Next()}")" width="40" class="rounded-circle" />
+                }
+                else
+                {
+                    <span>Sin foto</span>
+                }
+            </td>
+            <td>@item.RolNombre</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-warning">Editar</a>
+                <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-info">Detalles</a>
+                <form asp-action="Delete" asp-route-id="@item.IdUsuario" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
