@@ -39,12 +39,12 @@ namespace InmobiliariaConlara.Controllers
 			return View(usuarios);
 		}
 		// GET: Usuarios/Details/5
-		/*[Authorize(Policy = "Administrador")]
+		//[Authorize(Policy = "Administrador")]
 		public ActionResult Details(int id)
 		{
 			var e = repositorio.ObtenerPorId(id);
 			return View(e);
-		}*/
+		}
 
 		// GET: Usuarios/Create
 		//[Authorize(Policy = "Administrador")]
@@ -54,62 +54,79 @@ namespace InmobiliariaConlara.Controllers
 			return View();
 		}
 
-		// POST: Usuarios/Create
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		//[Authorize(Policy = "Administrador")]
-		public ActionResult Create(Usuario u)
-		{
-			if (!ModelState.IsValid)
-			{
-				ViewBag.Roles = Usuario.ObtenerRoles();
-				return View();
-			}
-      
 
 
-			string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-							password: u.Clave,
-							salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-							prf: KeyDerivationPrf.HMACSHA1,
-							iterationCount: 1000,
-							numBytesRequested: 256 / 8));
-			u.Clave = hashed;
-			u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
-			//var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
-			int res = repositorio.Alta(u);
-			if (u.AvatarFile != null && u.IdUsuario > 0)
-			{
-				string wwwPath = environment.WebRootPath;
-				string path = Path.Combine(wwwPath, "Uploads");
-				if (!Directory.Exists(path))
-				{
-					Directory.CreateDirectory(path);
-				}
-				//Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
-				string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.AvatarFile.FileName);
-				string pathCompleto = Path.Combine(path, fileName);
-				u.Avatar = Path.Combine("/Uploads", fileName);
-				// Esta operación guarda la foto en memoria en la ruta que necesitamos
-				using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
-				{
-					u.AvatarFile.CopyTo(stream);
-				}
-				repositorio.Modificacion(u);
-			}
-			if (u.AvatarFile == null && u.IdUsuario > 0)
-			{
-				u.Avatar = "/Uploads/avatar_0.png";
-				repositorio.Modificacion(u);
-			}
-			
-			return RedirectToAction(nameof(Index));
 
 
-			//ViewBag.Roles = Usuario.ObtenerRoles();
-			//return View();
+		
 
-		}
+// POST: Usuarios/Create
+[HttpPost]
+[ValidateAntiForgeryToken]
+//[Authorize(Policy = "Administrador")]
+public ActionResult Create(Usuario u)
+{
+    if (!ModelState.IsValid)
+    {
+        ViewBag.Roles = Usuario.ObtenerRoles();
+        return View();
+    }
+
+    // 🔹 Hashear la contraseña
+    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: u.Clave,
+                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 1000,
+                    numBytesRequested: 256 / 8));
+    u.Clave = hashed;
+
+    // 🔹 Asignar rol si no es administrador
+    u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
+
+    // 🔹 Guardar el usuario en la base de datos
+    int res = repositorio.Alta(u);
+
+    // 🔹 Procesar el avatar
+    if (u.AvatarFile != null && u.IdUsuario > 0)
+    {
+        // Crear carpeta si no existe
+        string wwwPath = environment.WebRootPath;
+        string path = Path.Combine(wwwPath, "Uploads");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        // Generar nombre único
+        string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.AvatarFile.FileName);
+        string pathCompleto = Path.Combine(path, fileName);
+
+        // Guardar archivo
+        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+        {
+            u.AvatarFile.CopyTo(stream);
+        }
+
+        // Actualizar ruta en el usuario
+        u.Avatar = Path.Combine("/Uploads", fileName);
+        repositorio.Modificacion(u);
+    }
+    else if (u.IdUsuario > 0)
+    {
+        // 🔹 Si no subió foto, asignar imagen por defecto
+        u.Avatar = "/Uploads/avatar_0.png";
+        repositorio.Modificacion(u);
+    }
+
+    return RedirectToAction(nameof(Index));
+}
+
+
+
+
+
+
 		// GET: Usuarios/Edit/5
 		//[Authorize]
 		public ActionResult Perfil()
@@ -117,7 +134,7 @@ namespace InmobiliariaConlara.Controllers
 			ViewData["Title"] = "Mi perfil";
 			var u = repositorio.ObtenerPorEmail(User.Identity.Name);//viene en la autenticacion comoclaim
 			ViewBag.Roles = Usuario.ObtenerRoles();
-			return View("Edit", u);
+			return View("edit", u);
 		}
 
 		// GET: Usuarios/Edit/5
@@ -323,7 +340,7 @@ namespace InmobiliariaConlara.Controllers
 		{
 			await HttpContext.SignOutAsync(
 					CookieAuthenticationDefaults.AuthenticationScheme);
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("index", "Home");
 		}
 	}
 }
