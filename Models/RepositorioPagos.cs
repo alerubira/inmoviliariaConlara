@@ -14,7 +14,7 @@ namespace Inmobiliaria.Models
         public int Alta(Pagos pago)
         {
             int res = -1;
-            
+
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Pagos
@@ -26,7 +26,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@idContratos", pago.IdContratos);
                     command.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-                    
+
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
@@ -68,7 +68,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@idContratos", pago.IdContratos);
                     command.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-                   
+
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -77,12 +77,12 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-public IList<Pagos> ObtenerTodos()
-{
-    var res = new List<Pagos>();
-    using (var connection = new MySqlConnection(connectionString))
-    {
-        string sql = @"
+        public IList<Pagos> ObtenerTodos()
+        {
+            var res = new List<Pagos>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
             SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,
                    i.Direccion AS DireccionInmueble
             FROM pagos p
@@ -91,32 +91,31 @@ public IList<Pagos> ObtenerTodos()
             ORDER BY p.fechaPago;
         ";
 
-        using (var command = new MySqlCommand(sql, connection))
-        {
-            connection.Open();
-            var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                var pago = new Pagos
+                using (var command = new MySqlCommand(sql, connection))
                 {
-                    IdPagos = Convert.ToInt32(reader["IdPagos"]),
-                    IdContratos = Convert.ToInt32(reader["idContratos"]),
-                    FechaPago = Convert.ToDateTime(reader["fechaPago"]),
-                    Importe = Convert.ToDecimal(reader["importe"]),
-                    DireccionInmueble = reader["DireccionInmueble"].ToString()
-                };
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var pago = new Pagos
+                        {
+                            IdPagos = Convert.ToInt32(reader["IdPagos"]),
+                            IdContratos = Convert.ToInt32(reader["idContratos"]),
+                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
+                            Importe = Convert.ToDecimal(reader["importe"]),
+                            DireccionInmueble = reader["DireccionInmueble"].ToString()
+                        };
 
-                res.Add(pago);
+                        res.Add(pago);
+                    }
+                    connection.Close();
+                }
             }
-            connection.Close();
+            return res;
         }
-    }
-    return res;
-}
-
-
 
         public Pagos? ObtenerPorId(int id)
+
         {
 
 
@@ -136,15 +135,54 @@ public IList<Pagos> ObtenerTodos()
                         pago = new Pagos
                         {
                             IdPagos = Convert.ToInt32(reader["IdPagos"]),
-                            IdContratos =Convert.ToInt32(reader["idContratos"]),
+                            IdContratos = Convert.ToInt32(reader["idContratos"]),
                             FechaPago = Convert.ToDateTime(reader["fechaPago"]),
                             Importe = Convert.ToDecimal(reader["importe"]),
-                    };
+                        };
                     }
                     connection.Close();
                 }
             }
             return pago;
         }
+
+        public IList<Pagos> obtenerPorInquilino(int idInquiloino)
+        {
+            var res = new List<Pagos>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+            SELECT p.idPagos, p.idContratos, p.fechaPago, p.importe,
+                   i.Direccion AS DireccionInmueble
+            FROM pagos p
+            INNER JOIN contratos c ON p.idContratos = c.IdContrato
+            INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
+            WHERE c.idInquilino = @idInquilino
+            ORDER BY p.fechaPago;";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@idInquilino", idInquiloino);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var pago = new Pagos
+                        {
+                            IdPagos = Convert.ToInt32(reader["idPagos"]),
+                            IdContratos = Convert.ToInt32(reader["idContratos"]),
+                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
+                            Importe = Convert.ToDecimal(reader["importe"]),
+                            DireccionInmueble = reader["DireccionInmueble"].ToString()
+                        };
+
+                        res.Add(pago);
+                    }
+                    connection.Close();
+                }
+            return res;
+            }
+        }
+
     }
 }
