@@ -15,7 +15,7 @@
            
             <div class="form-group">
                     <label class="control-label">Inquilino</label>
-                    <input type="text" id="inquilinoInput" class="form-control"value=@Model.NombreInquilino placeholder="Busque por apellido" list="inquilinosList" autocomplete="off" />
+                    <input type="text" id="inquilinoInput" class="form-control"value="@Model.NombreInquilino" placeholder="Busque por apellido" list="inquilinosList" autocomplete="off" />
                     <datalist id="inquilinosList"></datalist>
                     <!-- Campo oculto para enviar el ID -->
                     <input type="hidden" id="IdInquilino" name="IdInquilino"value=@Model.IdInquilino />
@@ -57,7 +57,7 @@
                         </script>
             <div class="form-group">
             <label class="control-label">Inmueble</label>
-            <input type="text" id="inmuebleInput" class="form-control"value=@Model.DireccionInmueble placeholder="Busque por direccion" list="inmueblesList" autocomplete="off" />
+            <input type="text" id="inmuebleInput" class="form-control"value="@Model.DireccionInmueble" placeholder="Busque por direccion" list="inmueblesList" autocomplete="off" />
             <datalist id="inmueblesList"></datalist>
             <!-- Campo oculto para enviar el ID -->
             <input type="hidden" id="IdInmuebles" name="IdInmuebles"value=@Model.IdInmuebles />
@@ -79,7 +79,10 @@
                                                     let option = document.createElement("option");
                                                     option.value = p.direccion;   // se muestra direccion
                                                     option.dataset.id = p.id; // guardamos el ID
+                                                    option.dataset.precio = p.precio; // guardamos el precio
+
                                                     document.getElementById("precio").value = p.precio; // guardamos el precio
+                                                    
                                                     dl.appendChild(option);
                                                 });
                                             }
@@ -93,6 +96,8 @@
                                 for (let i = 0; i < dl.length; i++) {
                                     if (dl[i].value === valor) {
                                         document.getElementById("IdInmuebles").value = dl[i].dataset.id;
+                                        document.getElementById("precio").value = dl[i].dataset.precio;
+                                        document.getElementById("Monto").value = dl[i].dataset.precio;
                                     }
                                 }
                             });
@@ -102,6 +107,16 @@
                 <input asp-for="Monto" class="form-control" readonly/>
                 <span asp-validation-for="Monto" class="text-danger"></span>
                  <input type="hidden" id="precio" name="precio"value=@Model.Precio />
+            </div>  
+             <div class="form-group">
+                <label asp-for="CantidadCuotas" class="control-label"></label>
+                <input asp-for="CantidadCuotas" class="form-control" readonly/>
+                <span asp-validation-for="CantidadCuotas" class="text-danger"></span>
+            </div>  
+             <div class="form-group">
+                <label asp-for="CuotasPagas" class="control-label"></label>
+                <input asp-for="CuotasPagas" class="form-control" readonly/>
+                <span asp-validation-for="CuotasPagas" class="text-danger"></span>
             </div>  
              <div class="form-group">
                 <label asp-for="FechaDesde" class="control-label"></label>
@@ -126,8 +141,10 @@
                                 meses += 1; // incluir ambos meses
                                 if (meses < 0) meses = 0;
                                 precio=document.getElementById("precio").value;
-                                monto=precio*meses;
-                                document.getElementById("Monto").value = monto;
+                               // monto=precio*meses;
+                               document.getElementById("Monto").value = precio;
+                               document.getElementById("CantidadCuotas").value = meses;
+                                document.getElementById("CuotasPagas").value = 0;
                             } else {
                                 document.getElementById("Monto").value = "";
                             }
