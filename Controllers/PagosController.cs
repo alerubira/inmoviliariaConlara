@@ -31,11 +31,24 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            // var contratos = repositorioTipoInmueble.ObtenerTodos();
-            //ViewBag.TipoInmuebles = contratos;
-            return View();
+            var contrato=repositorioContratos.ObtenerPorId(id);
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+           var pago=new Pagos();
+              pago.IdContratos=id;
+              pago.Importe=contrato.Monto;
+              pago.FechaPago=DateTime.Now;
+              pago.NumeroCuota = contrato.CuotasPagas + 1;
+              pago.MesPago=contrato.MesInicio+pago.NumeroCuota -1;
+              if (pago.MesPago>12) pago.MesPago=pago.MesPago -12;
+              pago.Concepto="Alquiler mes :"+ ((enMeses)pago.MesPago).ToString();
+            
+          
+            return View(pago);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

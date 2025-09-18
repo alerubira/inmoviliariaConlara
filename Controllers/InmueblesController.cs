@@ -65,8 +65,6 @@ namespace Inmobiliaria.Controllers{
                 return NotFound();
             }
             inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-
-
             inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
 
             ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();

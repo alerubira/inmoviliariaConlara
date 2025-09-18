@@ -3,6 +3,22 @@ using System.ComponentModel.DataAnnotations;
 namespace Inmobiliaria.Models
 {
   //[Table("Inmuebles")]
+  public enum enMeses
+  {
+
+    Enero = 1,
+    Febrero = 2,
+    Marzo = 3,
+    Abril = 4,
+    Mayo = 5,
+    Junio = 6,
+    Julio = 7,
+    Agosto = 8,
+    Septiembre = 9,
+    Octubre = 10,
+    Noviembre = 11,
+    Diciembre = 12
+	}
   public class Pagos
   {
     [Display(Name = "Numero de Pago")]
@@ -15,22 +31,31 @@ namespace Inmobiliaria.Models
     public DateTime FechaPago { get; set; }
     [Required(ErrorMessage = "El importe es obligatorio")]
     [Display(Name = "Importe Sugerido")]
-      public decimal Importe { get; set; }
-  
+    public decimal Importe { get; set; }
+    [Required(ErrorMessage = "El concepto es obligatorio")]
+    [Display(Name = "Concepto de Pago")]
+    public String? Concepto { get; set; }
+    [Required(ErrorMessage = "El numero de cuota es obligatorio")]
+    public int NumeroCuota { get; set; }
+    [Required(ErrorMessage = "El mes de pago es obligatorio")]
    
-   
+
     [Display(Name = "Direccion Inmueble")]
     public String? DireccionInmueble { get; set; }
-   
-		/*[ForeignKey(nameof(idPropietario))]
-   [BindNever]
-    public Propietario? Duenio { get; set; }
-    public string? Portada { get; set; }
-    [NotMapped]//Para EF
-    public IFormFile? PortadaFile { get; set; }
-    [ForeignKey(nameof(Imagen.InmuebleId))]
-    public IList<Imagen> Imagenes { get; set; } = new List<Imagen>();
-    [NotMapped]
-    public bool Habilitado { get; set; } = true;*/
+
+    public int MesPago { get; set; }
+	//	[NotMapped]//Para EF
+		public string MesPagoNombre => MesPago > 0 ? ((enMeses)MesPago).ToString() : "";
+
+		public static IDictionary<int, string> ObtenerMeses()
+		{
+			SortedDictionary<int, string> meses = new SortedDictionary<int, string>();
+			Type tipoEnumMeses = typeof(enMeses);
+			foreach (var valor in Enum.GetValues(tipoEnumMeses))
+			{
+				meses.Add((int)valor, Enum.GetName(tipoEnumMeses, valor));
+			}
+			return meses;
+		}
   }
 }

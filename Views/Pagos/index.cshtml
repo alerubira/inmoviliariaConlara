@@ -5,9 +5,9 @@
 
 <h1>
 	Pagos
-	<div class="btn-group pull-right">
+	<!--<div class="btn-group pull-right">
 		<a class="btn btn-primary" asp-action="Create" title="Crear">Crear Pagos<i class="fa-solid fa-plus"></i></a>
-	</div>
+	</div>-->
 </h1>
 <table class="table table-striped">
 	<thead>
@@ -26,6 +26,12 @@
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.FechaPago)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MesPagoNombre)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.NumeroCuota)
 			</th>
             
 		</tr>
@@ -48,6 +54,12 @@
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.FechaPago)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.MesPagoNombre)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.NumeroCuota)
 				</td>
 				    
                 <td>
