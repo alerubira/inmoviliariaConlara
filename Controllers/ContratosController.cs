@@ -52,9 +52,43 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
+                var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+                if (contratos == null)
+                {
+                    contrato.Vigente = true;
+                    repo.Alta(contrato);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    foreach (var contra in contratos)
+                    {
+                        int contador = contra.FechaDesde.Month;
+
+                        for (int i = 1; i <= contra.CantidadCuotas; i++)
+                        {
+                            if (contador > 12)
+                            {
+                                contador = 1;
+                            }
+                            if (contador == contrato.FechaDesde.Month )
+                            {
+                                  ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente con esa fecha");
+                                return View(contrato);
+                            }
+                            if (contador == contrato.FechaHasta.Month)
+                            {
+                                   ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente con esa fecha");
+                                return View(contrato);
+                            }
+                            contador++;
+                        }
+                    }
+                }
                 contrato.Vigente = true;
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
+               
             }
             //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
