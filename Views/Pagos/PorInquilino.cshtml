@@ -13,6 +13,8 @@
             <th>@Html.DisplayNameFor(model => model.First().FechaPago)</th>
             <th>@Html.DisplayNameFor(model => model.First().Importe)</th>
             <th>@Html.DisplayNameFor(model => model.First().DireccionInmueble)</th>
+            <th>@Html.DisplayNameFor(model => model.First().NumeroCuota)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Concepto)</th>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +26,8 @@
                 <td>@pago.FechaPago.ToShortDateString()</td>
                 <td>@pago.Importe.ToString("C")</td>
                 <td>@pago.DireccionInmueble</td>
+                <td>@pago.NumeroCuota</td>
+                <td>@pago.Concepto</td>
             </tr>
         }
     </tbody>

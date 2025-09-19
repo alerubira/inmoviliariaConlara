@@ -96,6 +96,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdContrato,idInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas,mesInicio
                             FROM Contratos
+                            where vigente=1
                             ORDER BY fechaDesde";
                 using (var command = new MySqlCommand(sql, connection))
                 {

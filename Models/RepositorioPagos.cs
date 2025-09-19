@@ -91,7 +91,7 @@ namespace Inmobiliaria.Models
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
             INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
-            ORDER BY p.fechaPago;
+            ORDER BY p.idPagos;
         ";
 
                 using (var command = new MySqlCommand(sql, connection))

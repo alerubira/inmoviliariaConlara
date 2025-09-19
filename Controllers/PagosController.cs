@@ -63,11 +63,16 @@ namespace Inmobiliaria.Controllers{
             if (ModelState.IsValid)
             {
 
-                repo.Alta(pago);
-                var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
+               var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
                 if (contr != null)
                 {
+                     repo.Alta(pago);
                     contr.CuotasPagas = pago.NumeroCuota;
+                    if (contr.CuotasPagas == contr.CantidadCuotas)
+                    {
+                        contr.Vigente = false;
+                        repositorioContratos.Modificacion(contr);
+                    }
                     repositorioContratos.Modificacion(contr);
                 }
                
@@ -92,7 +97,8 @@ namespace Inmobiliaria.Controllers{
              var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
            var pa=new Pagos();
-              pa.IdContratos=id;
+            pa.IdPagos = pago.IdPagos;
+              pa.IdContratos=contrato.IdContrato;
               pa.DireccionInmueble=contrato.DireccionInmueble;
               pa.Importe=pago.Importe;
               pa.FechaPago=pago.FechaPago;
