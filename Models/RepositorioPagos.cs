@@ -86,7 +86,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-            SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,p.concepto,p.numeroCuota,mesPago
+            SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,p.concepto,p.numeroCuota,mesPago,
                    i.Direccion AS DireccionInmueble
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato

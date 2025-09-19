@@ -8,12 +8,13 @@ namespace Inmobiliaria.Controllers{
         private readonly RepositorioPagos repo;
 
         private readonly RepositorioContratos repositorioContratos;
-        // private readonly RepositorioInmuebles repositorioInmuebles;
+         private readonly RepositorioInmuebles repositorioInmuebles;
         public PagosController(IConfiguration configuration)
         {
             repo = new RepositorioPagos(configuration);
 
             repositorioContratos = new RepositorioContratos(configuration);
+            repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
         public IActionResult Index()
@@ -34,12 +35,16 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Create(int id)
         {
             var contrato=repositorioContratos.ObtenerPorId(id);
+
             if (contrato == null)
             {
                 return NotFound();
             }
+             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
            var pago=new Pagos();
               pago.IdContratos=id;
+              pago.DireccionInmueble=contrato.DireccionInmueble;
               pago.Importe=contrato.Monto;
               pago.FechaPago=DateTime.Now;
               pago.NumeroCuota = contrato.CuotasPagas + 1;
