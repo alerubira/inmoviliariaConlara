@@ -64,6 +64,13 @@ namespace Inmobiliaria.Controllers{
             {
 
                 repo.Alta(pago);
+                var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
+                if (contr != null)
+                {
+                    contr.CuotasPagas = pago.NumeroCuota;
+                    repositorioContratos.Modificacion(contr);
+                }
+               
                 return RedirectToAction(nameof(Index));
             }
             //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
@@ -72,19 +79,28 @@ namespace Inmobiliaria.Controllers{
 
         public IActionResult Edit(int id)
         {
-            var pago = repo.ObtenerPorId(id);
+            var pago=repo.ObtenerPorId(id);
+            if(pago==null){
+                return NotFound();
+            }
+             var contrato=repositorioContratos.ObtenerPorId(pago.IdContratos);
 
-            if (pago == null)
+            if (contrato == null)
             {
                 return NotFound();
             }
-
-            var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
-            pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
-            //    pago.Importe =contrato != null ? (contrato.Precio ?? 0) : 0;
-
-            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-            return View(pago);
+             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+           var pa=new Pagos();
+              pa.IdContratos=id;
+              pa.DireccionInmueble=contrato.DireccionInmueble;
+              pa.Importe=pago.Importe;
+              pa.FechaPago=pago.FechaPago;
+              pa.NumeroCuota = pago.NumeroCuota;
+              pa.MesPago=pago.MesPago;
+              pa.Concepto=pago.Concepto ;
+            
+            return View(pa);
         }
 
         [HttpPost]
@@ -105,7 +121,7 @@ namespace Inmobiliaria.Controllers{
                 repo.Modificacion(pago);
                 return RedirectToAction(nameof(Index));
             }
-            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            
             return View(pago);
         }
         public IActionResult Delete(int id)
