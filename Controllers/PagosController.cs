@@ -91,13 +91,13 @@ namespace Inmobiliaria.Controllers{
         {
             var pago=repo.ObtenerPorId(id);
             if(pago==null){
-                return NotFound();
+                return NotFound("No se encontro ningun pago");
             }
              var contrato=repositorioContratos.ObtenerPorId(pago.IdContratos);
 
             if (contrato == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun contrato ligado a ese pago");
             }
              var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
@@ -122,7 +122,7 @@ namespace Inmobiliaria.Controllers{
 
             if (id != pago.IdPagos)
             {
-                return NotFound();
+                return NotFound("Hay una inconsistecia en el pago enviado");
             }
 
 
@@ -140,7 +140,7 @@ namespace Inmobiliaria.Controllers{
             var pago = repo.ObtenerPorId(id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun pago");
             }
             return View(pago);
         }
@@ -152,10 +152,13 @@ namespace Inmobiliaria.Controllers{
             var pago = repo.ObtenerPorId(id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun pago");
             }
             if (id != pago.IdPagos)
-                return NotFound();
+            {
+                 return NotFound("Hay una inconsistencia en el pago");
+            }
+               
 
             if (ModelState.IsValid)
             {
@@ -174,7 +177,7 @@ namespace Inmobiliaria.Controllers{
 
             var lista = repo.obtenerPorInquilino(id.Value);
 
-            Console.WriteLine($"ID: {id.Value} - Cantidad de pagos: {lista.Count}");
+            //Console.WriteLine($"ID: {id.Value} - Cantidad de pagos: {lista.Count}");
 
             // Asigna al pago la direccion del inmueble 
             foreach (var pago in lista)

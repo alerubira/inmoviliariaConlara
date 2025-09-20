@@ -22,6 +22,11 @@ namespace Inmobiliaria.Controllers{
             // Asigna el contrato el nombre del inquilino , la direccion del inmueble y el precio del inmueble a cada contrato
             foreach (var contrato in lista)
             {
+                if (contrato.FechaHasta < DateTime.Now)
+                {
+                    contrato.Vigente = false;
+                    repo.Modificacion(contrato);
+                }
                 if (contrato.IdInquilino.HasValue)
                 {
                     Inquilino nI = repositorioInquilino.ObtenerPorId(contrato.IdInquilino.Value);
