@@ -8,12 +8,13 @@ namespace Inmobiliaria.Controllers{
         private readonly RepositorioPagos repo;
 
         private readonly RepositorioContratos repositorioContratos;
-        // private readonly RepositorioInmuebles repositorioInmuebles;
+         private readonly RepositorioInmuebles repositorioInmuebles;
         public PagosController(IConfiguration configuration)
         {
             repo = new RepositorioPagos(configuration);
 
             repositorioContratos = new RepositorioContratos(configuration);
+            repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
         public IActionResult Index()
@@ -31,11 +32,32 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            // var contratos = repositorioTipoInmueble.ObtenerTodos();
-            //ViewBag.TipoInmuebles = contratos;
-            return View();
+            var contrato=repositorioContratos.ObtenerPorId(id);
+
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato para ese pago");
+            }
+            
+             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+           var pago=new Pagos();
+              pago.IdContratos=id;
+              pago.DireccionInmueble=contrato.DireccionInmueble;
+              pago.Importe=contrato.Monto;
+              pago.FechaPago=DateTime.Now;
+              pago.NumeroCuota = contrato.CuotasPagas + 1;
+              pago.MesPago=contrato.MesInicio+pago.NumeroCuota -1;
+              if (pago.MesPago>12) pago.MesPago=pago.MesPago -12;
+              pago.Concepto="Alquiler mes :"+ ((enMeses)pago.MesPago).ToString();
+            if (pago.NumeroCuota > contrato.CantidadCuotas)
+            {
+                return NotFound("Ya fueron realizados todo los pagos para este contrato");
+            }
+          
+            return View(pago);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -45,7 +67,20 @@ namespace Inmobiliaria.Controllers{
             if (ModelState.IsValid)
             {
 
-                repo.Alta(pago);
+               var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
+                if (contr != null)
+                {
+                    
+                     repo.Alta(pago);
+                    contr.CuotasPagas = pago.NumeroCuota;
+                   /* if (contr.CuotasPagas == contr.CantidadCuotas)
+                    {
+                        contr.Vigente = false;
+                        repositorioContratos.Modificacion(contr);
+                    }*/
+                    repositorioContratos.Modificacion(contr);
+                }
+               
                 return RedirectToAction(nameof(Index));
             }
             //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
@@ -54,19 +89,29 @@ namespace Inmobiliaria.Controllers{
 
         public IActionResult Edit(int id)
         {
-            var pago = repo.ObtenerPorId(id);
-
-            if (pago == null)
-            {
-                return NotFound();
+            var pago=repo.ObtenerPorId(id);
+            if(pago==null){
+                return NotFound("No se encontro ningun pago");
             }
+             var contrato=repositorioContratos.ObtenerPorId(pago.IdContratos);
 
-            var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
-            pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
-            //    pago.Importe =contrato != null ? (contrato.Precio ?? 0) : 0;
-
-            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-            return View(pago);
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato ligado a ese pago");
+            }
+             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+           var pa=new Pagos();
+            pa.IdPagos = pago.IdPagos;
+              pa.IdContratos=contrato.IdContrato;
+              pa.DireccionInmueble=contrato.DireccionInmueble;
+              pa.Importe=pago.Importe;
+              pa.FechaPago=pago.FechaPago;
+              pa.NumeroCuota = pago.NumeroCuota;
+              pa.MesPago=pago.MesPago;
+              pa.Concepto=pago.Concepto ;
+            
+            return View(pa);
         }
 
         [HttpPost]
@@ -77,7 +122,7 @@ namespace Inmobiliaria.Controllers{
 
             if (id != pago.IdPagos)
             {
-                return NotFound();
+                return NotFound("Hay una inconsistecia en el pago enviado");
             }
 
 
@@ -87,7 +132,7 @@ namespace Inmobiliaria.Controllers{
                 repo.Modificacion(pago);
                 return RedirectToAction(nameof(Index));
             }
-            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            
             return View(pago);
         }
         public IActionResult Delete(int id)
@@ -95,7 +140,7 @@ namespace Inmobiliaria.Controllers{
             var pago = repo.ObtenerPorId(id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun pago");
             }
             return View(pago);
         }
@@ -107,10 +152,13 @@ namespace Inmobiliaria.Controllers{
             var pago = repo.ObtenerPorId(id);
             if (pago == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun pago");
             }
             if (id != pago.IdPagos)
-                return NotFound();
+            {
+                 return NotFound("Hay una inconsistencia en el pago");
+            }
+               
 
             if (ModelState.IsValid)
             {
@@ -129,7 +177,7 @@ namespace Inmobiliaria.Controllers{
 
             var lista = repo.obtenerPorInquilino(id.Value);
 
-            Console.WriteLine($"ID: {id.Value} - Cantidad de pagos: {lista.Count}");
+            //Console.WriteLine($"ID: {id.Value} - Cantidad de pagos: {lista.Count}");
 
             // Asigna al pago la direccion del inmueble 
             foreach (var pago in lista)

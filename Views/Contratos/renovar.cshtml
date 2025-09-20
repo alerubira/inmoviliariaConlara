@@ -1,0 +1,91 @@
+@model Inmobiliaria.Models.Contratos
+@using Inmobiliaria.Models
+@using System.Collections.Generic
+@{
+    ViewData["Title"] = "Renovar";
+   // var tiposInmuebles = (IList<TipoInmueble>)ViewBag.TipoInmuebles;
+}
+
+<h4>Renovar Contrato</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           <div class="form-group">
+                <label asp-for="NombreInquilino" class="control-label"></label>
+                <input asp-for="NombreInquilino" class="form-control" readonly/>
+                <span asp-validation-for="NombreInquilino" class="text-danger"></span>
+                 <input type="hidden" id="IdInquilino" name="IdInquilino" />
+            </div>  
+            <div class="form-group">
+                <label asp-for="DireccionInmueble" class="control-label"></label>
+                <input asp-for="DireccionInmueble" class="form-control" readonly/>
+                <span asp-validation-for="DireccionInmueble" class="text-danger"></span>
+                 <input type="hidden" id="IdInmueble" name="IdInmueble" />
+            </div>  
+           
+           
+             <div class="form-group">
+                <label asp-for="Monto" class="control-label"></label>
+                <input asp-for="Monto" class="form-control" readonly/>
+                <span asp-validation-for="Monto" class="text-danger"></span>
+                 <input type="hidden" id="precio" name="precio" />
+            </div>  
+             <div class="form-group">
+                <label asp-for="CantidadCuotas" class="control-label"></label>
+                <input asp-for="CantidadCuotas" class="form-control" readonly/>
+                <span asp-validation-for="CantidadCuotas" class="text-danger"></span>
+                
+            </div> 
+             <div class="form-group">
+                <label asp-for="CuotasPagas" class="control-label"></label>
+                <input asp-for="CuotasPagas" class="form-control" readonly/>
+                <span asp-validation-for="CuotasPagas" class="text-danger"></span>
+             <div class="form-group">
+                <label asp-for="FechaDesde" class="control-label"></label>
+                <input asp-for="FechaDesde" class="form-control"readonly />
+                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+                  <input type="hidden" id="mesInicio" name="MesInicio" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaHasta" class="control-label"></label>
+                <input asp-for="FechaHasta" class="form-control" />
+                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+            </div>
+            <script>
+                        function calcularMeses() {
+                            const desde = document.getElementById("FechaDesde").value;
+                            const hasta = document.getElementById("FechaHasta").value;
+                            if (desde && hasta) 
+                            {
+                                const fechaDesde = new Date(desde);
+                                const fechaHasta = new Date(hasta);
+                                let meses = (fechaHasta.getFullYear() - fechaDesde.getFullYear()) * 12;
+                                meses += fechaHasta.getMonth() - fechaDesde.getMonth();
+                                meses += 1; // incluir ambos meses
+                                if (meses < 0) meses = 0;
+                                precio=document.getElementById("precio").value;
+                               // monto=precio*meses;
+                               document.getElementById("Monto").value = precio;
+                                document.getElementById("CantidadCuotas").value = meses;
+                                document.getElementById("CuotasPagas").value = 0;
+                                document.getElementById("mesInicio").value = fechaDesde.getMonth()+1;
+                            } else {
+                                document.getElementById("Monto").value = "";
+                            }
+                        }
+
+                        document.getElementById("FechaDesde").addEventListener("change", calcularMeses);
+                        document.getElementById("FechaHasta").addEventListener("change", calcularMeses);
+            </script>          
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index"class="bg-white p-3 border rounded shadow-sm">Regresar a la lista</a>
+</div>

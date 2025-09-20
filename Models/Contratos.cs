@@ -29,7 +29,11 @@ namespace Inmobiliaria.Models
         [Display(Name = "Cantidad de Cuotas")]
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria")]
         public Int32 CantidadCuotas { get; set; }
+        [Display(Name = "Cantidad Cuotas Pagas")]
+        [Required(ErrorMessage = "La cantidad de cuotas pagas es obligatoria")]
         public Int32 CuotasPagas { get; set; }
+        [Required(ErrorMessage = "El mes de inicio es obligatorio")]
+        public Int32 MesInicio { get; set; }
 
         public decimal? Precio { get; set; }
         [Display(Name = "Inquilino")]

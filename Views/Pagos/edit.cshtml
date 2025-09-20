@@ -12,28 +12,39 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
-            <!-- Campo oculto para el ID -->
-            <input type="hidden" asp-for="IdPagos" />
-
-            <div class="form-group">
-                <label class="control-label">Dirección del Inmueble</label>
-                <!-- Mostramos la dirección como texto sin editar -->
-                <input type="text" class="form-control" value="@Model.DireccionInmueble" disabled />
-                
-                <!-- Mantenemos la relación con el contrato -->
-                <input type="hidden" asp-for="IdContratos" />
+           <div class="form-group">
+                     <label asp-for="DireccionInmueble" class="control-label"></label>
+                    <input asp-for="DireccionInmueble" class="form-control" readonly/>
+                    <span asp-validation-for="DireccionInmueble" class="text-danger"></span>
+                    <!-- Campo oculto para enviar el ID -->
+                    <input type="hidden" id="IdContratos" name="IdContratos" value=@Model.IdContratos />
+                    <input type="hidden" id="IdPagos" name="IdPagos" value=@Model.IdPagos />
             </div>
 
-            <div class="form-group">
+                        
+             <div class="form-group">
                 <label asp-for="Importe" class="control-label"></label>
-                <input asp-for="Importe" class="form-control" />
+                <input asp-for="Importe" class="form-control" readonly/>
                 <span asp-validation-for="Importe" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
+                <!--<input type="hidden" id="importe" name="importe" /> --> 
+            </div>  
+             <div class="form-group">
                 <label asp-for="FechaPago" class="control-label"></label>
                 <input asp-for="FechaPago" class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
+            </div>
+              <div class="form-group">
+                <label asp-for="Concepto" class="control-label"></label>
+                <input asp-for="Concepto" class="form-control"readonly />
+                <span asp-validation-for="Concepto" class="text-danger"></span>
+                 <input type="hidden" id="MesPago" name="mesPago" value=@Model.MesPago />
+            </div>
+           
+
+             <div class="form-group">
+                <label asp-for="NumeroCuota" class="control-label"></label>
+                <input asp-for="NumeroCuota" class="form-control"readonly />
+                <span asp-validation-for="NumeroCuota" class="text-danger"></span>
             </div>
             
             <div class="form-group mt-3">
