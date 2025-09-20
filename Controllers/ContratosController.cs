@@ -189,7 +189,7 @@ namespace Inmobiliaria.Controllers{
 
             if (contrato == null)
             {
-                return NotFound("No se encontro ningun contrato para editar");
+                return NotFound("No se encontro ningun contrato para renovar");
             }
             if (contrato.IdInquilino.HasValue)
             {
@@ -204,7 +204,9 @@ namespace Inmobiliaria.Controllers{
             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
             contrato.Precio = inm != null ? inm.Precio : 0;
-
+            
+            contrato.FechaDesde=contrato.FechaHasta;
+            contrato.FechaHasta = default(DateTime); 
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
@@ -227,7 +229,7 @@ namespace Inmobiliaria.Controllers{
                 if (contratos.Count == 0)
                 {
                      contrato.Vigente = true;
-                    repo.Modificacion(contrato);
+                    repo.Alta(contrato);
                     return RedirectToAction(nameof(Index));
                 }else
                 {
@@ -244,7 +246,7 @@ namespace Inmobiliaria.Controllers{
                     }
                  }
                 contrato.Vigente = true;
-                repo.Modificacion(contrato);
+                repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
             }
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
