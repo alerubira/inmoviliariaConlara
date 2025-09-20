@@ -183,6 +183,73 @@ namespace Inmobiliaria.Controllers{
             }
             return View(contrato);
         }
+        public IActionResult Renovar(int id)
+        {
+            var contrato = repo.ObtenerPorId(id);
+
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato para editar");
+            }
+            if (contrato.IdInquilino.HasValue)
+            {
+                Inquilino nI = repositorioInquilino.ObtenerPorId(contrato.IdInquilino.Value);
+                contrato.NombreInquilino = nI != null ? nI.ToString() : "";
+            }
+            else
+            {
+                contrato.NombreInquilino = "";
+            }
+            //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
+            var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+            contrato.Precio = inm != null ? inm.Precio : 0;
+
+            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            return View(contrato);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Renovar(int id, Contratos contrato)
+        {
+
+
+            if (id != contrato.IdContrato)
+            {
+                return NotFound("Hay una inconsistencia en el contrato");
+            }
+
+
+            if (ModelState.IsValid)
+            { 
+                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+                if (contratos.Count == 0)
+                {
+                     contrato.Vigente = true;
+                    repo.Modificacion(contrato);
+                    return RedirectToAction(nameof(Index));
+                }else
+                {
+                    var i = compararFechas(contrato, contratos);
+                    if (i == 1)
+                    {
+                        ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
+                            return View(contrato);
+                    }
+                    if (i == 2)
+                    {
+                         ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
+                         return View(contrato);
+                    }
+                 }
+                contrato.Vigente = true;
+                repo.Modificacion(contrato);
+                return RedirectToAction(nameof(Index));
+            }
+            // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+            return View(contrato);
+        }
         public IActionResult buscarPorFraccionDireccion(String term)
         {
             if (string.IsNullOrEmpty(term) || term.Length < 3)
