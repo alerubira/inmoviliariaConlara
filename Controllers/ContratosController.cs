@@ -204,9 +204,11 @@ namespace Inmobiliaria.Controllers{
             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
             contrato.Precio = inm != null ? inm.Precio : 0;
-            
+            contrato.Monto = inm != null ? inm.Precio : 0;
+            contrato.CantidadCuotas = 0;
+            contrato.CuotasPagas = 0;
             contrato.FechaDesde=contrato.FechaHasta;
-            contrato.FechaHasta = default(DateTime); 
+            contrato.FechaHasta = DateTime.Now; 
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
@@ -216,16 +218,9 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Renovar(int id, Contratos contrato)
         {
 
-
-            if (id != contrato.IdContrato)
-            {
-                return NotFound("Hay una inconsistencia en el contrato");
-            }
-
-
             if (ModelState.IsValid)
             { 
-                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+                 var contratos = repo.ObtenerTodosPoIdInmueble(id);
                 if (contratos.Count == 0)
                 {
                      contrato.Vigente = true;
