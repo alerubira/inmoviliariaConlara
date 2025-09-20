@@ -58,7 +58,7 @@ namespace Inmobiliaria.Controllers{
             if (ModelState.IsValid)
             {
                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
-                if (contratos.Count==0)
+                if (contratos.Count == 0)
                 {
                     contrato.Vigente = true;
                     repo.Alta(contrato);
@@ -66,34 +66,23 @@ namespace Inmobiliaria.Controllers{
                 }
                 else
                 {
-                    foreach (var contra in contratos)
+                    var i = compararFechas(contrato, contratos);
+                    if (i == 1)
                     {
-                        int contador = contra.FechaDesde.Month;
-
-                        for (int i = 1; i <= contra.CantidadCuotas; i++)
-                        {
-                            if (contador > 12)
-                            {
-                                contador = 1;
-                            }
-                            if (contador == contrato.FechaDesde.Month && contrato.FechaDesde.Year==contra.FechaDesde.Year )
-                            {
-                                  ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
-                                return View(contrato);
-                            }
-                            if (contador == contrato.FechaHasta.Month && contrato.FechaHasta.Year==contra.FechaHasta.Year)
-                            {
-                                   ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
-                                return View(contrato);
-                            }
-                            contador++;
-                        }
+                        ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
+                            return View(contrato);
                     }
-                }
+                    if (i == 2)
+                    {
+                         ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
+                         return View(contrato);
+                    }
+                 }
+                
                 contrato.Vigente = true;
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
-               
+
             }
             //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
@@ -105,7 +94,7 @@ namespace Inmobiliaria.Controllers{
 
             if (contrato == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun contrato para editar");
             }
             if (contrato.IdInquilino.HasValue)
             {
@@ -133,12 +122,32 @@ namespace Inmobiliaria.Controllers{
 
             if (id != contrato.IdContrato)
             {
-                return NotFound();
+                return NotFound("Hay una inconsistencia en el contrato");
             }
 
 
             if (ModelState.IsValid)
-            {
+            { 
+                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+                if (contratos.Count == 0)
+                {
+                     contrato.Vigente = true;
+                    repo.Modificacion(contrato);
+                    return RedirectToAction(nameof(Index));
+                }else
+                {
+                    var i = compararFechas(contrato, contratos);
+                    if (i == 1)
+                    {
+                        ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
+                            return View(contrato);
+                    }
+                    if (i == 2)
+                    {
+                         ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
+                         return View(contrato);
+                    }
+                 }
                 contrato.Vigente = true;
                 repo.Modificacion(contrato);
                 return RedirectToAction(nameof(Index));
@@ -174,23 +183,51 @@ namespace Inmobiliaria.Controllers{
             }
             return View(contrato);
         }
-         public IActionResult buscarPorFraccionDireccion( String term)
+        public IActionResult buscarPorFraccionDireccion(String term)
         {
-              if (string.IsNullOrEmpty(term) || term.Length < 3)
+            if (string.IsNullOrEmpty(term) || term.Length < 3)
+            {
+                return Json(new { success = false, data = new List<object>() });
+            }
+
+            var lista = repo.buscarPorFraccionDireccion(term);
+
+            var resultado = lista.Select(i => new
+            {
+                id = i.IdContrato,
+                Direccion = i.DireccionInmueble,
+                Precio = i.Precio
+            });
+
+            return Json(new { success = true, data = resultado });
+        }
+        private int compararFechas(Contratos contrato, IList<Contratos> contratos)
+        {
+            foreach (var contra in contratos)
+            {
+                int contador = contra.FechaDesde.Month;
+
+                for (int i = 1; i <= contra.CantidadCuotas; i++)
+                {
+                    if (contador > 12)
                     {
-                        return Json(new { success = false, data = new List<object>() });
+                        contador = 1;
                     }
-
-                 var lista = repo.buscarPorFraccionDireccion(term);
-
-                 var resultado = lista.Select(i => new
-                        {
-                            id =i.IdContrato,
-                            Direccion = i.DireccionInmueble,
-                            Precio=i.Precio
-                        });
-
-                return Json(new { success = true, data = resultado });
+                    if ((contador == contrato.FechaDesde.Month) && (contrato.FechaDesde.Year == contra.FechaDesde.Year)&&(contrato.IdContrato!=contra.IdContrato))
+                    {
+                       
+                       
+                        return 1;
+                    }
+                    if ((contador == contrato.FechaHasta.Month) && (contrato.FechaHasta.Year == contra.FechaHasta.Year)&&(contrato.IdContrato!=contra.IdContrato))
+                    {
+                       
+                        return 2;
+                    }
+                    contador++;
+                }
+            }
+            return 3;         
         }
 }
 }
