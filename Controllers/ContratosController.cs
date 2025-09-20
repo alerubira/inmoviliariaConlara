@@ -53,7 +53,7 @@ namespace Inmobiliaria.Controllers{
             if (ModelState.IsValid)
             {
                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
-                if (contratos == null)
+                if (contratos.Count==0)
                 {
                     contrato.Vigente = true;
                     repo.Alta(contrato);
@@ -71,14 +71,14 @@ namespace Inmobiliaria.Controllers{
                             {
                                 contador = 1;
                             }
-                            if (contador == contrato.FechaDesde.Month )
+                            if (contador == contrato.FechaDesde.Month && contrato.FechaDesde.Year==contra.FechaDesde.Year )
                             {
-                                  ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente con esa fecha");
+                                  ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
                                 return View(contrato);
                             }
-                            if (contador == contrato.FechaHasta.Month)
+                            if (contador == contrato.FechaHasta.Month && contrato.FechaHasta.Year==contra.FechaHasta.Year)
                             {
-                                   ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente con esa fecha");
+                                   ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
                                 return View(contrato);
                             }
                             contador++;

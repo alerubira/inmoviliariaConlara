@@ -38,8 +38,9 @@ namespace Inmobiliaria.Controllers{
 
             if (contrato == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun contrato para ese pago");
             }
+            
              var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
            var pago=new Pagos();
@@ -51,7 +52,10 @@ namespace Inmobiliaria.Controllers{
               pago.MesPago=contrato.MesInicio+pago.NumeroCuota -1;
               if (pago.MesPago>12) pago.MesPago=pago.MesPago -12;
               pago.Concepto="Alquiler mes :"+ ((enMeses)pago.MesPago).ToString();
-            
+            if (pago.NumeroCuota > contrato.CantidadCuotas)
+            {
+                return NotFound("Ya fueron realizados todo los pagos para este contrato");
+            }
           
             return View(pago);
         }
@@ -66,13 +70,14 @@ namespace Inmobiliaria.Controllers{
                var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
                 if (contr != null)
                 {
+                    
                      repo.Alta(pago);
                     contr.CuotasPagas = pago.NumeroCuota;
-                    if (contr.CuotasPagas == contr.CantidadCuotas)
+                   /* if (contr.CuotasPagas == contr.CantidadCuotas)
                     {
                         contr.Vigente = false;
                         repositorioContratos.Modificacion(contr);
-                    }
+                    }*/
                     repositorioContratos.Modificacion(contr);
                 }
                

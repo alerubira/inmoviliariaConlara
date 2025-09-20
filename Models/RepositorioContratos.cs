@@ -130,7 +130,7 @@ namespace Inmobiliaria.Models
          public IList<Contratos> ObtenerTodosPoIdInmueble(int idInmueble)
     {
              var res = new List<Contratos>();
-    
+            
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas,mesInicio
