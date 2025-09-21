@@ -3,7 +3,7 @@ using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-namespace Inmobiliaria.Controllers{
+namespace Inmobiliaria.Controllers;
     public class ContratosController : Controller
     {
         private readonly RepositorioContratos repo;
@@ -274,51 +274,51 @@ namespace Inmobiliaria.Controllers{
 
 
 
-                [Authorize(Roles="Administrador,Empleado")]
-         public IActionResult buscarPorFraccionDireccion(String term)
-        {            if (string.IsNullOrEmpty(term) || term.Length < 3)
-            {
-                return Json(new { success = false, data = new List<object>() });
-            }
-            
-            var lista = repo.buscarPorFraccionDireccion(term);
+    [Authorize(Roles = "Administrador,Empleado")]
+    public IActionResult buscarPorFraccionDireccion(String term)
+    { if (string.IsNullOrEmpty(term) || term.Length < 3)
+        {
+            return Json(new { success = false, data = new List<object>() });
+        }
 
-            var resultado = lista.Select(i => new
-            {
-                id = i.IdContrato,
-                Direccion = i.DireccionInmueble,
-                Precio = i.Precio
-            });
+        var lista = repo.buscarPorFraccionDireccion(term);
 
-            return Json(new { success = true, data = resultado });
+        var resultado = lista.Select(i => new
+        {
+            id = i.IdContrato,
+            Direccion = i.DireccionInmueble,
+            Precio = i.Precio
+        });
+
+        return Json(new { success = true, data = resultado });
+    }
         
         private int compararFechas(Contratos contrato, IList<Contratos> contratos)
+    {
+        foreach (var contra in contratos)
         {
-            foreach (var contra in contratos)
-            {
-                int contador = contra.FechaDesde.Month;
+            int contador = contra.FechaDesde.Month;
 
-                for (int i = 1; i <= contra.CantidadCuotas; i++)
+            for (int i = 1; i <= contra.CantidadCuotas; i++)
+            {
+                if (contador > 12)
                 {
-                    if (contador > 12)
-                    {
-                        contador = 1;
-                    }
-                    if ((contador == contrato.FechaDesde.Month) && (contrato.FechaDesde.Year == contra.FechaDesde.Year)&&(contrato.IdContrato!=contra.IdContrato))
-                    {
-                       
-                       
-                        return 1;
-                    }
-                    if ((contador == contrato.FechaHasta.Month) && (contrato.FechaHasta.Year == contra.FechaHasta.Year)&&(contrato.IdContrato!=contra.IdContrato))
-                    {
-                       
-                        return 2;
-                    }
-                    contador++;
+                    contador = 1;
                 }
+                if ((contador == contrato.FechaDesde.Month) && (contrato.FechaDesde.Year == contra.FechaDesde.Year) && (contrato.IdContrato != contra.IdContrato))
+                {
+
+
+                    return 1;
+                }
+                if ((contador == contrato.FechaHasta.Month) && (contrato.FechaHasta.Year == contra.FechaHasta.Year) && (contrato.IdContrato != contra.IdContrato))
+                {
+
+                    return 2;
+                }
+                contador++;
             }
-            return 3;         
         }
-}
+        return 3;
+    }
 }
