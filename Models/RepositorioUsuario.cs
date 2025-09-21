@@ -1,3 +1,5 @@
+using System.Text;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using MySql.Data.MySqlClient;
 
 namespace InmobiliariaConlara.Models
@@ -5,6 +7,8 @@ namespace InmobiliariaConlara.Models
     public class RepositorioUsuario
     {
         private readonly string connectionString;
+
+        private readonly string GlobalSalt = "MiSaltSecreto123";
 
         public RepositorioUsuario(IConfiguration configuration)
         {
@@ -69,10 +73,10 @@ namespace InmobiliariaConlara.Models
                     command.Parameters.AddWithValue("@email", u.Email);
                     command.Parameters.AddWithValue("@clave", u.Clave ?? "");
                     if (String.IsNullOrEmpty(u.Avatar))
-						command.Parameters.AddWithValue("@avatar", /*DBNull.Value*/"");
-					else
-						command.Parameters.AddWithValue("@avatar", u.Avatar);
-                   // command.Parameters.AddWithValue("@avatar", u.Avatar);
+                        command.Parameters.AddWithValue("@avatar", /*DBNull.Value*/"");
+                    else
+                        command.Parameters.AddWithValue("@avatar", u.Avatar);
+                    // command.Parameters.AddWithValue("@avatar", u.Avatar);
                     command.Parameters.AddWithValue("@rol", u.Rol);
                     command.Parameters.AddWithValue("@id", u.IdUsuario);
                     connection.Open();
@@ -129,7 +133,7 @@ namespace InmobiliariaConlara.Models
                     {
                         u = new Usuario
                         {
-                             IdUsuario = reader.GetInt32("IdUsuario"),
+                            IdUsuario = reader.GetInt32("IdUsuario"),
                             Nombre = reader.GetString("Nombre"),
                             Apellido = reader.GetString("Apellido"),
                             Email = reader.GetString("email"),
@@ -146,7 +150,7 @@ namespace InmobiliariaConlara.Models
         public Usuario? ObtenerPorEmail(String email)
         {
             Usuario? u = null;
-         using (var connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdUsuario, Nombre, Apellido, email, clave, avatar, rol 
                     FROM usuario WHERE email=@email";
@@ -159,7 +163,7 @@ namespace InmobiliariaConlara.Models
                     {
                         u = new Usuario
                         {
-                             IdUsuario = reader.GetInt32("IdUsuario"),
+                            IdUsuario = reader.GetInt32("IdUsuario"),
                             Nombre = reader.GetString("Nombre"),
                             Apellido = reader.GetString("Apellido"),
                             Email = reader.GetString("email"),
@@ -172,6 +176,26 @@ namespace InmobiliariaConlara.Models
                 }
             }
             return u;
+        }
+        public Usuario? Login(string email, string password)
+        {
+            var usuario = ObtenerPorEmail(email);
+            if (usuario == null) return null;
+
+            byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: saltBytes,
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8
+            ));
+
+
+            if (usuario.Clave != hashed) return null;
+
+            return usuario;
+
         }
     }
 }

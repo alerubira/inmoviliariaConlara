@@ -1,11 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using InmobiliariaConlara.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
     public class HomeController : Controller
     {
+
+
+
+            [AllowAnonymous]
+            public IActionResult Restringido()
+    {
+        return View();
+    }
+
+    [Authorize(Policy = "Administrador")]
+    public IActionResult SoloAdmin()
+    {
+        return Content("📌 Solo el administrador puede ver esta página.");
+    }
+
+    [Authorize(Policy = "Empleado")]
+    public IActionResult SoloEmpleado()
+    {
+        return Content("📌 Empleados y administradores pueden ver esta página.");
+    }
+
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string? mensaje)
         {
@@ -24,6 +49,11 @@ namespace Inmobiliaria.Controllers
         {
             return View();
         }
+        
+
+
+
+        
     }
 }
 
