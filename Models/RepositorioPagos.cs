@@ -18,16 +18,17 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Pagos
-                    ( idContratos, fechaPago, importe)
-                    VALUES ( @IdContratos, @fechaPago,@importe);
+                    ( idContratos, fechaPago, importe,concepto,numeroCuota,mesPago)
+                    VALUES ( @IdContratos, @fechaPago,@importe,@concepto,@numeroCuota,@mesPago);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@idContratos", pago.IdContratos);
                     command.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-
-
+                    command.Parameters.AddWithValue("@concepto", pago.Concepto);
+                    command.Parameters.AddWithValue("@numeroCuota", pago.NumeroCuota);
+                    command.Parameters.AddWithValue("@mesPago", pago.MesPago);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     pago.IdPagos = res;
@@ -60,7 +61,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Pagos SET 
-                        idContratos=@idContratos, fechaPago=@fechaPago, importe=@importe
+                        idContratos=@idContratos, fechaPago=@fechaPago, importe=@importe,concepto=@concepto,numeroCuota=@numeroCuota,mesPago=@mesPago
                         WHERE IdPagos = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -68,7 +69,9 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@idContratos", pago.IdContratos);
                     command.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
                     command.Parameters.AddWithValue("@importe", pago.Importe);
-
+                    command.Parameters.AddWithValue("@concepto", pago.Concepto);
+                    command.Parameters.AddWithValue("@numeroCuota", pago.NumeroCuota);
+                    command.Parameters.AddWithValue("@mesPago", pago.MesPago);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -83,12 +86,12 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-            SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,
+            SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,p.concepto,p.numeroCuota,mesPago,
                    i.Direccion AS DireccionInmueble
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
             INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
-            ORDER BY p.fechaPago;
+            ORDER BY p.idPagos;
         ";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -103,7 +106,11 @@ namespace Inmobiliaria.Models
                             IdContratos = Convert.ToInt32(reader["idContratos"]),
                             FechaPago = Convert.ToDateTime(reader["fechaPago"]),
                             Importe = Convert.ToDecimal(reader["importe"]),
-                            DireccionInmueble = reader["DireccionInmueble"].ToString()
+                            DireccionInmueble = reader["DireccionInmueble"].ToString(),
+                            Concepto = reader["concepto"].ToString() ?? string.Empty,
+                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
+                            MesPago = Convert.ToInt32(reader["mesPago"]),
+                            
                         };
 
                         res.Add(pago);
@@ -122,7 +129,7 @@ namespace Inmobiliaria.Models
             Pagos? pago = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdPagos,IdContratos,fechaPago, importe
+                string sql = @"SELECT IdPagos,IdContratos,fechaPago, importe,concepto,numeroCuota,mesPago
                             FROM pagos
                             WHERE IdPagos = @id";
                 using (var command = new MySqlCommand(sql, connection))
@@ -138,6 +145,9 @@ namespace Inmobiliaria.Models
                             IdContratos = Convert.ToInt32(reader["idContratos"]),
                             FechaPago = Convert.ToDateTime(reader["fechaPago"]),
                             Importe = Convert.ToDecimal(reader["importe"]),
+                            Concepto = reader["concepto"].ToString() ?? string.Empty,
+                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
+                            MesPago = Convert.ToInt32(reader["mesPago"])
                         };
                     }
                     connection.Close();
@@ -152,7 +162,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-            SELECT p.idPagos, p.idContratos, p.fechaPago, p.importe,
+            SELECT p.idPagos, p.idContratos, p.fechaPago, p.importe,p.concepto,p.numeroCuota,p.mesPago,
                    i.Direccion AS DireccionInmueble
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
@@ -173,7 +183,10 @@ namespace Inmobiliaria.Models
                             IdContratos = Convert.ToInt32(reader["idContratos"]),
                             FechaPago = Convert.ToDateTime(reader["fechaPago"]),
                             Importe = Convert.ToDecimal(reader["importe"]),
-                            DireccionInmueble = reader["DireccionInmueble"].ToString()
+                            DireccionInmueble = reader["DireccionInmueble"].ToString(),
+                            Concepto = reader["concepto"].ToString() ?? string.Empty,
+                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
+                            MesPago = Convert.ToInt32(reader["mesPago"])
                         };
 
                         res.Add(pago);

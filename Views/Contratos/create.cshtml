@@ -131,6 +131,7 @@
                 <label asp-for="FechaDesde" class="control-label"></label>
                 <input asp-for="FechaDesde" class="form-control" />
                 <span asp-validation-for="FechaDesde" class="text-danger"></span>
+                  <input type="hidden" id="mesInicio" name="MesInicio" />
             </div>
             <div class="form-group">
                 <label asp-for="FechaHasta" class="control-label"></label>
@@ -154,6 +155,7 @@
                                document.getElementById("Monto").value = precio;
                                 document.getElementById("CantidadCuotas").value = meses;
                                 document.getElementById("CuotasPagas").value = 0;
+                                document.getElementById("mesInicio").value = fechaDesde.getMonth()+1;
                             } else {
                                 document.getElementById("Monto").value = "";
                             }
@@ -170,5 +172,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Regresar a la lista</a>
+    <a asp-action="Index"class="bg-white p-3 border rounded shadow-sm">Regresar a la lista</a>
 </div>
