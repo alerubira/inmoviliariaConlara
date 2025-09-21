@@ -208,7 +208,7 @@ namespace Inmobiliaria.Controllers{
             contrato.CantidadCuotas = 0;
             contrato.CuotasPagas = 0;
             contrato.FechaDesde=contrato.FechaHasta;
-            contrato.FechaHasta = DateTime.Now; 
+            //contrato.FechaHasta = DateTime.Now; 
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
@@ -220,7 +220,7 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             { 
-                 var contratos = repo.ObtenerTodosPoIdInmueble(id);
+                 var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
                 if (contratos.Count == 0)
                 {
                      contrato.Vigente = true;
