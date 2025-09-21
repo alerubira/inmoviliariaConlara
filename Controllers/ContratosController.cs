@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 namespace Inmobiliaria.Controllers{
     public class ContratosController : Controller
     {
@@ -15,6 +16,7 @@ namespace Inmobiliaria.Controllers{
             repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
+        [Authorize(Roles="Administrador,Empleado")]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
@@ -44,12 +46,19 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
+
+
+        [Authorize(Roles="Administrador,Empleado")]
         public IActionResult Create()
         {
             // var contratos = repositorioTipoInmueble.ObtenerTodos();
             //ViewBag.TipoInmuebles = contratos;
             return View();
         }
+
+
+
+        [Authorize(Roles="Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Contratos contrato)
@@ -88,6 +97,8 @@ namespace Inmobiliaria.Controllers{
             return View(contrato);
         }
 
+
+        [Authorize(Roles="Administrador")]
         public IActionResult Edit(int id)
         {
             var contrato = repo.ObtenerPorId(id);
@@ -114,6 +125,9 @@ namespace Inmobiliaria.Controllers{
             return View(contrato);
         }
 
+
+
+        [Authorize(Roles="Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Contratos contrato)
@@ -155,6 +169,8 @@ namespace Inmobiliaria.Controllers{
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
+
+        [Authorize(Roles="Administrador")]
         public IActionResult Delete(int id)
         {
             var contrato = repo.ObtenerPorId(id);
@@ -164,6 +180,8 @@ namespace Inmobiliaria.Controllers{
             }
             return View(contrato);
         }
+
+        [Authorize(Roles="Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, String bandera)
@@ -183,6 +201,7 @@ namespace Inmobiliaria.Controllers{
             }
             return View(contrato);
         }
+
         public IActionResult Renovar(int id)
         {
             var contrato = repo.ObtenerPorId(id);
@@ -252,13 +271,16 @@ namespace Inmobiliaria.Controllers{
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
-        public IActionResult buscarPorFraccionDireccion(String term)
-        {
-            if (string.IsNullOrEmpty(term) || term.Length < 3)
+
+
+
+                [Authorize(Roles="Administrador,Empleado")]
+         public IActionResult buscarPorFraccionDireccion(String term)
+        {            if (string.IsNullOrEmpty(term) || term.Length < 3)
             {
                 return Json(new { success = false, data = new List<object>() });
             }
-
+            
             var lista = repo.buscarPorFraccionDireccion(term);
 
             var resultado = lista.Select(i => new
@@ -269,7 +291,7 @@ namespace Inmobiliaria.Controllers{
             });
 
             return Json(new { success = true, data = resultado });
-        }
+        
         private int compararFechas(Contratos contrato, IList<Contratos> contratos)
         {
             foreach (var contra in contratos)
