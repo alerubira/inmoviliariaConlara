@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
@@ -19,22 +20,29 @@ namespace Inmobiliaria.Controllers
             var lista = repo.ObtenerTodos();
             return View(lista);
         }*/
+        
+        [Authorize(Roles="Administrador,Empleado")]
         public IActionResult Index(int pageNumber = 1, int pageSize = 5)
-            {
-                var lista = repo.ObtenerPaginado(pageNumber, pageSize);
-                var totalRegistros = repo.ContarInquilinos();
-                var totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
+        {
+            var lista = repo.ObtenerPaginado(pageNumber, pageSize);
+            var totalRegistros = repo.ContarInquilinos();
+            var totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
 
-                ViewBag.PaginaActual = pageNumber;
-                ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.PaginaActual = pageNumber;
+            ViewBag.TotalPaginas = totalPaginas;
 
-                return View(lista);
-            }
+            return View(lista);
+        }
 
+
+        [Authorize(Roles="Administrador,Empleado")]
         public IActionResult Create()
         {
             return View();
         }
+
+
+        [Authorize(Roles="Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inquilino inquilino)
@@ -53,6 +61,8 @@ namespace Inmobiliaria.Controllers
             return View(inquilino);
         }
 
+
+        [Authorize(Roles="Administrador,Empleado")]
         public IActionResult Edit(int id)
         {
             var propietario = repo.ObtenerPorId(id);
@@ -63,6 +73,8 @@ namespace Inmobiliaria.Controllers
             return View(propietario);
         }
 
+
+        [Authorize(Roles="Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Inquilino inquilino)
@@ -77,6 +89,9 @@ namespace Inmobiliaria.Controllers
             }
             return View(inquilino);
         }
+
+
+        [Authorize(Roles="Administrador")]
         public IActionResult Delete(int id)
         {
             var inquilino = repo.ObtenerPorId(id);
@@ -86,6 +101,10 @@ namespace Inmobiliaria.Controllers
             }
             return View(inquilino);
         }
+
+
+
+        [Authorize(Roles="Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, String bandera)
@@ -105,6 +124,8 @@ namespace Inmobiliaria.Controllers
             }
             return View(inquilino);
         }
+
+        [Authorize(Roles="Administrador,Empleado")]
          [HttpGet]
         public IActionResult BuscarInquilinoPorFraccionApellido( String term)
         {
@@ -127,5 +148,5 @@ namespace Inmobiliaria.Controllers
 
                 return Json(new { success = true, data = resultado });
         }
-}
     }
+}

@@ -197,5 +197,37 @@ namespace InmobiliariaConlara.Models
             return usuario;
 
         }
+
+        public Usuario? ObtenerPerfilPorEmail(string email)
+        {
+            Usuario? u = null;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdUsuario, Nombre, Apellido, email, avatar, rol 
+                            FROM usuario WHERE email=@email";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@email", email);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        u = new Usuario
+                        {
+                            IdUsuario = reader.GetInt32("IdUsuario"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido"),
+                            Email = reader.GetString("email"),
+                            Avatar = reader.GetString("avatar"),
+                            Rol = reader.GetInt32("rol"),
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return u;
+        }
+
+
     }
 }

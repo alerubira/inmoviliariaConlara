@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 namespace Inmobiliaria.Controllers{
     public class PagosController : Controller
     {
@@ -16,6 +17,8 @@ namespace Inmobiliaria.Controllers{
             repositorioContratos = new RepositorioContratos(configuration);
         }
 
+
+        [Authorize(Roles ="Administrador,Empleado")]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
@@ -31,12 +34,17 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
+
+
+        [Authorize(Roles ="Administrador,Empleado")]
         public IActionResult Create()
         {
             // var contratos = repositorioTipoInmueble.ObtenerTodos();
             //ViewBag.TipoInmuebles = contratos;
             return View();
         }
+
+        [Authorize(Roles ="Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Pagos pago)
@@ -52,6 +60,8 @@ namespace Inmobiliaria.Controllers{
             return View(pago);
         }
 
+
+        [Authorize(Roles ="Administrador,Empleado")]
         public IActionResult Edit(int id)
         {
             var pago = repo.ObtenerPorId(id);
@@ -69,6 +79,8 @@ namespace Inmobiliaria.Controllers{
             return View(pago);
         }
 
+
+        [Authorize(Roles ="Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Pagos pago)
@@ -90,6 +102,9 @@ namespace Inmobiliaria.Controllers{
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(pago);
         }
+
+
+        [Authorize(Roles = "Administrador")]
         public IActionResult Delete(int id)
         {
             var pago = repo.ObtenerPorId(id);
@@ -99,6 +114,8 @@ namespace Inmobiliaria.Controllers{
             }
             return View(pago);
         }
+
+        [Authorize(Roles ="Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, String bandera)
@@ -120,6 +137,8 @@ namespace Inmobiliaria.Controllers{
             return View(pago);
         }
 
+
+        [Authorize(Roles ="Administrador,Empleado")]
         public IActionResult PorInquilino(int? id)
         {
             if (id == null || id <= 0)

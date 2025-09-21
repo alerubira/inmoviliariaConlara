@@ -73,7 +73,7 @@
 				<td>
                     @Html.DisplayFor(modelItem => item.CuotasPagas)
 				<td>    
-
+					@if (User.IsInRole("Administrador")){
 					<div class="btn-group" role="group">
 						<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">
 							<i class="fa-solid fa-pen"></i>
@@ -83,6 +83,7 @@
 						</a>
 						
 					</div>
+					}
 				</td>
 			</tr>
 		}

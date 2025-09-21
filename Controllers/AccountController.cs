@@ -27,43 +27,39 @@ namespace InmobiliariaConlara.Controllers
         }
 
         // POST: Account/Login
- [HttpPost]
-public async Task<IActionResult> Login(string email, string password)
-{
-            var user = repositorio.Login(email,password);
+        [HttpPost]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            var user = repositorio.Login(email, password);
 
-    if (user == null)
-    {
-        ViewBag.Error = "Credenciales inválidas";
-        return View();
-    }
+            if (user == null)
+            {
+                ViewBag.Error = "Credenciales inválidas";
+                return View();
+            }
 
-    // Creamos las claims
-    var claims = new List<Claim>
+            // Creamos las claims
+            var claims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, user.Email),
         new Claim(ClaimTypes.Role, user.Rol == 1 ? "Administrador" : "Empleado") 
         // asumimos que Rol es int en tu modelo
     };
 
-    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-    var principal = new ClaimsPrincipal(identity);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
 
-    await HttpContext.SignInAsync(
-        CookieAuthenticationDefaults.AuthenticationScheme,
-        principal,
-        new AuthenticationProperties
-        {
-            IsPersistent = true,
-            ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
-        });
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                });
 
-    // Redirección según rol
-    if (user.Rol == 1)
-        return RedirectToAction("Index", "LayoutAdmin");
-    else
-        return RedirectToAction("Index", "LayoutEmpleado");
-}
+            return RedirectToAction("Index", "Home");
+        }
 
 
         // GET: Account/Logout
@@ -72,6 +68,19 @@ public async Task<IActionResult> Login(string email, string password)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
+        }
+               
+        public IActionResult Perfil()
+        {
+            var email = User.Identity?.Name; // lo guardamos al loguear
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("Login");
+
+            var user = repositorio.ObtenerPorEmail(email);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            return View(user); // <- pasa el usuario a la vista
         }
     }
 }

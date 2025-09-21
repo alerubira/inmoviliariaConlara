@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
+
 namespace InmobiliariaConlara.Controllers
 {
     public class UsuarioController : Controller
@@ -29,28 +31,34 @@ namespace InmobiliariaConlara.Controllers
             this.repositorio = repositorio;
         }
 
-        // GET: Usuarios
+
+        [Authorize(Roles = "Administrador")]
+        // GET: Usuario
         public ActionResult Index()
         {
             var usuarios = repositorio.ObtenerTodos();
             return View(usuarios);
         }
 
-        // GET: Usuarios/Details/5
+        [Authorize(Roles = "Administrador")]
+        // GET: Usuario/Details/5
         public ActionResult Details(int id)
         {
             var e = repositorio.ObtenerPorId(id);
             return View(e);
         }
 
-        // GET: Usuarios/Create
+
+        [Authorize(Roles = "Administrador")]
+        // GET: Usuario/Create
         public ActionResult Create()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
             return View();
         }
 
-        // POST: Usuarios/Create
+        [Authorize(Roles = "Administrador")]
+        // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario u)
@@ -104,7 +112,9 @@ namespace InmobiliariaConlara.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
+        
         public ActionResult Perfil()
         {
             ViewData["Title"] = "Mi perfil";
@@ -112,7 +122,9 @@ namespace InmobiliariaConlara.Controllers
             ViewBag.Roles = Usuario.ObtenerRoles();
             return View("edit", u);
         }
+        
 
+        [Authorize(Roles = "Administrador")]
         public ActionResult Edit(int id)
         {
             ViewData["Title"] = "Editar usuario";
@@ -121,6 +133,8 @@ namespace InmobiliariaConlara.Controllers
             return View(u);
         }
 
+
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Usuario u)
@@ -150,11 +164,14 @@ namespace InmobiliariaConlara.Controllers
             return RedirectToAction(vista);
         }
 
+
+        [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int id)
         {
             throw new NotImplementedException();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Usuario usuario)
@@ -173,7 +190,9 @@ namespace InmobiliariaConlara.Controllers
             }
         }
 
-        [Authorize]
+
+
+        [Authorize(Roles = "Administrador")]
         public IActionResult Avatar()
         {
             var u = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -183,7 +202,7 @@ namespace InmobiliariaConlara.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrador")]
         public string AvatarBase64()
         {
             var u = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -193,7 +212,7 @@ namespace InmobiliariaConlara.Controllers
             return Convert.ToBase64String(fileBytes);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrador")]
         [HttpPost("[controller]/[action]/{fileName}")]
         public IActionResult FromBase64([FromBody] string imagen, [FromRoute] string fileName)
         {
@@ -203,7 +222,7 @@ namespace InmobiliariaConlara.Controllers
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Foto()
         {
             var u = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -212,7 +231,7 @@ namespace InmobiliariaConlara.Controllers
             return new FileStreamResult(stream, $"image/{ext.Substring(1)}");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Datos()
         {
             var u = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -223,13 +242,13 @@ namespace InmobiliariaConlara.Controllers
             return res;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         public ActionResult LoginModal()
         {
             return PartialView("_LoginModal", new Login());
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
@@ -237,7 +256,7 @@ namespace InmobiliariaConlara.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(Login login)
         {
@@ -287,11 +306,13 @@ namespace InmobiliariaConlara.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador")]
         [Route("salir", Name = "logout")]
         public async Task<ActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "Home");
         }
+
     }
 }

@@ -37,7 +37,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="index">Inquilinos</a>
                         </li>
                          <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TipoInmueble" asp-action="index">Tipos Inmuebles</a>
+                         @if (User.IsInRole("Administrador"))
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TipoInmueble" asp-action="index">Tipos Inmuebles</a>
+                            }
                         </li>
                          <li class="nav-item"></li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="index">Inmuebles</a>
@@ -48,6 +51,21 @@
                         </li>
                           <li class="nav-item"></li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pagos" asp-action="index">Pagos</a>
+                        </li>
+                        <li>
+                            <li class="nav-item"></li>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="index">Usuarios</a>
+                            }
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Perfil">Mi Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
+                                <button type="submit" class="btn btn-link nav-link text-dark" style="display:inline; padding:0;">Cerrar Sesión</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
