@@ -123,20 +123,94 @@ namespace Inmobiliaria.Controllers{
             ModelState.Clear();
             return View("Calculado", multa);
         }
+          public IActionResult Edit(int id)
+        {
+            var multa=repo.ObtenerPorId(id);
+            if(multa==null){
+                return NotFound("No se encontro ninguna multa");
+            }
+             var contrato=repositorioContratos.ObtenerPorId(multa.IdContrato);
+
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato ligado a esa multa");
+            }
+             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+            multa.DireccionInmueble = contrato.DireccionInmueble;
+            
+            return View(multa);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Multas multa)
+        {
+
+
+            if (id != multa.IdMulta)
+            {
+                return NotFound("Hay una inconsistecia en el pago enviado");
+            }
+
+
+            if (ModelState.IsValid)
+            {
+
+                repo.Modificacion(multa);
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return View(multa);
+        }
+        public IActionResult Delete(int id)
+        {
+            var multa = repo.ObtenerPorId(id);
+            if (multa == null)
+            {
+                return NotFound("No se encontro ninguna multa");
+            }
+            return View(multa);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id, String bandera)
+
+        {
+            var multa = repo.ObtenerPorId(id);
+            if (multa == null)
+            {
+                return NotFound("No se encontro ninguna multa");
+            }
+            if (id != multa.IdMulta)
+            {
+                 return NotFound("Hay una inconsistencia en la multa");
+            }
+               
+
+            if (ModelState.IsValid)
+            {
+                repo.Baja(id);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(multa);
+        }
+
+
         static bool PasoMasDeLaMitad(DateTime ingreso, DateTime egreso, DateTime fecha)
-    {
-        // Calcular diferencia total en meses
-        int totalMeses = (egreso.Year - ingreso.Year) * 12 + egreso.Month - ingreso.Month;
+        {
+            // Calcular diferencia total en meses
+            int totalMeses = (egreso.Year - ingreso.Year) * 12 + egreso.Month - ingreso.Month;
 
-        // Mitad del período en meses
-        double mitadMeses = totalMeses / 2.0;
+            // Mitad del período en meses
+            double mitadMeses = totalMeses / 2.0;
 
-        // Meses transcurridos desde el ingreso hasta la fecha
-        int mesesTranscurridos = (fecha.Year - ingreso.Year) * 12 + fecha.Month - ingreso.Month;
+            // Meses transcurridos desde el ingreso hasta la fecha
+            int mesesTranscurridos = (fecha.Year - ingreso.Year) * 12 + fecha.Month - ingreso.Month;
 
-        // Comparar si pasó más de la mitad
-        return mesesTranscurridos > mitadMeses;
-    }
+            // Comparar si pasó más de la mitad
+            return mesesTranscurridos > mitadMeses;
+        }
         
 
 
