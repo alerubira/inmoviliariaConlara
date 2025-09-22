@@ -9,7 +9,7 @@ namespace Inmobiliaria.Models
         public int IdMulta { get; set; }
        
         [Required(ErrorMessage = "El Contrato  es obligatorio")]
-        public int? IdContrato { get; set; }
+        public int IdContrato { get; set; }
         [Display(Name = "Fecha de ejecucion multa")]
         [Required(ErrorMessage = "La fecha dela multa es obligatoria")]
         public DateTime FechaMulta { get; set; }
@@ -23,12 +23,12 @@ namespace Inmobiliaria.Models
         public DateTime NuevaFechaHastaContrato { get; set; }
 
        
-        [Required(ErrorMessage = "El Importa de la cuota es obligatorio")]
+        [Required(ErrorMessage = "El Importe de la cuota es obligatorio")]
         [Display(Name = "Monto de la cuota")]
         public decimal ImporteCuota { get; set; }
-         [Required(ErrorMessage = "El Importa de la multa es obligatorio")]
+         [Required(ErrorMessage = "El Importe de la multa es obligatorio")]
         [Display(Name = "Monto de la Multa")]
-        public decimal ImporteMulta { get; set; }
+        public decimal? ImporteMulta { get; set; }
        
         [Display(Name = "Cantidad de Cuotas Adeudadas")]
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria")]

@@ -96,6 +96,13 @@
 											title="renovar contrato">
 												<i class="fa-solid fa-repeat"></i>
 											</a>
+						<a class="btn btn-warning btn-sm" 
+						                    asp-controller="Multas"
+											asp-action="Calcular" 
+											asp-route-id="@item.IdContrato" 
+											title="Calcular Multa">
+												<i class="fa-solid fa-sack-xmark"></i>
+											</a>					
 					</div>
 				</td>
 			</tr>

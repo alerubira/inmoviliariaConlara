@@ -1,0 +1,68 @@
+@model Inmobiliaria.Models.Multas
+@using Inmobiliaria.Models
+@using System.Collections.Generic
+@{
+    ViewData["Title"] = "Multa Calculada";
+   // var tiposInmuebles = (IList<TipoInmueble>)ViewBag.TipoInmuebles;
+}
+
+<h4>Multa Calculada</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+           
+           <div class="form-group">
+                <label asp-for="DireccionInmueble" class="control-label"></label>
+                <input asp-for="DireccionInmueble" class="form-control" readonly/>
+                <span asp-validation-for="DireccionInmueble" class="text-danger"></span>
+                 <input asp-for="IdContrato" type="hidden" />
+            </div>  
+             <div class="form-group">
+                <label asp-for="ImporteCuota" class="control-label"></label>
+                <input asp-for="ImporteCuota" class="form-control" readonly/>
+                <span asp-validation-for="ImporteCuota" class="text-danger"></span>
+                
+            </div> 
+            <div class="form-group">
+                <label asp-for="CuotasAdeudadas" class="control-label"></label>
+                <input asp-for="CuotasAdeudadas" class="form-control" readonly/>
+                <span asp-validation-for="CuotasAdeudadas" class="text-danger"></span>
+                
+            </div> 
+            <div class="form-group">
+                <label asp-for="ImporteMulta" class="control-label"></label>
+                <input asp-for="ImporteMulta" class="form-control" readonly/>
+                <span asp-validation-for="ImporteMulta" class="text-danger"></span>
+
+            </div> 
+             
+             <div class="form-group">
+                <label asp-for="FechaMulta" class="control-label"></label>
+                <input asp-for="FechaMulta" class="form-control" readonly/>
+                <span asp-validation-for="FechaMulta" class="text-danger"></span>
+                  
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaHastaContrato" class="control-label"></label>
+                <input asp-for="FechaHastaContrato" class="form-control" readonly/>
+                <span asp-validation-for="FechaHastaContrato" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="NuevaFechaHastaContrato" class="control-label"></label>
+                <input asp-for="NuevaFechaHastaContrato" class="form-control" />
+                <span asp-validation-for="NuevaFechaHastaContrato" class="text-danger"></span>
+            </div>
+          
+            <div class="form-group">
+                <input type="submit" value="Generar Multa" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index"class="bg-white p-3 border rounded shadow-sm">Regresar a la lista</a>
+</div>

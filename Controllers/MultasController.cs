@@ -1,0 +1,155 @@
+using Microsoft.AspNetCore.Mvc;
+using Inmobiliaria.Models;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+namespace Inmobiliaria.Controllers{
+    public class MultasController : Controller
+    {
+        private readonly RepositorioMultas repo;
+
+        private readonly RepositorioContratos repositorioContratos;
+        private readonly RepositorioInmuebles repositorioInmuebles;
+        public MultasController(IConfiguration configuration)
+        {
+            repo = new RepositorioMultas(configuration);
+
+            repositorioContratos = new RepositorioContratos(configuration);
+            repositorioInmuebles = new RepositorioInmuebles(configuration);
+        }
+
+        public IActionResult Index()
+        {
+            var lista = repo.ObtenerTodos();
+
+
+            foreach (var multa in lista)
+            {
+                var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(multa.IdContrato);
+                multa.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
+                multa.ImporteCuota = contrato != null ? (contrato.Precio ?? 0) : 0;
+            }
+
+            return View(lista);
+        }
+        public IActionResult Create(int id)
+        {
+            var contrato = repositorioContratos.ObtenerPorId(id);
+
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato para realizar la multa");
+            }
+
+            var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+            var multa = new Multas();
+            multa.IdContrato = id;
+            multa.DireccionInmueble = contrato.DireccionInmueble;
+            multa.ImporteCuota = contrato.Monto;
+            multa.FechaMulta = DateTime.Now;
+            multa.FechaHastaContrato = contrato.FechaHasta;
+
+
+            return View(multa);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Multas multa)
+        {
+      //armar la multa darle alta,modificar el contrato ,armar el pago(ligar el contrato y no la multa al pago)
+            if (ModelState.IsValid)
+            {
+
+                var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
+                if (contr != null)
+                {
+
+                    repo.Alta(pago);
+                    contr.CuotasPagas = pago.NumeroCuota;
+                    if (contr.CuotasPagas == contr.CantidadCuotas)
+                    {
+                        contr.Vigente = false;
+                        repositorioContratos.Modificacion(contr);
+                    }
+                    repositorioContratos.Modificacion(contr);
+                }
+
+                 return RedirectToAction(nameof(Index));
+                //  }
+                //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+                //return View(pago);
+            }
+        }
+        public IActionResult Calcular(int id)
+        {
+            var contrato = repositorioContratos.ObtenerPorId(id);
+
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ningun contrato para realizar la multa");
+            }
+
+            var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+            var multa = new Multas();
+            multa.IdContrato = id;
+            multa.DireccionInmueble = contrato.DireccionInmueble;
+            multa.ImporteCuota = contrato.Monto;
+            multa.FechaMulta = DateTime.Now;
+            multa.FechaHastaContrato = contrato.FechaHasta;
+            multa.NuevaFechaHastaContrato = contrato.FechaHasta;
+            multa.ImporteMulta = 0;
+            return View(multa);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Calcular(Multas multa)
+        {
+            var contrato = repositorioContratos.ObtenerPorId(multa.IdContrato);
+            if (contrato == null)
+            {
+                return NotFound("No se encontro ninguncontratopara realizar la multa");
+            }
+            decimal? montoProvisorio;
+            if (PasoMasDeLaMitad(contrato.FechaDesde, contrato.FechaHasta, multa.NuevaFechaHastaContrato))
+            {
+                montoProvisorio = contrato.Monto;
+            }
+            else
+            {
+                montoProvisorio = contrato.Monto * 2;
+            }
+            int cantCuotasProvisoria=multa.NuevaFechaHastaContrato.Month-contrato.FechaDesde.Month+1;
+            int cuotasAdeudadas = cantCuotasProvisoria - contrato.CuotasPagas;
+            decimal? prov = montoProvisorio + (cuotasAdeudadas * contrato.Monto);
+            multa.ImporteMulta = prov;
+            multa.CuotasAdeudadas = cuotasAdeudadas;
+        
+            ModelState.Clear();
+            return View("Calculado", multa);
+        }
+        static bool PasoMasDeLaMitad(DateTime ingreso, DateTime egreso, DateTime fecha)
+    {
+        // Calcular diferencia total en meses
+        int totalMeses = (egreso.Year - ingreso.Year) * 12 + egreso.Month - ingreso.Month;
+
+        // Mitad del período en meses
+        double mitadMeses = totalMeses / 2.0;
+
+        // Meses transcurridos desde el ingreso hasta la fecha
+        int mesesTranscurridos = (fecha.Year - ingreso.Year) * 12 + fecha.Month - ingreso.Month;
+
+        // Comparar si pasó más de la mitad
+        return mesesTranscurridos > mitadMeses;
+    }
+        
+
+
+
+
+    }
+    }
+
+
+    
+

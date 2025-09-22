@@ -1,0 +1,95 @@
+@model IEnumerable<Inmobiliaria.Models.Multas>
+@{
+	ViewData["Title"] = "Multas";
+}
+
+<h1>
+	Multas
+	
+</h1>
+<table class="table table-striped"> 
+	<thead>
+		<tr>
+            <th>
+				@Html.DisplayNameFor(model => model.IdMulta)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IdContrato)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.NombreInquilino)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.DireccionInmueble)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ImporteMulta)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FechaHastaContrato)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.NuevaFechaHastaContrato)
+			</th>
+            <th>
+				@Html.DisplayNameFor(model => model.FechaMulta)
+			</th>
+			 <th>
+				@Html.DisplayNameFor(model => model.CuotasAdeudadas)
+			</th>
+			
+			
+            
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdMulta)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdContrato)
+				</td>
+                <td>
+					@Html.DisplayFor(modelItem => item.NombreInquilino)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.DireccionInmueble)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.ImporteMulta)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FechaHastaContrato)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.NuevaFechaHastaContrato)
+				</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaMulta)
+				<td> 
+				<td>
+                    @Html.DisplayFor(modelItem => item.CuotasAdeudadas)
+				<td>     
+				   
+
+					<div class="btn-group" role="group">
+						
+						<a class="btn btn-primary" 
+											asp-controller="Pagos" 
+											asp-action="Create" 
+											asp-route-id="@item.IdMulta" 
+											title="Generar Pago">
+												<i class="fa-solid fa-dollar-sign"></i>
+											</a>
+
+						
+											
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
