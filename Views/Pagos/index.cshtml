@@ -25,21 +25,18 @@
 				@Html.DisplayNameFor(model => model.Importe)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.FechaPago)
+				@Html.DisplayNameFor(model => model.Concepto)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.MesPagoNombre)
+				@Html.DisplayNameFor(model => model.FechaPago)
 			</th>
+			
 			<th>
 				@Html.DisplayNameFor(model => model.NumeroCuota)
 			</th>
-			<th>
+			
 				
-			</th>
-			<th>
-				
-			</th>
-            
+			
 		</tr>
 	</thead>
 	<tbody>
@@ -59,11 +56,12 @@
 					@Html.DisplayFor(modelItem => item.Importe)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.FechaPago)
+					@Html.DisplayFor(modelItem => item.Concepto)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.MesPagoNombre)
+					@Html.DisplayFor(modelItem => item.FechaPago)
 				</td>
+				
 				<td>
 					@Html.DisplayFor(modelItem => item.NumeroCuota)
 				</td>

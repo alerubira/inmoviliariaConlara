@@ -27,7 +27,7 @@ namespace Inmobiliaria.Controllers{
                 var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
 
                 pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
-                pago.Importe = contrato != null ? (contrato.Precio ?? 0) : 0;
+               // pago.Importe = contrato != null ? (contrato.Precio ?? 0) : 0;
             }
 
             return View(lista);
@@ -57,14 +57,14 @@ namespace Inmobiliaria.Controllers{
 
                 mult.DireccionInmueble = inm != null ? inm.Direccion : "";
                 // armar el pago acorde a la multa pero ligado a un contrato
-                pago.IdContratos = id;
-                pago.DireccionInmueble = contrato.DireccionInmueble;
+                pago.IdContratos = contrato.IdContrato;
+                pago.DireccionInmueble = mult.DireccionInmueble;
                 pago.Importe = mult.ImporteMulta.Value;
                 pago.FechaPago = DateTime.Now;
                 pago.NumeroCuota = contrato.CantidadCuotas + 1;
                 pago.MesPago = mult.FechaMulta.Month;
                 pago.Concepto = "Multa por retiro anticipado";
-                if (mult.Pagada)
+                if (!mult.Pagada)
                 {
                     return NotFound("Esta multa ya fue pagada");
                 }
