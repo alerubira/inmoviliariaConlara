@@ -18,12 +18,12 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Multa
-                    ( idMulta, idContrato,fechaMulta, fechaHastaContrato,nuevaFechaHastaContrato,importeCuota,importeMulta,cuotasAdeudadas)
-                    VALUES ( @IdMulta, @idContrato,@fechaMulta, @fechaHastaContrato, @NuevaFechaHastaContrato,@importeCuota,@importeMulta);
+                    (idContrato,fechaMulta, fechaHastaContrato,nuevaFechaHastaContrato,importeCuota,importeMulta,cuotasAdeudadas)
+                    VALUES (@idContrato,@fechaMulta, @fechaHastaContrato, @nuevaFechaHastaContrato,@importeCuota,@importeMulta,@cuotasAdeudadas);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@idMulta", multa.IdMulta);
+                
                     command.Parameters.AddWithValue("@idContrato", multa.IdContrato);
                     command.Parameters.AddWithValue("@fechaMulta", multa.FechaMulta);
                     command.Parameters.AddWithValue("@fechaHastaContrato", multa.FechaHastaContrato);
@@ -35,7 +35,7 @@ namespace Inmobiliaria.Models
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
-                    multa.IdContrato = res;
+                    multa.IdMulta = res;
                     connection.Close();
                 }
             }
@@ -93,7 +93,7 @@ namespace Inmobiliaria.Models
             var res = new List<Multas>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdMulta,idContrato, fechaMulta, fechaHastaContrato, nuevaFechaHastaContrato, importeCuota, importeMulta,cuotasAdeudads
+                string sql = @"SELECT IdMulta,idContrato, fechaMulta, fechaHastaContrato, nuevaFechaHastaContrato, importeCuota, importeMulta,cuotasAdeudadas
                             FROM multa
                             
                             ORDER BY fechaMulta";

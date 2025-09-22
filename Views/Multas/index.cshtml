@@ -16,9 +16,7 @@
 			<th>
 				@Html.DisplayNameFor(model => model.IdContrato)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.NombreInquilino)
-			</th>
+			
 			<th>
 				@Html.DisplayNameFor(model => model.DireccionInmueble)
 			</th>
@@ -52,9 +50,7 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.IdContrato)
 				</td>
-                <td>
-					@Html.DisplayFor(modelItem => item.NombreInquilino)
-				</td>
+               
 				<td>
 					@Html.DisplayFor(modelItem => item.DireccionInmueble)
 				</td>
@@ -79,13 +75,18 @@
 						
 						<a class="btn btn-primary" 
 											asp-controller="Pagos" 
-											asp-action="Create" 
+											asp-action="CreateM" 
 											asp-route-id="@item.IdMulta" 
 											title="Generar Pago">
 												<i class="fa-solid fa-dollar-sign"></i>
 											</a>
 
-						
+						<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdMulta" title="Editar">
+							<i class="fa-solid fa-pen"></i>
+						</a>
+						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdMulta" title="Eliminar">
+							<i class="fa-solid fa-trash-can"></i>
+						</a>
 											
 					</div>
 				</td>

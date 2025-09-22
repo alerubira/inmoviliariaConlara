@@ -56,29 +56,23 @@ namespace Inmobiliaria.Controllers{
         [ValidateAntiForgeryToken]
         public IActionResult Create(Multas multa)
         {
-      //armar la multa darle alta,modificar el contrato ,armar el pago(ligar el contrato y no la multa al pago)
+      //armar el pago(ligar el contrato y no la multa al pago)
             if (ModelState.IsValid)
             {
 
-                var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
-                if (contr != null)
+                var contr = repositorioContratos.ObtenerPorId(multa.IdContrato);
+                if(contr==null)
                 {
-
-                    repo.Alta(pago);
-                    contr.CuotasPagas = pago.NumeroCuota;
-                    if (contr.CuotasPagas == contr.CantidadCuotas)
-                    {
-                        contr.Vigente = false;
-                        repositorioContratos.Modificacion(contr);
-                    }
-                    repositorioContratos.Modificacion(contr);
+                    return NotFound("No se encontroningun contrato para realizar la multa");
                 }
-
-                 return RedirectToAction(nameof(Index));
-                //  }
-                //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
-                //return View(pago);
+                repo.Alta(multa);
+                contr.CuotasPagas =contr.CantidadCuotas;
+                repositorioContratos.Modificacion(contr);
+                return RedirectToAction(nameof(Index));
+                
+               
             }
+             return View(multa);
         }
         public IActionResult Calcular(int id)
         {
