@@ -65,6 +65,7 @@ namespace Inmobiliaria.Controllers{
                 {
                     return NotFound("No se encontroningun contrato para realizar la multa");
                 }
+                multa.Pagada = false;
                 repo.Alta(multa);
                 contr.CuotasPagas =contr.CantidadCuotas;
                 repositorioContratos.Modificacion(contr);

@@ -6,13 +6,13 @@ namespace Inmobiliaria.Controllers{
     public class PagosController : Controller
     {
         private readonly RepositorioPagos repo;
-
+        private readonly RepositorioMultas repositorioMultas;
         private readonly RepositorioContratos repositorioContratos;
          private readonly RepositorioInmuebles repositorioInmuebles;
         public PagosController(IConfiguration configuration)
         {
             repo = new RepositorioPagos(configuration);
-
+            repositorioMultas = new RepositorioMultas(configuration);
             repositorioContratos = new RepositorioContratos(configuration);
             repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
@@ -32,30 +32,75 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
-        public IActionResult Create(int id)
+        public IActionResult Create(int id,bool multa)
         {
-            var contrato=repositorioContratos.ObtenerPorId(id);
+            Pagos pago=new Pagos();
 
-            if (contrato == null)
+            if (multa)
             {
-                return NotFound("No se encontro ningun contrato para ese pago");
+                var mult = repositorioMultas.ObtenerPorId(id);
+                if (mult == null)
+                {
+                    return NotFound("No se encontro ninguna multa para pagar");
+                }
+                var contrato = repositorioContratos.ObtenerPorId(mult.IdContrato);
+
+                if (contrato == null)
+                {
+                    return NotFound("No se encontro ningun contrato para ese pago");
+                }
+                var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+                if (inm == null)
+                {
+                    return NotFound("No se encontro ningun Inmueble");
+                }
+
+                mult.DireccionInmueble = inm != null ? inm.Direccion : "";
+                // armar el pago acorde a la multa pero ligado a un contrato
+                pago.IdContratos = id;
+                pago.DireccionInmueble = contrato.DireccionInmueble;
+                pago.Importe = mult.ImporteMulta.Value;
+                pago.FechaPago = DateTime.Now;
+                pago.NumeroCuota = contrato.CantidadCuotas + 1;
+                pago.MesPago = mult.FechaMulta.Month;
+                pago.Concepto = "Multa por retiro anticipado";
+                if (mult.Pagada)
+                {
+                    return NotFound("Esta multa ya fue pagada");
+                }
+                pago.Multa = true;
+
+            }
+            else
+            {
+                var contrato = repositorioContratos.ObtenerPorId(id);
+
+                if (contrato == null)
+                {
+                    return NotFound("No se encontro ningun contrato para ese pago");
+                }
+                var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+                if (inm == null)
+                {
+                    return NotFound("No se encontro ningun Inmueble");
+                }
+                contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
+                // pago = new Pagos();
+                pago.IdContratos = id;
+                pago.DireccionInmueble = contrato.DireccionInmueble;
+                pago.Importe = contrato.Monto;
+                pago.FechaPago = DateTime.Now;
+                pago.NumeroCuota = contrato.CuotasPagas + 1;
+                pago.MesPago = contrato.MesInicio + pago.NumeroCuota - 1;
+                if (pago.MesPago > 12) pago.MesPago = pago.MesPago - 12;
+                pago.Concepto = "Alquiler mes :" + ((enMeses)pago.MesPago).ToString();
+                if (pago.NumeroCuota > contrato.CantidadCuotas)
+                {
+                    return NotFound("Ya fueron realizados todo los pagos para este contrato");
+                }
+                pago.Multa = false;
             }
             
-             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
-            contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-           var pago=new Pagos();
-              pago.IdContratos=id;
-              pago.DireccionInmueble=contrato.DireccionInmueble;
-              pago.Importe=contrato.Monto;
-              pago.FechaPago=DateTime.Now;
-              pago.NumeroCuota = contrato.CuotasPagas + 1;
-              pago.MesPago=contrato.MesInicio+pago.NumeroCuota -1;
-              if (pago.MesPago>12) pago.MesPago=pago.MesPago -12;
-              pago.Concepto="Alquiler mes :"+ ((enMeses)pago.MesPago).ToString();
-            if (pago.NumeroCuota > contrato.CantidadCuotas)
-            {
-                return NotFound("Ya fueron realizados todo los pagos para este contrato");
-            }
           
             return View(pago);
         }
@@ -66,24 +111,38 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
-
-               var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
-                if (contr != null)
+                if (!pago.Multa.Value)
                 {
-                    
-                     repo.Alta(pago);
-                    contr.CuotasPagas = pago.NumeroCuota;
-                   /* if (contr.CuotasPagas == contr.CantidadCuotas)
+                    var contr = repositorioContratos.ObtenerPorId(pago.IdContratos);
+                    if (contr == null)
                     {
-                        contr.Vigente = false;
-                        repositorioContratos.Modificacion(contr);
-                    }*/
+                        return NotFound("No se encontro ningun contrato para realizar el pago");
+                    }
+                    repo.Alta(pago);
+                    contr.CuotasPagas = pago.NumeroCuota;
                     repositorioContratos.Modificacion(contr);
+                    return RedirectToAction(nameof(Index));
                 }
-               
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    var contrato = repositorioContratos.ObtenerPorId(pago.IdContratos);
+                    if (contrato == null)
+                    {
+                        return NotFound("No se encontro ningun contrato para realizar el pago");
+                    }
+                    var multa = repositorioMultas.ObtenerPorIdContrato(contrato.IdContrato);
+                    if (multa == null)
+                    {
+                        return NotFound("No se encontro ninguna multa para realizar el pago");
+                    }
+                     repo.Alta(pago);
+                    multa.Pagada = false;
+                    repositorioMultas.Modificacion(multa);
+                    return RedirectToAction(nameof(Index));
+               }   
+              
             }
-            //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
+    
             return View(pago);
         }
 

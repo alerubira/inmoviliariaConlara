@@ -33,8 +33,9 @@ namespace Inmobiliaria.Models
         [Display(Name = "Cantidad de Cuotas Adeudadas")]
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria")]
         public Int32 CuotasAdeudadas { get; set; }
+        [Display(Name = "Multa Pagada")]
        
-       
+       public bool Pagada { get; set; }
 
     
         [Display(Name = "Inquilino")]

@@ -73,13 +73,7 @@
 
 					<div class="btn-group" role="group">
 						
-						<a class="btn btn-primary" 
-											asp-controller="Pagos" 
-											asp-action="CreateM" 
-											asp-route-id="@item.IdMulta" 
-											title="Generar Pago">
-												<i class="fa-solid fa-dollar-sign"></i>
-											</a>
+						
 
 						<a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdMulta" title="Editar">
 							<i class="fa-solid fa-pen"></i>
@@ -87,6 +81,14 @@
 						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdMulta" title="Eliminar">
 							<i class="fa-solid fa-trash-can"></i>
 						</a>
+						<a class="btn btn-primary" 
+											asp-controller="Pagos" 
+											asp-action="Create" 
+											asp-route-id="@item.IdMulta" 
+											asp-route-multa="true"
+											title="Generar Pago">
+												<i class="fa-solid fa-dollar-sign"></i>
+											</a>
 											
 					</div>
 				</td>

@@ -20,7 +20,8 @@
                     <input asp-for="DireccionInmueble" class="form-control" readonly/>
                     <span asp-validation-for="DireccionInmueble" class="text-danger"></span>
                     <!-- Campo oculto para enviar el ID -->
-                    <input type="hidden" id="IdContratos" name="IdContratos" value=@Model.IdContratos />
+                    <input asp-for="IdContratos" type="hidden" />
+                    <input asp-for="Multa" type="hidden" />
             </div>
 
                         
