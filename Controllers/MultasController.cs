@@ -144,13 +144,13 @@ namespace Inmobiliaria.Controllers{
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Multas multa)
+        public IActionResult Edit( Multas multa)
         {
+            var mult = repo.ObtenerPorId(multa.IdMulta);  
 
-
-            if (id != multa.IdMulta)
+            if (mult==null)
             {
-                return NotFound("Hay una inconsistecia en el pago enviado");
+                return NotFound("No se encontro nunguna multa para editar");
             }
 
 
