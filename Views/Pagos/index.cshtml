@@ -81,3 +81,29 @@
 		}
 	</tbody>
 </table>
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.PaginaActual > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.PaginaActual - 1)">Anterior</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+            {
+                <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(ViewBag.PaginaActual + 1)">Siguiente</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

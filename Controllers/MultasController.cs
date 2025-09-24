@@ -56,7 +56,7 @@ namespace Inmobiliaria.Controllers{
         [ValidateAntiForgeryToken]
         public IActionResult Create(Multas multa)
         {
-      //armar el pago(ligar el contrato y no la multa al pago)
+      
             if (ModelState.IsValid)
             {
 

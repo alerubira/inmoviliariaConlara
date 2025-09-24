@@ -107,12 +107,11 @@ namespace Inmobiliaria.Models
             return res;
         }
         public IList<Inquilino> ObtenerPaginado(int pageNumber, int pageSize)
-                        { // TEMP: simular error para test
-                          // throw new Exception("Prueba: esto es un error de prueba para el toast");
+                        { 
                             IList<Inquilino> res = new List<Inquilino>();
                             using (var connection = new MySqlConnection(connectionString))
                             {
-                                // OFFSET = (pagina - 1) * cantidadPorPagina
+                                
                                 int offset = (pageNumber - 1) * pageSize;
                                 string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
                                             FROM inquilino

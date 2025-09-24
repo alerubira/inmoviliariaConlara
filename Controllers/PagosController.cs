@@ -17,19 +17,24 @@ namespace Inmobiliaria.Controllers{
             repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pageNumber = 1, int pageSize = 5)
         {
-            var lista = repo.ObtenerTodos();
+           
+           var lista = repo.ObtenerPaginado(pageNumber, pageSize);
+                var totalRegistros = repo.ContarPagos();
+                var totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
 
+               
             // Asigna al pago la direccion del inmueble 
             foreach (var pago in lista)
             {
                 var contrato = repositorioContratos.obtenerDireccionPrecioInmueblePorIdContrato(pago.IdContratos);
 
                 pago.DireccionInmueble = contrato != null ? contrato.DireccionInmueble : "";
-               // pago.Importe = contrato != null ? (contrato.Precio ?? 0) : 0;
+                // pago.Importe = contrato != null ? (contrato.Precio ?? 0) : 0;
             }
-
+              ViewBag.PaginaActual = pageNumber;
+              ViewBag.TotalPaginas = totalPaginas;
             return View(lista);
         }
         public IActionResult Create(int id,bool multa)
