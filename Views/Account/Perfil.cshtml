@@ -20,5 +20,6 @@
             <p><strong>Email:</strong> @Model.Email</p>
             <p><strong>Rol:</strong> @(Model.Rol == 1 ? "Administrador" : "Empleado")</p>
         </div>
+        <a asp-controller="Usuario" asp-action="Edit" asp-route-id="@Model.IdUsuario" class="btn btn-primary mt-3">Editar Perfil</a>
     </div>
 </div>

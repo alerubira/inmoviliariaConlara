@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using InmobiliariaConlara.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -22,7 +16,7 @@ namespace InmobiliariaConlara.Controllers
         private readonly IWebHostEnvironment environment;
         private readonly RepositorioUsuario repositorio;
 
-        // 🔹 SALT HARDCODEADO (para desarrollo)
+        //  SALT HARDCODEADO (para desarrollo)
         private const string GlobalSalt = "MiSaltSecreto123";
 
         public UsuarioController(IWebHostEnvironment environment, RepositorioUsuario repositorio)
@@ -69,10 +63,10 @@ namespace InmobiliariaConlara.Controllers
                 return View();
             }
 
-            // 🔹 Generar salt fijo
+            //  Generar salt fijo
             byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
 
-            // 🔹 Hashear contraseña
+            //  Hashear contraseña
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: u.Clave,
                 salt: saltBytes,
@@ -81,13 +75,13 @@ namespace InmobiliariaConlara.Controllers
                 numBytesRequested: 256 / 8));
             u.Clave = hashed;
 
-            // 🔹 Asignar rol si no es administrador
+            //  Asignar rol si no es administrador
             u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
 
-            // 🔹 Guardar usuario
+            //  Guardar usuario
             int res = repositorio.Alta(u);
 
-            // 🔹 Procesar avatar
+            //  Procesar avatar
             string wwwPath = environment.WebRootPath;
             string uploadPath = Path.Combine(wwwPath, "Uploads");
             if (!Directory.Exists(uploadPath))
@@ -114,7 +108,7 @@ namespace InmobiliariaConlara.Controllers
 
         [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
-        
+
         public ActionResult Perfil()
         {
             ViewData["Title"] = "Mi perfil";
@@ -122,9 +116,9 @@ namespace InmobiliariaConlara.Controllers
             ViewBag.Roles = Usuario.ObtenerRoles();
             return View("edit", u);
         }
-        
 
-        [Authorize(Roles = "Administrador")]
+
+        [Authorize(Roles = "Administrador,Empleado")]
         public ActionResult Edit(int id)
         {
             ViewData["Title"] = "Editar usuario";
@@ -134,7 +128,7 @@ namespace InmobiliariaConlara.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Empleado")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Usuario u)
@@ -148,7 +142,7 @@ namespace InmobiliariaConlara.Controllers
                     return RedirectToAction(nameof(Index), "Home");
             }
 
-            // 🔹 Hashear nueva contraseña si se cambió
+            //  Hashear nueva contraseña si se cambió
             if (!string.IsNullOrEmpty(u.Clave))
             {
                 byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
@@ -160,8 +154,38 @@ namespace InmobiliariaConlara.Controllers
                     numBytesRequested: 256 / 8));
             }
 
+
+             // Procesar avatar si se subió uno nuevo
+            string wwwPath = environment.WebRootPath;
+            string uploadPath = Path.Combine(wwwPath, "Uploads");
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            if (u.AvatarFile != null && u.IdUsuario > 0)
+            {
+                string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.AvatarFile.FileName);
+                string pathCompleto = Path.Combine(uploadPath, fileName);
+                using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                    u.AvatarFile.CopyTo(stream);
+
+                u.Avatar = Path.Combine("/Uploads", fileName);
+            }
+            else
+            {
+                // Si no sube nueva foto, mantenemos la anterior
+                var usuarioDb = repositorio.ObtenerPorId(u.IdUsuario);
+                u.Avatar = usuarioDb.Avatar;
+            }
+
             repositorio.Modificacion(u);
-            return RedirectToAction(vista);
+            if (User.IsInRole("Administrador"))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction("Perfil", "Account"); 
+            }
         }
 
 
@@ -265,10 +289,10 @@ namespace InmobiliariaConlara.Controllers
                 var returnUrl = string.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
                 if (ModelState.IsValid)
                 {
-                    // 🔹 Salt fijo
+                    //  Salt fijo
                     byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
 
-                    // 🔹 Hashear clave ingresada
+                    //  Hashear clave ingresada
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                         password: login.Clave,
                         salt: saltBytes,
@@ -313,6 +337,8 @@ namespace InmobiliariaConlara.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "Home");
         }
+
+        
 
     }
 }

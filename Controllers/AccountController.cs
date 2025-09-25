@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using InmobiliariaConlara.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InmobiliariaConlara.Controllers
 {
@@ -62,14 +63,15 @@ namespace InmobiliariaConlara.Controllers
         }
 
 
-        // GET: Account/Logout
-        [HttpGet]
-        public async Task<IActionResult> Logout()
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
-               
+  
         public IActionResult Perfil()
         {
             var email = User.Identity?.Name; // lo guardamos al loguear
