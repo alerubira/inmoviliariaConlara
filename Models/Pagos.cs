@@ -42,7 +42,7 @@ namespace Inmobiliaria.Models
 
     [Display(Name = "Direccion Inmueble")]
     public String? DireccionInmueble { get; set; }
-
+    public Boolean? Multa{ get; set; } 
     public int MesPago { get; set; }
 	//	[NotMapped]//Para EF
 		public string MesPagoNombre => MesPago > 0 ? ((enMeses)MesPago).ToString() : "";

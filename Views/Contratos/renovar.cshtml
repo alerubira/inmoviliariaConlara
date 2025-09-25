@@ -10,19 +10,24 @@
 <hr />
 <div class="row">
     <div class="col-md-4 bg-white p-3 border rounded shadow-sm">
-        <form asp-action="Create">
+        <form asp-action="Renovar">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            
            <div class="form-group">
                 <label asp-for="NombreInquilino" class="control-label"></label>
                 <input asp-for="NombreInquilino" class="form-control" readonly/>
                 <span asp-validation-for="NombreInquilino" class="text-danger"></span>
-                 <input type="hidden" id="IdInquilino" name="IdInquilino" />
+                  <input asp-for="IdInquilino" type="hidden" />
+                  <input asp-for="IdContrato" type="hidden" />
             </div>  
             <div class="form-group">
                 <label asp-for="DireccionInmueble" class="control-label"></label>
                 <input asp-for="DireccionInmueble" class="form-control" readonly/>
                 <span asp-validation-for="DireccionInmueble" class="text-danger"></span>
-                 <input type="hidden" id="IdInmueble" name="IdInmueble" />
+                 <input asp-for="IdInmuebles" type="hidden" />
+
             </div>  
            
            
@@ -46,7 +51,7 @@
                 <label asp-for="FechaDesde" class="control-label"></label>
                 <input asp-for="FechaDesde" class="form-control"readonly />
                 <span asp-validation-for="FechaDesde" class="text-danger"></span>
-                  <input type="hidden" id="mesInicio" name="MesInicio" />
+                  <input type="hidden" id="MesInicio" name="MesInicio" />
             </div>
             <div class="form-group">
                 <label asp-for="FechaHasta" class="control-label"></label>
@@ -63,14 +68,14 @@
                                 const fechaHasta = new Date(hasta);
                                 let meses = (fechaHasta.getFullYear() - fechaDesde.getFullYear()) * 12;
                                 meses += fechaHasta.getMonth() - fechaDesde.getMonth();
-                                meses += 1; // incluir ambos meses
+                               // meses += 1; // incluir ambos meses
                                 if (meses < 0) meses = 0;
-                                precio=document.getElementById("precio").value;
+                               // precio=document.getElementById("precio").value;
                                // monto=precio*meses;
-                               document.getElementById("Monto").value = precio;
-                                document.getElementById("CantidadCuotas").value = meses;
+                              // document.getElementById("Monto").value = precio;
+                                document.getElementById("CantidadCuotas").value = meses ;
                                 document.getElementById("CuotasPagas").value = 0;
-                                document.getElementById("mesInicio").value = fechaDesde.getMonth()+1;
+                                document.getElementById("MesInicio").value = fechaDesde.getMonth()+2;
                             } else {
                                 document.getElementById("Monto").value = "";
                             }

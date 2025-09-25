@@ -52,6 +52,10 @@
                           <li class="nav-item"></li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pagos" asp-action="index">Pagos</a>
                         </li>
+
+                          <li class="nav-item"></li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Multas" asp-action="index">Multas</a>
+
                         <li>
                             <li class="nav-item"></li>
                             @if (User.IsInRole("Administrador"))
@@ -67,6 +71,7 @@
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-danger">Cerrar sesión</button>
                             </form>
+
                         </li>
                     </ul>
                 </div>

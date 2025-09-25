@@ -8,7 +8,54 @@
 	<div class="btn-group pull-right">
 		<a class="btn btn-primary" asp-action="Create" title="Crear">Crear Inmueble<i class="fa-solid fa-plus"></i></a>
 	</div>
+	<div class="btn-group pull-right">
+		<a class="btn btn-info" asp-action="Habilitados" title="VerHabilitados">Ver Inmuebles Habilitados<i class="fa-solid fa-filter"></i></a>
+	</div>
+	<div class="btn-group pull-right">
+		<a class="btn btn-info" asp-action="Index" title="VerListaCompleta">Ver Lista Completa<i class="fa-solid fa-table-list"></i></a>
+	</div>
+	<div class="btn-group pull-right">
+    <!-- Botón que muestra/oculta el formulario -->
+    <button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#formFiltroFechas" aria-expanded="false" aria-controls="formFiltroFechas">
+        Buscar Desocupados <i class="fa-solid fa-calendar-days"></i>
+    </button>
+</div>
+
+<!-- Formulario oculto que se despliega -->
+<div class="collapse  @(ViewData.ModelState.ErrorCount > 0 ? "show" : "")  mt-3" id="formFiltroFechas">
+    <div class="card card-body">
+        <form asp-action="BuscarDesocupados" method="post">
+            <div class="form-group">
+                <label for="fechaDesde">Fecha Desde</label>
+                <input type="date" class="form-control" id="fechaDesde" name="fechaDesde" required />
+            </div>
+            <div class="form-group mt-2">
+                <label for="fechaHasta">Fecha Hasta</label>
+                <input type="date" class="form-control" id="fechaHasta" name="fechaHasta" required />
+            </div>
+			<div class="text-danger mt-2" id="erroresFechas">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-success">
+                    Buscar <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" id="btnCancelar" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#formFiltroFechas">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 </h1>
+@section Scripts {
+<script>
+    document.getElementById("btnCancelar").addEventListener("click", function() {
+        // Limpiar el ValidationSummary
+        document.getElementById("erroresFechas").innerHTML = "";
+    });
+</script>
+}
 <table class="table table-striped">
 	<thead>
 		<tr>
