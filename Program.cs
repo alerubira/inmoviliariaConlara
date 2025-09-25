@@ -1,36 +1,38 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using InmobiliariaConlara.Models; // 👈 importa el namespace de tu repositorio
+using InmobiliariaConlara.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Registrar todos los servicios primero
+// 🔹 Registrar servicios MVC y Session
 builder.Services.AddControllersWithViews()
-       .AddSessionStateTempDataProvider(); // TempData via Session
+       .AddSessionStateTempDataProvider();
 
-builder.Services.AddSession(); // Habilita Session
+builder.Services.AddSession();
 
-// 👇 Registro de tu repositorio para inyección de dependencias
+// 🔹 Registrar repositorios
 builder.Services.AddScoped<RepositorioUsuario>();
 
+// 🔹 Configuración de autenticación con cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => // el sitio web valida con cookie
+    .AddCookie(options =>
     {
-        options.LoginPath = "/Usuarios/Login";
-        options.LogoutPath = "/Usuarios/Logout";
-        options.AccessDeniedPath = "/Home/Restringido";
-        //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);//Tiempo de expiración
+        options.LoginPath = "/Account/Login";       // Página de login
+        options.LogoutPath = "/Account/Logout";     // Página de logout
+        options.AccessDeniedPath = "/Home/Restringido"; // Página sin permisos
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // ⏱ Tiempo de expiración
+        options.SlidingExpiration = true;           // 🔄 Extiende sesión si hay actividad
     });
 
+// 🔹 Políticas de autorización
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
     options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 });
 
-// 🔹 Construir la app
 var app = builder.Build();
 
-// Middleware de sesión debe ir antes de UseRouting
+// Middleware de sesión
 app.UseSession();
 
 // Middleware de errores
@@ -47,12 +49,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // 👈 primero autenticación
-app.UseAuthorization();  // 👈 después autorización
+// 🔹 Orden correcto
+app.UseAuthentication(); 
+app.UseAuthorization();
 
 // Rutas MVC
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

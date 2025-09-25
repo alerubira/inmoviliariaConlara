@@ -1,0 +1,24 @@
+@model InmobiliariaConlara.Models.Usuario
+
+@{
+    ViewData["Title"] = "Mi Perfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow p-4 mt-4">
+    <h2>Mi Perfil</h2>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <img src="@Url.Content(Model.Avatar ?? "~/img/default-avatar.png")" 
+                 alt="Avatar" 
+                 class="img-thumbnail rounded-circle" />
+        </div>
+        <div class="col-md-9">
+            <p><strong>Nombre:</strong> @Model.Nombre</p>
+            <p><strong>Apellido:</strong> @Model.Apellido</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Rol:</strong> @(Model.Rol == 1 ? "Administrador" : "Empleado")</p>
+        </div>
+    </div>
+</div>

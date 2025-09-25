@@ -26,7 +26,7 @@ namespace InmobiliariaConlara.Models
 		public string? Apellido { get; set; }
 		[Required, EmailAddress]
 		public string? Email { get; set; }
-		[Required, DataType(DataType.Password)]
+			[Required, DataType(DataType.Password)]
 		public string? Clave { get; set; }
 		public string Avatar { get; set; } = "";
 		[NotMapped]//Para EF
