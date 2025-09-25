@@ -12,7 +12,7 @@ namespace Inmobiliaria.Models
         //[Required(ErrorMessage = "La dirección es requerida")]
         [Required(ErrorMessage = "El inquilino es obligatorio")]
         public int? IdInquilino { get; set; }
-        [Required(ErrorMessage =" El inmueble es obligatorio")]
+        [Required(ErrorMessage = " El inmueble es obligatorio")]
         public int IdInmuebles { get; set; }
         [Required(ErrorMessage = "El monto es obligatorio")]
         [Display(Name = "Monto de la cuota")]
@@ -40,5 +40,11 @@ namespace Inmobiliaria.Models
         public String? NombreInquilino { get; set; }
         [Display(Name = "Direccion del Inmueble")]
         public String? DireccionInmueble { get; set; }
+        [Display(Name = "Usuario que realizo el Alta")]
+        [Required(ErrorMessage = "El usuario que realiza el alta es obligatorio")]
+        public int UsuariAlta { get; set; }
+         [Display(Name = "Usuario que realizo la Baja")]
+        public int? UsuarioBaja { get; set; }
+        public bool Existe{ get; set; }
     }
 }

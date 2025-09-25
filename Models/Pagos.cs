@@ -38,24 +38,32 @@ namespace Inmobiliaria.Models
     [Required(ErrorMessage = "El numero de cuota es obligatorio")]
     public int NumeroCuota { get; set; }
     [Required(ErrorMessage = "El mes de pago es obligatorio")]
-   
+
 
     [Display(Name = "Direccion Inmueble")]
     public String? DireccionInmueble { get; set; }
-    public Boolean? Multa{ get; set; } 
+    public Boolean? Multa { get; set; }
     public int MesPago { get; set; }
-	//	[NotMapped]//Para EF
-		public string MesPagoNombre => MesPago > 0 ? ((enMeses)MesPago).ToString() : "";
 
-		public static IDictionary<int, string> ObtenerMeses()
-		{
-			SortedDictionary<int, string> meses = new SortedDictionary<int, string>();
-			Type tipoEnumMeses = typeof(enMeses);
-			foreach (var valor in Enum.GetValues(tipoEnumMeses))
-			{
-				meses.Add((int)valor, Enum.GetName(tipoEnumMeses, valor));
-			}
-			return meses;
-		}
+    //	[NotMapped]//Para EF
+    public string MesPagoNombre => MesPago > 0 ? ((enMeses)MesPago).ToString() : "";
+
+    public static IDictionary<int, string> ObtenerMeses()
+    {
+      SortedDictionary<int, string> meses = new SortedDictionary<int, string>();
+      Type tipoEnumMeses = typeof(enMeses);
+      foreach (var valor in Enum.GetValues(tipoEnumMeses))
+      {
+        meses.Add((int)valor, Enum.GetName(tipoEnumMeses, valor));
+      }
+      return meses;
+    }
+     [Display(Name = "Usuario que realizo el Alta")]
+        [Required(ErrorMessage = "El usuario que realiza el alta es obligatorio")]
+        public int UsuariAlta { get; set; }
+         [Display(Name = "Usuario que realizo la Baja")]
+        public int? UsuarioBaja { get; set; }
+        [Required]
+        public bool Existe { get; set; }
   }
 }

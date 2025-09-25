@@ -36,5 +36,7 @@ namespace Inmobiliaria.Models
 			}
 			return res;
 		}
+		[Required]
+        public bool Existe { get; set; }
 	}
 }
