@@ -70,7 +70,7 @@ namespace Inmobiliaria.Controllers{
             var inmueble = repo.ObtenerPorId(id);
             if (inmueble == null)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun Inmueble para editar");
             }
             inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
             inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
@@ -89,7 +89,7 @@ namespace Inmobiliaria.Controllers{
 
             if (id != inmueble.IdInmuebles)
             {
-                return NotFound();
+                return NotFound("No se encontro ningun inmueble para editar");
             }
 
             if (ModelState.IsValid)

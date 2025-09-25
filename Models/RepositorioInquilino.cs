@@ -106,57 +106,7 @@ namespace Inmobiliaria.Models
             }
             return res;
         }
-        public IList<Inquilino> ObtenerPaginado(int pageNumber, int pageSize)
-                        { // TEMP: simular error para test
-                          // throw new Exception("Prueba: esto es un error de prueba para el toast");
-                            IList<Inquilino> res = new List<Inquilino>();
-                            using (var connection = new MySqlConnection(connectionString))
-                            {
-                                // OFFSET = (pagina - 1) * cantidadPorPagina
-                                int offset = (pageNumber - 1) * pageSize;
-                                string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
-                                            FROM inquilino
-                                            ORDER BY IdInquilino
-                                            LIMIT @pageSize OFFSET @offset";
-
-                                using (var command = new MySqlCommand(sql, connection))
-                                {
-                                    command.Parameters.AddWithValue("@pageSize", pageSize);
-                                    command.Parameters.AddWithValue("@offset", offset);
-
-                                    connection.Open();
-                                    var reader = command.ExecuteReader();
-                                    while (reader.Read())
-                                    {
-                                        Inquilino i = new Inquilino
-                                        {
-                                            IdInquilino = reader.GetInt32("IdInquilino"),
-                                            Nombre = reader.GetString("Nombre"),
-                                            Apellido = reader.GetString("Apellido"),
-                                            Dni = reader.GetString("Dni"),
-                                            Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
-                                            eMail = reader.GetString("eMail")
-                                        };
-                                        res.Add(i);
-                                    }
-                                    connection.Close();
-                                }
-                            }
-                            return res;
-                        }
-
-        public int ContarInquilinos()
-                {
-                    using (var connection = new MySqlConnection(connectionString))
-                    {
-                        string sql = "SELECT COUNT(*) FROM inquilino";
-                        using (var command = new MySqlCommand(sql, connection))
-                        {
-                            connection.Open();
-                            return Convert.ToInt32(command.ExecuteScalar());
-                        }
-                    }
-                }
+        
 
 
         public Inquilino? ObtenerPorId(int id)
@@ -254,6 +204,56 @@ namespace Inmobiliaria.Models
 
             return res;
         }
+        public IList<Inquilino> ObtenerPaginado(int pageNumber, int pageSize)
+                        { 
+                            IList<Inquilino> res = new List<Inquilino>();
+                            using (var connection = new MySqlConnection(connectionString))
+                            {
+                                
+                                int offset = (pageNumber - 1) * pageSize;
+                                string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
+                                            FROM inquilino
+                                            ORDER BY IdInquilino
+                                            LIMIT @pageSize OFFSET @offset";
+
+                                using (var command = new MySqlCommand(sql, connection))
+                                {
+                                    command.Parameters.AddWithValue("@pageSize", pageSize);
+                                    command.Parameters.AddWithValue("@offset", offset);
+
+                                    connection.Open();
+                                    var reader = command.ExecuteReader();
+                                    while (reader.Read())
+                                    {
+                                        Inquilino i = new Inquilino
+                                        {
+                                            IdInquilino = reader.GetInt32("IdInquilino"),
+                                            Nombre = reader.GetString("Nombre"),
+                                            Apellido = reader.GetString("Apellido"),
+                                            Dni = reader.GetString("Dni"),
+                                            Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
+                                            eMail = reader.GetString("eMail")
+                                        };
+                                        res.Add(i);
+                                    }
+                                    connection.Close();
+                                }
+                            }
+                            return res;
+                        }
+
+        public int ContarInquilinos()
+                {
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        string sql = "SELECT COUNT(*) FROM inquilino";
+                        using (var command = new MySqlCommand(sql, connection))
+                        {
+                            connection.Open();
+                            return Convert.ToInt32(command.ExecuteScalar());
+                        }
+                    }
+                }
     }    
     
 }

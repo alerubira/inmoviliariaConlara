@@ -52,6 +52,10 @@
                           <li class="nav-item"></li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pagos" asp-action="index">Pagos</a>
                         </li>
+
+                          <li class="nav-item"></li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Multas" asp-action="index">Multas</a>
+
                         <li>
                             <li class="nav-item"></li>
                             @if (User.IsInRole("Administrador"))
@@ -66,6 +70,7 @@
                             <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
                                 <button type="submit" class="btn btn-link nav-link text-dark" style="display:inline; padding:0;">Cerrar Sesión</button>
                             </form>
+
                         </li>
                     </ul>
                 </div>

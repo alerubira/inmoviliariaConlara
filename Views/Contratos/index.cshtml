@@ -83,11 +83,13 @@
 						<a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdContrato" title="Eliminar">
 							<i class="fa-solid fa-trash-can"></i>
 						</a>
-						}
-						<a class="btn btn-secondary" 
+
+						<a class="btn btn-primary" 
+
 											asp-controller="Pagos" 
 											asp-action="Create" 
-											asp-route-id="@item.IdContrato" 
+											asp-route-id="@item.IdContrato"
+											asp-route-multa="false" 
 											title="Generar Pago">
 												<i class="fa-solid fa-dollar-sign"></i>
 											</a>
@@ -98,6 +100,13 @@
 											title="renovar contrato">
 												<i class="fa-solid fa-repeat"></i>
 											</a>
+						<a class="btn btn-warning btn-sm" 
+						                    asp-controller="Multas"
+											asp-action="Calcular" 
+											asp-route-id="@item.IdContrato" 
+											title="Calcular Multa">
+												<i class="fa-solid fa-sack-xmark"></i>
+											</a>					
 					</div>
 				</td>
 			</tr>

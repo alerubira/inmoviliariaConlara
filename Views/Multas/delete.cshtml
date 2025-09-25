@@ -1,0 +1,46 @@
+@model Inmobiliaria.Models.Multas
+@{
+    ViewData["Title"] = "Eliminar Multas";
+}
+
+<h1>Eliminar</h1>
+
+<h3>¿Seguro que desea eliminar sta multa?</h3>
+<div>
+    <h4>Multa</h4>
+    
+    <dl class="row">
+      <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdMulta)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdMulta)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdContrato)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdContrato)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DireccionInmueble)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DireccionInmueble)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ImporteMulta)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ImporteMulta)
+        </dd>
+
+    </dl>
+    
+      
+     <form asp-action="delete" class="bg-white p-3 border rounded shadow-sm">
+        <input type="hidden" asp-for="IdMulta" />
+        <input type="hidden" name="bandera" value="tu_valor" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index" class="bg-white p-3 border rounded shadow-sm">Volver al listado</a>
+    </form>
