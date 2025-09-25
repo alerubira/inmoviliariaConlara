@@ -86,7 +86,6 @@ namespace Inmobiliaria.Controllers{
         public IActionResult Edit(int id, Inmuebles inmueble)
         {
 
-
             if (id != inmueble.IdInmuebles)
             {
                 return NotFound("No se encontro ningun inmueble para editar");
@@ -159,6 +158,8 @@ namespace Inmobiliaria.Controllers{
 
             return Json(new { success = true, data = resultado });
         }
+
+
         
         
         [Authorize(Roles="Administrador,Empleado")]
@@ -177,9 +178,58 @@ namespace Inmobiliaria.Controllers{
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
                 inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
-            Console.WriteLine("Propietario ID: " + id);
+           // Console.WriteLine("Propietario ID: " + id);
             ViewBag.Propietario = repoPropietario.ObtenerPorId(id.Value);
             return View("PorPropietario", lista);
         }
+        public IActionResult Habilitados()
+        {
+            var lista = repo.ObtenerTodosDisponibles();
+
+            // Asigna el propietario a cada inmueble
+            foreach (var inmueble in lista)
+            {
+                inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+            }
+
+            return View("Index", lista);
+        }
+         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BuscarDesocupados(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            var lista = repo.ObtenerTodos();
+
+            // Asigna el propietario a cada inmueble
+            foreach (var inmueble in lista)
+            {
+                inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+            }
+            if (!fechaDesde.HasValue || !fechaHasta.HasValue)
+            {
+                ModelState.AddModelError("", "Debe ingresar ambas fechas.");
+                return View("Index",lista);
+            }
+            // Validar rango
+            if (fechaDesde > fechaHasta)
+            {
+                ModelState.AddModelError("", "La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.");
+                return View("Index",lista);
+            }
+
+            
+                var desocupados = repo.BuscarDesocupados(fechaDesde, fechaHasta);
+                 foreach (var inmueble in desocupados)
+            {
+                inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
+                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+            }
+
+                return View("Index", desocupados);
+            
+        }
+
 }
 }
