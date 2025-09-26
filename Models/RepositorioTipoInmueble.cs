@@ -110,8 +110,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdTipoInmueble, Nombre
-                            FROM TipoInmueble WHERE existe = 1
-                            WHERE IdTipoInmueble = @id";
+                            FROM TipoInmueble
+                            WHERE IdTipoInmueble = @id && existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);

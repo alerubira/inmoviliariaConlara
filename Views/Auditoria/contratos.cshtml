@@ -1,0 +1,89 @@
+@model IEnumerable<Inmobiliaria.Models.Contratos>
+@{
+	ViewData["Title"] = "Contratos";
+}
+
+<h1>
+	Contratos
+</h1>
+<table class="table table-striped"> 
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.IdContrato)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.NombreInquilino)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.DireccionInmueble)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Monto)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FechaDesde)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FechaHasta)
+			</th>
+            <th>
+				@Html.DisplayNameFor(model => model.Vigente)
+			</th>
+			 <th>
+				@Html.DisplayNameFor(model => model.CantidadCuotas)
+			</th>
+			 <th>
+				@Html.DisplayNameFor(model => model.CuotasPagas)
+			</th>
+						 <th>
+				@Html.DisplayNameFor(model => model.mailUsuarioAlta)
+			</th>
+						 <th>
+				@Html.DisplayNameFor(model => model.mailUsuarioBaja)
+			</th>
+			
+            
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.IdContrato)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.NombreInquilino)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.DireccionInmueble)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Monto)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FechaDesde)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FechaHasta)
+				</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vigente)
+				</td> 
+				<td>
+                    @Html.DisplayFor(modelItem => item.CantidadCuotas)
+				</td>     
+				<td>
+                    @Html.DisplayFor(modelItem => item.CuotasPagas)
+				</td>
+				<td>
+                    @Html.DisplayFor(modelItem => item.mailUsuarioAlta)
+				</td>
+				<td>
+                    @Html.DisplayFor(modelItem => item.mailUsuarioBaja)
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

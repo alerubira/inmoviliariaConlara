@@ -324,7 +324,59 @@ namespace Inmobiliaria.Models
             return res;
         }
         
+        public IList<Contratos> ObtenerTodosTodos()
+        {
+            var res = new List<Contratos>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT c.IdContrato,
+                                c.idInquilino,
+                                c.idInmuebles,
+                                c.monto,
+                                c.fechaDesde,
+                                c.fechaHasta,
+                                c.vigente,
+                                c.cantidadCuotas,
+                                c.cuotasPagas,
+                                c.mesInicio,
+                                ua.Email AS EmailUsuarioAlta,
+                                ub.Email AS EmailUsuarioBaja
+                            FROM Contratos c
+                            LEFT JOIN Usuario ua ON ua.IdUsuario = c.UsuarioAlta
+                            LEFT JOIN Usuario ub ON ub.IdUsuario = c.UsuarioBaja
+                            ORDER BY c.fechaDesde;
+                            ";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var contrato = new Contratos
+                        {
+                            IdContrato = Convert.ToInt32(reader["IdContrato"]),
+                            IdInquilino = Convert.ToInt32(reader["idInquilino"]),
+                            IdInmuebles = Convert.ToInt32(reader["idInmuebles"]),
+                            Monto = Convert.ToDecimal(reader["monto"]),
+                            FechaDesde = Convert.ToDateTime(reader["fechaDesde"]),
+                            FechaHasta = Convert.ToDateTime(reader["fechaHasta"]),
+                            Vigente = Convert.ToBoolean(reader["vigente"]),
+                            CantidadCuotas = Convert.ToInt32(reader["cantidadCuotas"]),
+                            CuotasPagas = Convert.ToInt32(reader["cuotasPagas"]),
+                            MesInicio = Convert.ToInt32(reader["mesInicio"]),
+                            mailUsuarioAlta = Convert.ToString(reader["EmailUsuarioAlta"]),
+                            mailUsuarioBaja = Convert.ToString(reader["EmailUsuarioBaja"])
 
+
+
+                        };
+                        res.Add(contrato);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         
     }
     
