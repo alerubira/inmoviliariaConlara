@@ -33,8 +33,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@cuotasAdeudadas", multa.CuotasAdeudadas);
                     command.Parameters.AddWithValue("@pagada", multa.Pagada);
                     command.Parameters.AddWithValue("@existe", 1);
-                    command.Parameters.AddWithValue("@usuarioAlta",multa.UsuariAlta);
-                    command.Parameters.AddWithValue("@usuarioBaja",multa.UsuarioBaja);
+                    command.Parameters.AddWithValue("@usuarioAlta", multa.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", multa.UsuarioBaja);
 
 
                     connection.Open();
@@ -47,7 +47,7 @@ namespace Inmobiliaria.Models
         }
 
         public int Baja(Multas multa)
-          {
+        {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
@@ -75,7 +75,7 @@ namespace Inmobiliaria.Models
                 }
             }
             return res;
-          }
+        }
 
         public int Modificacion(Multas multa)
         {
@@ -145,7 +145,7 @@ namespace Inmobiliaria.Models
             }
             return res;
         }
-      
+
 
         public Multas? ObtenerPorId(int id)
         {
@@ -211,7 +211,7 @@ namespace Inmobiliaria.Models
                             ImporteCuota = Convert.ToDecimal(reader["importeCuota"]),
                             ImporteMulta = Convert.ToDecimal(reader["importeMulta"]),
                             CuotasAdeudadas = Convert.ToInt32(reader["cuotasAdeudadas"]),
-                            Pagada=Convert.ToBoolean(reader["pagada"])
+                            Pagada = Convert.ToBoolean(reader["pagada"])
 
 
                         };
@@ -223,6 +223,55 @@ namespace Inmobiliaria.Models
         }
        
         
+        public IList<Multas> ObtenerTodosTodos()
+        {
+            var res = new List<Multas>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT m.IdMulta,
+                                m.idContrato,
+                                m.fechaMulta,
+                                m.fechaHastaContrato,
+                                m.nuevaFechaHastaContrato,
+                                m.importeCuota,
+                                m.importeMulta,
+                                m.cuotasAdeudadas,
+                                m.pagada,
+                                ua.Email AS EmailUsuarioAlta,
+                                ub.Email AS EmailUsuarioBaja
+                            FROM multa m
+                            LEFT JOIN Usuario ua ON ua.IdUsuario = m.UsuarioAlta
+                            LEFT JOIN Usuario ub ON ub.IdUsuario = m.UsuarioBaja
+                            ORDER BY m.fechaMulta;
+                            ";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var multa = new Multas
+                        {
+                            IdMulta = Convert.ToInt32(reader["IdMulta"]),
+                            IdContrato = Convert.ToInt32(reader["idContrato"]),
+                            FechaMulta = Convert.ToDateTime(reader["fechaMulta"]),
+                            FechaHastaContrato = Convert.ToDateTime(reader["fechaHastaContrato"]),
+                            NuevaFechaHastaContrato = Convert.ToDateTime(reader["nuevaFechaHastaContrato"]),
+                            ImporteCuota = Convert.ToDecimal(reader["importeCuota"]),
+                            ImporteMulta = Convert.ToDecimal(reader["importeMulta"]),
+                            CuotasAdeudadas = Convert.ToInt32(reader["cuotasAdeudadas"]),
+                            Pagada = Convert.ToBoolean(reader["pagada"]),
+                            mailUsuarioAlta = Convert.ToString(reader["EmailUsuarioAlta"]),
+                            mailUsuarioBaja = Convert.ToString(reader["EmailUsuarioBaja"])
+                        };
+                        res.Add(multa);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         }
     
 }

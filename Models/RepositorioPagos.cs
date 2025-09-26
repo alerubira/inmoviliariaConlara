@@ -128,7 +128,7 @@ namespace Inmobiliaria.Models
                             Concepto = reader["concepto"].ToString() ?? string.Empty,
                             NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
                             MesPago = Convert.ToInt32(reader["mesPago"]),
-                            
+
                         };
 
                         res.Add(pago);
@@ -138,7 +138,9 @@ namespace Inmobiliaria.Models
             }
             return res;
         }
-                public Pagos? ObtenerPorId(int id)
+
+
+        public Pagos? ObtenerPorId(int id)
 
         {
 
@@ -184,7 +186,7 @@ namespace Inmobiliaria.Models
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
             INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
-            WHERE c.idInquilino = @idInquilino && p.existe=1
+            WHERE c.idInquilino = @idInquilino && p.existe=1 && p.fechaPago IS NOT NULL AND p.fechaPago != '0000-00-00'
             ORDER BY p.fechaPago;";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -210,17 +212,17 @@ namespace Inmobiliaria.Models
                     }
                     connection.Close();
                 }
-            return res;
+                return res;
             }
         }
-         public IList<Pagos> ObtenerPaginado(int pageNumber, int pageSize)
-                        { 
-                            IList<Pagos> res = new List<Pagos>();
-                            using (var connection = new MySqlConnection(connectionString))
-                            {
-                                
-                                int offset = (pageNumber - 1) * pageSize;
-                                string sql= @"
+        public IList<Pagos> ObtenerPaginado(int pageNumber, int pageSize)
+        {
+            IList<Pagos> res = new List<Pagos>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+
+                int offset = (pageNumber - 1) * pageSize;
+                string sql = @"
                                         SELECT p.IdPagos, p.idContratos, p.fechaPago, p.importe,p.concepto,p.numeroCuota,mesPago,
                                             i.Direccion AS DireccionInmueble
                                         FROM pagos p
@@ -229,50 +231,105 @@ namespace Inmobiliaria.Models
                                         WHERE p.existe=1
                                         ORDER BY p.idPagos
                                          LIMIT @pageSize OFFSET @offset";
-                                    
-                                           
 
-                                using (var command = new MySqlCommand(sql, connection))
-                                {
-                                    command.Parameters.AddWithValue("@pageSize", pageSize);
-                                    command.Parameters.AddWithValue("@offset", offset);
 
-                                    connection.Open();
-                                    var reader = command.ExecuteReader();
-                                    while (reader.Read())
-                                    {
-                                        Pagos p = new Pagos
-                                        {
-                                            IdPagos = Convert.ToInt32(reader["IdPagos"]),
-                                            IdContratos = Convert.ToInt32(reader["idContratos"]),
-                                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
-                                            Importe = Convert.ToDecimal(reader["importe"]),
-                                            DireccionInmueble = reader["DireccionInmueble"].ToString(),
-                                            Concepto = reader["concepto"].ToString() ?? string.Empty,
-                                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
-                                            MesPago = Convert.ToInt32(reader["mesPago"]),
-                                        };
-                                        res.Add(p);
-                                    }
-                                    connection.Close();
-                                }
-                            }
-                            return res;
-                        }
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@pageSize", pageSize);
+                    command.Parameters.AddWithValue("@offset", offset);
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Pagos p = new Pagos
+                        {
+                            IdPagos = Convert.ToInt32(reader["IdPagos"]),
+                            IdContratos = Convert.ToInt32(reader["idContratos"]),
+                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
+                            Importe = Convert.ToDecimal(reader["importe"]),
+                            DireccionInmueble = reader["DireccionInmueble"].ToString(),
+                            Concepto = reader["concepto"].ToString() ?? string.Empty,
+                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
+                            MesPago = Convert.ToInt32(reader["mesPago"]),
+                        };
+                        res.Add(p);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
 
         public int ContarPagos()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM pagos WHERE existe=1";
+                using (var command = new MySqlCommand(sql, connection))
                 {
-                    using (var connection = new MySqlConnection(connectionString))
-                    {
-                        string sql = "SELECT COUNT(*) FROM pagos WHERE existe=1";
-                        using (var command = new MySqlCommand(sql, connection))
-                        {
-                            connection.Open();
-                            return Convert.ToInt32(command.ExecuteScalar());
-                        }
-                    }
+                    connection.Open();
+                    return Convert.ToInt32(command.ExecuteScalar());
                 }
+            }
+        }
 
+        public IList<Pagos> ObtenerTodosTodos()
+        {
+            var res = new List<Pagos>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT p.IdPagos, 
+       p.idContratos, 
+       p.fechaPago, 
+       p.importe,
+       p.concepto,
+       p.numeroCuota,
+       p.mesPago,
+       ua.Email AS EmailUsuarioAlta,
+       ub.Email AS EmailUsuarioBaja,
+       i.Direccion AS DireccionInmueble
+FROM pagos p
+INNER JOIN contratos c ON p.idContratos = c.IdContrato
+INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
+LEFT JOIN Usuario ua ON ua.IdUsuario = p.UsuarioAlta
+LEFT JOIN Usuario ub ON ub.IdUsuario = p.UsuarioBaja
+WHERE p.fechaPago IS NOT NULL 
+  AND p.fechaPago != '0000-00-00'
+ORDER BY p.idPagos;
+
+
+                        ";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var pago = new Pagos
+                        {
+                            IdPagos = Convert.ToInt32(reader["IdPagos"]),
+                            IdContratos = Convert.ToInt32(reader["idContratos"]),
+                            FechaPago = Convert.ToDateTime(reader["fechaPago"]),
+                            Importe = Convert.ToDecimal(reader["importe"]),
+                            DireccionInmueble = reader["DireccionInmueble"].ToString(),
+                            Concepto = reader["concepto"].ToString() ?? string.Empty,
+                            NumeroCuota = Convert.ToInt32(reader["numeroCuota"]),
+                            MesPago = Convert.ToInt32(reader["mesPago"]),
+                            mailUsuarioAlta = Convert.ToString(reader["EmailUsuarioAlta"]),
+                            mailUsuarioBaja = Convert.ToString(reader["EmailUsuarioBaja"])
+                            
+                        };
+
+                        res.Add(pago);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
 
     }
 }

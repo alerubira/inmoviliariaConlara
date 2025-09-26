@@ -42,11 +42,17 @@ namespace Inmobiliaria.Models
         public String? NombreInquilino { get; set; }
         [Display(Name = "Direccion del Inmueble")]
         public String? DireccionInmueble { get; set; }
-         [Display(Name = "Usuario que realizo el Alta")]
+        [Display(Name = "Usuario que realizo el Alta")]
         [Required(ErrorMessage = "El usuario que realiza el alta es obligatorio")]
         public int UsuariAlta { get; set; }
-         [Display(Name = "Usuario que realizo la Baja")]
+        [Display(Name = "Usuario que realizo la Baja")]
         public int? UsuarioBaja { get; set; }
-        public bool Existe{ get; set; }
+        public bool Existe { get; set; }
+
+        [Display(Name = "Usuario que realizo el Alta")]
+        public String? mailUsuarioAlta { get; set; }
+        [Display(Name = "Usuario que realizo la Baja")]
+        public String? mailUsuarioBaja { get; set; }
+        
     }
 }
