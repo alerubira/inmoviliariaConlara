@@ -7,7 +7,7 @@ namespace Inmobiliaria.Models
     {
         [Display(Name = "Codigo Interno")]
         public int IdMulta { get; set; }
-       
+
         [Required(ErrorMessage = "El Contrato  es obligatorio")]
         public int IdContrato { get; set; }
         [Display(Name = "Fecha de ejecucion multa")]
@@ -18,29 +18,35 @@ namespace Inmobiliaria.Models
         [Required(ErrorMessage = "La fecha  es obligatoria")]
         public DateTime FechaHastaContrato { get; set; }
 
-         [Display(Name = "Nueva Fecha de finalizacion")]
+        [Display(Name = "Nueva Fecha de finalizacion")]
         [Required(ErrorMessage = "La fecha  es obligatoria")]
         public DateTime NuevaFechaHastaContrato { get; set; }
 
-       
+
         [Required(ErrorMessage = "El Importe de la cuota es obligatorio")]
         [Display(Name = "Monto de la cuota")]
         public decimal ImporteCuota { get; set; }
-         [Required(ErrorMessage = "El Importe de la multa es obligatorio")]
+        [Required(ErrorMessage = "El Importe de la multa es obligatorio")]
         [Display(Name = "Monto de la Multa")]
         public decimal? ImporteMulta { get; set; }
-       
+
         [Display(Name = "Cantidad de Cuotas Adeudadas")]
         [Required(ErrorMessage = "La cantidad de cuotas es obligatoria")]
         public Int32 CuotasAdeudadas { get; set; }
         [Display(Name = "Multa Pagada")]
-       
-       public bool Pagada { get; set; }
 
-    
+        public bool Pagada { get; set; }
+
+
         [Display(Name = "Inquilino")]
         public String? NombreInquilino { get; set; }
         [Display(Name = "Direccion del Inmueble")]
         public String? DireccionInmueble { get; set; }
+         [Display(Name = "Usuario que realizo el Alta")]
+        [Required(ErrorMessage = "El usuario que realiza el alta es obligatorio")]
+        public int UsuariAlta { get; set; }
+         [Display(Name = "Usuario que realizo la Baja")]
+        public int? UsuarioBaja { get; set; }
+        public bool Existe{ get; set; }
     }
 }

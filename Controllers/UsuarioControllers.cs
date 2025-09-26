@@ -189,10 +189,15 @@ namespace InmobiliariaConlara.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador")]
-        public ActionResult Delete(int id)
+        [Authorize(Roles="Administrador")]
+        public IActionResult Delete(int id)
         {
-            throw new NotImplementedException();
+            var usuario = repositorio.ObtenerPorId(id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            return View(usuario);
         }
 
         [Authorize(Roles = "Administrador")]
@@ -202,10 +207,11 @@ namespace InmobiliariaConlara.Controllers
         {
             try
             {
+                
                 var ruta = Path.Combine(environment.WebRootPath, "Uploads", $"avatar_{id}" + Path.GetExtension(usuario.Avatar));
                 if (System.IO.File.Exists(ruta))
                     System.IO.File.Delete(ruta);
-                repositorio.Baja(id);
+                repositorio.Baja(usuario);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -337,8 +343,6 @@ namespace InmobiliariaConlara.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "Home");
         }
-
-        
 
     }
 }

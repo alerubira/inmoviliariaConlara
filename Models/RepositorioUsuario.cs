@@ -21,8 +21,8 @@ namespace InmobiliariaConlara.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Usuario
-                    (Nombre, Apellido, eMail, Clave,avatar,rol)
-                    VALUES (@nombre, @apellido, @email, @clave,@avatar,@rol);
+                    (Nombre, Apellido, eMail, Clave,avatar,rol,existe)
+                    VALUES (@nombre, @apellido, @email, @clave,@avatar,@rol,@existe);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -32,6 +32,7 @@ namespace InmobiliariaConlara.Models
                     command.Parameters.AddWithValue("@clave", u.Clave ?? "");
                     command.Parameters.AddWithValue("@avatar", u.Avatar);
                     command.Parameters.AddWithValue("@rol", u.Rol);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     u.IdUsuario = res;
@@ -41,15 +42,17 @@ namespace InmobiliariaConlara.Models
             return res;
         }
 
-        public int Baja(int id)
+        public int Baja(Usuario u)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM usuario WHERE IdUsuario = @id";
+                string sql = @"UPDATE Usuario
+                    SET  existe=@existe
+                    WHERE IdUsuario = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@existe", 0);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -64,7 +67,7 @@ namespace InmobiliariaConlara.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Usuario
-                    SET  Apellido=@apellido,Nombre=@nombre, Email=@email, clave=@clave, avatar=@avatar,rol=@rol
+                    SET  Apellido=@apellido,Nombre=@nombre, Email=@email, clave=@clave, avatar=@avatar,rol=@rol,existe=@existe
                     WHERE IdUsuario = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -79,6 +82,7 @@ namespace InmobiliariaConlara.Models
                     // command.Parameters.AddWithValue("@avatar", u.Avatar);
                     command.Parameters.AddWithValue("@rol", u.Rol);
                     command.Parameters.AddWithValue("@id", u.IdUsuario);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -92,7 +96,7 @@ namespace InmobiliariaConlara.Models
             IList<Usuario> res = new List<Usuario>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdUsuario, Nombre, Apellido, Email, clave, avatar, rol FROM usuario";
+                string sql = @"SELECT IdUsuario, Nombre, Apellido, Email, clave, avatar, rol FROM usuario WHERE existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -123,7 +127,7 @@ namespace InmobiliariaConlara.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdUsuario, Nombre, Apellido,email, clave,avatar, rol 
-                    FROM usuario WHERE IdUsuario=@id";
+                    FROM usuario WHERE IdUsuario=@id && existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -153,7 +157,7 @@ namespace InmobiliariaConlara.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdUsuario, Nombre, Apellido, email, clave, avatar, rol 
-                    FROM usuario WHERE email=@email";
+                    FROM usuario WHERE email=@email && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@email", email);
@@ -204,7 +208,7 @@ namespace InmobiliariaConlara.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdUsuario, Nombre, Apellido, email, avatar, rol 
-                            FROM usuario WHERE email=@email";
+                            FROM usuario WHERE email=@email && existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@email", email);

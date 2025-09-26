@@ -37,6 +37,8 @@ namespace Inmobiliaria.Models
     public Propietario? Duenio { get; set; }
     [Display(Name = "Tipo de Inmueble")]
     public String? TipoInmueble { get; set; }
+    [Required]
+    public bool Existe { get; set; }
 		/*[ForeignKey(nameof(idPropietario))]
    [BindNever]
     public Propietario? Duenio { get; set; }

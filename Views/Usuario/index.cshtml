@@ -44,9 +44,10 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-warning">Editar</a>
                 <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-info">Detalles</a>
-                <form asp-action="Delete" asp-route-id="@item.IdUsuario" method="post" style="display:inline">
-                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                </form>
+                <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-danger">
+                    Eliminar
+                </a>
+
             </td>
         </tr>
     }

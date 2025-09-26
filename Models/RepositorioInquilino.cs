@@ -17,8 +17,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Inquilino
-                    ( Apellido,Nombre, Dni, Telefono, eMail)
-                    VALUES ( @apellido,@nombre, @dni, @telefono, @email);
+                    ( Apellido,Nombre, Dni, Telefono, eMail, existe)
+                    VALUES ( @apellido,@nombre, @dni, @telefono, @email, @existe);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -27,6 +27,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@dni", i.Dni);
                     command.Parameters.AddWithValue("@telefono", i.Telefono ?? "");
                     command.Parameters.AddWithValue("@email", i.eMail);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     i.IdInquilino = res;
@@ -36,15 +37,23 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public int Baja(int id)
+        public int Baja(Inquilino i)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM Inquilino WHERE IdInquilino = @id";
+                string sql = @"UPDATE Inquilino
+                    SET  Apellido=@apellido,Nombre=@nombre, Dni=@dni, Telefono=@telefono, eMail=@email, existe=@existe
+                    WHERE IdInquilino = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@apellido", i.Apellido);
+                    command.Parameters.AddWithValue("@nombre", i.Nombre);
+                    command.Parameters.AddWithValue("@dni", i.Dni);
+                    command.Parameters.AddWithValue("@telefono", i.Telefono ?? "");
+                    command.Parameters.AddWithValue("@email", i.eMail);
+                    command.Parameters.AddWithValue("@id", i.IdInquilino);
+                    command.Parameters.AddWithValue("@existe", 0);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -59,7 +68,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Inquilino
-                    SET  Apellido=@apellido,Nombre=@nombre, Dni=@dni, Telefono=@telefono, eMail=@email
+                    SET  Apellido=@apellido,Nombre=@nombre, Dni=@dni, Telefono=@telefono, eMail=@email, existe=@existe
                     WHERE IdInquilino = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -68,8 +77,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@dni", i.Dni);
                     command.Parameters.AddWithValue("@telefono", i.Telefono ?? "");
                     command.Parameters.AddWithValue("@email", i.eMail);
-                    //command.Parameters.AddWithValue("@clave", p.Clave);
                     command.Parameters.AddWithValue("@id", i.IdInquilino);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -83,7 +92,7 @@ namespace Inmobiliaria.Models
             IList<Inquilino> res = new List<Inquilino>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail FROM inquilino";
+                string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail FROM inquilino, WHERE existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -115,7 +124,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
-                    FROM Inquilino WHERE IdInquilino=@id";
+                    FROM Inquilino WHERE IdInquilino=@id && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -144,7 +153,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
-                    FROM Inquilino WHERE Dni=@dni";
+                    FROM Inquilino WHERE Dni=@dni && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@dni", dni);
@@ -176,7 +185,7 @@ namespace Inmobiliaria.Models
                 string sql = @"
                             SELECT IdInquilino, Nombre, Apellido
                             FROM Inquilino
-                            WHERE Apellido LIKE @fraccion
+                            WHERE Apellido LIKE @fraccion && existe=1
                         ";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -212,7 +221,8 @@ namespace Inmobiliaria.Models
                                 
                                 int offset = (pageNumber - 1) * pageSize;
                                 string sql = @"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, eMail 
-                                            FROM inquilino
+                                            FROM inquilino 
+                                            WHERE existe=1 
                                             ORDER BY IdInquilino
                                             LIMIT @pageSize OFFSET @offset";
 
@@ -246,7 +256,7 @@ namespace Inmobiliaria.Models
                 {
                     using (var connection = new MySqlConnection(connectionString))
                     {
-                        string sql = "SELECT COUNT(*) FROM inquilino";
+                        string sql = "SELECT COUNT(*) FROM inquilino WHERE existe=1";
                         using (var command = new MySqlCommand(sql, connection))
                         {
                             connection.Open();

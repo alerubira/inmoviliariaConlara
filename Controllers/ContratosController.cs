@@ -64,35 +64,39 @@ namespace Inmobiliaria.Controllers;
         public IActionResult Create(Contratos contrato)
         {
 
-            if (ModelState.IsValid)
+
+        contrato.Existe = true;
+        contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
+
+        if (ModelState.IsValid)
+        {
+            var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+            if (contratos.Count == 0)
             {
-                var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
-                if (contratos.Count == 0)
-                {
-                    contrato.Vigente = true;
-                    repo.Alta(contrato);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    var i = compararFechas(contrato, contratos);
-                    if (i == 1)
-                    {
-                        ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
-                            return View(contrato);
-                    }
-                    if (i == 2)
-                    {
-                         ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
-                         return View(contrato);
-                    }
-                 }
-                
                 contrato.Vigente = true;
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
-
             }
+            else
+            {
+                var i = compararFechas(contrato, contratos);
+                if (i == 1)
+                {
+                    ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
+                    return View(contrato);
+                }
+                if (i == 2)
+                {
+                    ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
+                    return View(contrato);
+                }
+            }
+
+            contrato.Vigente = true;
+            repo.Alta(contrato);
+            return RedirectToAction(nameof(Index));
+
+        }
             //ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
         }
@@ -178,6 +182,7 @@ namespace Inmobiliaria.Controllers;
             {
                 return NotFound();
             }
+
             return View(contrato);
         }
 
@@ -196,12 +201,17 @@ namespace Inmobiliaria.Controllers;
 
             if (ModelState.IsValid)
             {
-                repo.Baja(id);
+                contrato.Existe = false;
+                contrato.UsuarioBaja = int.Parse(User.FindFirst("UserId")?.Value);
+                repo.Baja(contrato);
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(contrato);
         }
 
+        [Authorize(Roles ="Administrador,Empleado")]
         public IActionResult Renovar(int id)
         {
             var contrato = repo.ObtenerPorId(id);
@@ -227,6 +237,7 @@ namespace Inmobiliaria.Controllers;
             contrato.CantidadCuotas = 0;
             contrato.CuotasPagas = 0;
             contrato.FechaDesde=contrato.FechaHasta;
+            
             //contrato.FechaHasta = DateTime.Now; 
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
@@ -240,25 +251,31 @@ namespace Inmobiliaria.Controllers;
             if (ModelState.IsValid)
             { 
                  var contratos = repo.ObtenerTodosPoIdInmueble(contrato.IdInmuebles);
+                 
                 if (contratos.Count == 0)
+            {
+                contrato.Vigente = true;
+                contrato.Existe = true;
+                contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
+                repo.Alta(contrato);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                var i = compararFechas(contrato, contratos);
+                if (i == 1)
                 {
-                     contrato.Vigente = true;
-                    repo.Alta(contrato);
-                    return RedirectToAction(nameof(Index));
-                }else
+                    ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
+                    return View(contrato);
+                }
+                if (i == 2)
                 {
-                    var i = compararFechas(contrato, contratos);
-                    if (i == 1)
-                    {
-                        ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
-                            return View(contrato);
-                    }
-                    if (i == 2)
-                    {
-                         ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
-                         return View(contrato);
-                    }
-                 }
+                    ModelState.AddModelError("FechaHasta", "Ya existe un contrato vigente en ese mes");
+                    return View(contrato);
+                }
+            }
+                contrato.Existe = true;
+                contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value); // TODO: intentar simplificar
                 contrato.Vigente = true;
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
@@ -302,13 +319,10 @@ namespace Inmobiliaria.Controllers;
                 }
                 if ((contador == contrato.FechaDesde.Month) && (contrato.FechaDesde.Year == contra.FechaDesde.Year) && (contrato.IdContrato != contra.IdContrato))
                 {
-
-
                     return 1;
                 }
                 if ((contador == contrato.FechaHasta.Month) && (contrato.FechaHasta.Year == contra.FechaHasta.Year) && (contrato.IdContrato != contra.IdContrato))
                 {
-
                     return 2;
                 }
                 contador++;

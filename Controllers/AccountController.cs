@@ -43,9 +43,11 @@ namespace InmobiliariaConlara.Controllers
             var claims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, user.Email),
-        new Claim(ClaimTypes.Role, user.Rol == 1 ? "Administrador" : "Empleado") 
+        new Claim(ClaimTypes.Role, user.Rol == 1 ? "Administrador" : "Empleado") ,
+        new Claim("UserId", user.IdUsuario.ToString()) //id del usuario
+
         // asumimos que Rol es int en tu modelo
-    };
+            };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
