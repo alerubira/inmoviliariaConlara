@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-09-2025 a las 22:38:37
+-- Tiempo de generación: 26-09-2025 a las 21:50:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -48,14 +48,15 @@ CREATE TABLE `contratos` (
 --
 
 INSERT INTO `contratos` (`idContrato`, `idInquilino`, `idInmuebles`, `monto`, `fechaDesde`, `fechaHasta`, `vigente`, `cantidadCuotas`, `cuotasPagas`, `mesInicio`, `existe`, `usuarioAlta`, `usuarioBaja`) VALUES
-(7, 15, 3, 130000, '2025-09-18', '2025-12-18', 0, 4, 4, 9, 0, 0, NULL),
-(8, 1, 4, 200000, '2025-09-19', '2025-11-19', 0, 3, 3, 9, 0, 0, NULL),
-(9, 1, 2, 160000, '2025-07-20', '2025-09-19', 0, 3, 0, 0, 0, 0, NULL),
-(10, 8, 4, 200000, '2025-09-20', '2025-12-20', 1, 4, 4, 9, 0, 0, NULL),
-(11, 6, 2, 160000, '2026-02-20', '2026-04-20', 1, 3, 2, 0, 0, 0, NULL),
-(12, 7, 2, 160000, '2026-05-20', '2026-12-20', 1, 8, 8, 5, 0, 0, NULL),
-(13, 9, 3, 130000, '2025-01-20', '2025-09-19', 0, 9, 1, 0, 0, 0, NULL),
-(14, 8, 4, 200000, '2025-12-20', '2026-03-20', 1, 3, 2, 13, 0, 0, NULL);
+(7, 15, 3, 130000, '2025-09-18', '2025-12-18', 0, 4, 3, 9, 1, 1, NULL),
+(8, 1, 4, 200000, '2025-09-19', '2025-11-19', 0, 3, 3, 9, 1, 1, NULL),
+(9, 1, 2, 160000, '2025-07-20', '2025-09-19', 0, 3, 0, 0, 0, 1, 1),
+(10, 8, 4, 200000, '2025-09-20', '2025-12-20', 1, 4, 4, 9, 1, 1, NULL),
+(11, 6, 2, 160000, '2026-02-20', '2026-04-20', 1, 3, 2, 0, 1, 1, NULL),
+(12, 7, 2, 160000, '2026-05-20', '2026-12-20', 1, 8, 8, 5, 1, 1, NULL),
+(13, 9, 3, 130000, '2025-01-20', '2025-09-19', 0, 9, 1, 0, 0, 1, 1),
+(14, 8, 4, 200000, '2025-12-20', '2026-03-20', 1, 3, 2, 13, 1, 1, NULL),
+(15, 18, 4, 200000, '2025-10-01', '2025-12-31', 1, 3, 0, 10, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -82,14 +83,15 @@ CREATE TABLE `inmuebles` (
 --
 
 INSERT INTO `inmuebles` (`idInmuebles`, `direccion`, `ambientes`, `superficie`, `latitud`, `longitud`, `idPropietario`, `idTipoInmueble`, `precio`, `Habilitado`, `existe`) VALUES
-(2, 'Las heras 344', 5, 460, 254, 226, 1, 5, 160000, 1, 0),
-(3, 'Belgrano 123', 4, 298, 35, 56, 4, 4, 130000, 1, 0),
-(4, 'Belgrano1287', 7, 360, 35, 56, 1, 5, 200000, 1, 0),
-(5, 'Las heras 2377', 5, 350, 35, 34, 2, 5, 360000, 1, 0),
-(7, 'Las Heras47586', 5, 3456, 25, 46, 1, 2, 120000, 1, 0),
-(8, 'San Martin 345', 5, 2387, 33, 37, 6, 4, 125000, 1, 0),
-(9, 'San Martin 123', 7, 347, 22, 55, 2, 5, 190000, 1, 0),
-(10, 'Sarmiento 332', 4, 3645, 34, 56, 1, 4, 145000, 1, 0);
+(2, 'Las heras 344', 5, 460, 254, 226, 1, 5, 160000, 1, 1),
+(3, 'Belgrano 123', 4, 298, 35, 56, 4, 4, 130000, 1, 1),
+(4, 'Belgrano1287', 7, 360, 35, 56, 1, 5, 200000, 1, 1),
+(5, 'Las heras 2377', 5, 350, 35, 34, 2, 5, 360000, 1, 1),
+(7, 'Las Heras47586', 5, 3456, 25, 46, 1, 2, 120000, 1, 1),
+(8, 'San Martin 345', 5, 2387, 33, 37, 6, 4, 125000, 0, 1),
+(9, 'San Martin 123', 7, 347, 22, 55, 2, 5, 190000, 1, 1),
+(10, 'Sarmiento 332', 4, 3645, 34, 56, 1, 4, 145000, 0, 1),
+(11, 'España305', 3, 350, 332, 332, 2, 5, 100000, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -112,24 +114,24 @@ CREATE TABLE `inquilino` (
 --
 
 INSERT INTO `inquilino` (`idInquilino`, `apellido`, `nombre`, `dni`, `telefono`, `eMail`, `existe`) VALUES
-(1, 'Perez', 'Juan', '16234876', '265465783', 'arubira60@gmail.com', 0),
-(2, 'Veronelli', 'Antonio', '32456374', '2654345637', 'arubira60@gmail.com', 0),
-(4, 'Lopez', 'Adriana', '25364785', '2635874658', 'arubira60@gmail.com', 0),
-(6, 'Lusero', 'Joaquin', '27398456', '26354988', 'arubira60@gmail.com', 0),
-(7, 'Perez', 'Alberto', '347823487', '236478233', 'arubira60@gmail.com', 0),
-(8, 'Perez', 'Carmela', '546373748', '546373747', 'arubira60@gmail.com', 0),
-(9, 'PEREZ', 'Alicia Carmen', '546373746', '435464657', 'arubira60@gmail.com', 0),
-(10, 'Gonzalez', 'Miriam del Carmen', '4334649823', '87543857349', 'arubira60@gmail.com', 0),
-(11, 'Gonzales', 'Jose', '45734539', '4358340958', 'arubira60@gmail.com', 0),
-(12, 'Garro', 'Luis', '346236478', '32493374', 'arubira60@gmail.com', 0),
-(13, 'Garro', 'Alicia', '437646376', '84768346', 'arubira60@gmail.com', 0),
-(14, 'ALTAMIRANO', 'Luisa', '133636728', '34723478239', 'arubira60@gmail.com', 0),
-(15, 'lopes', 'Oscar', '34632462', '8438937', 'arubira60@gmail.com', 0),
-(16, 'Lopez', 'Juan', '25364545', '3454646', 'arubira60@gmail.com', 0),
-(17, 'Lopez', 'Juan', '25364545', '3454646', 'arubira60@gmail.com', 0),
-(18, 'Rosetti', 'Juan Alberto', '3546465', '53646474', 'arubira60@gmail.com', 0),
-(19, 'Castro', 'Bruno', '7647734377', '87468764', 'arubira60@gmail.com', 0),
-(20, 'PEREYRA', 'Luisa', '765875687', '54654654', 'arubira60@gmail.com', 0);
+(1, 'Perez', 'Juan', '16234876', '265465783', 'arubira60@gmail.com', 1),
+(2, 'Veronelli', 'Antonio', '32456374', '2654345637', 'arubira60@gmail.com', 1),
+(4, 'Lopez', 'Adriana', '25364785', '2635874658', 'arubira60@gmail.com', 1),
+(6, 'Lusero', 'Joaquin', '27398456', '26354988', 'arubira60@gmail.com', 1),
+(7, 'Perez', 'Alberto', '347823487', '236478233', 'arubira60@gmail.com', 1),
+(8, 'Perez', 'Carmela', '546373748', '546373747', 'arubira60@gmail.com', 1),
+(9, 'PEREZ', 'Alicia Carmen', '546373746', '435464657', 'arubira60@gmail.com', 1),
+(10, 'Gonzalez', 'Miriam del Carmen', '4334649823', '87543857349', 'arubira60@gmail.com', 1),
+(11, 'Gonzales', 'Jose', '45734539', '4358340958', 'arubira60@gmail.com', 1),
+(12, 'Garro', 'Luis', '346236478', '32493374', 'arubira60@gmail.com', 1),
+(13, 'Garro', 'Alicia', '437646376', '84768346', 'arubira60@gmail.com', 1),
+(14, 'ALTAMIRANO', 'Luisa', '133636728', '34723478239', 'arubira60@gmail.com', 1),
+(15, 'lopes', 'Oscar', '34632462', '8438937', 'arubira60@gmail.com', 1),
+(16, 'Lopez', 'Juan', '25364545', '3454646', 'arubira60@gmail.com', 1),
+(17, 'Lopez', 'Juan', '25364545', '3454646', 'arubira60@gmail.com', 1),
+(18, 'Rosetti', 'Juan Alberto', '3546465', '53646474', 'arubira60@gmail.com', 1),
+(19, 'Castro', 'Bruno', '7647734377', '87468764', 'arubira60@gmail.com', 1),
+(20, 'PEREYRA', 'Luisa', '765875687', '54654654', 'arubira60@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -157,7 +159,7 @@ CREATE TABLE `multa` (
 --
 
 INSERT INTO `multa` (`idMulta`, `idContrato`, `fechaMulta`, `fechaHastaContrato`, `nuevaFechaHastaContrato`, `importeCuota`, `importeMulta`, `cuotasAdeudadas`, `pagada`, `existe`, `usuarioAlta`, `usuarioBaja`) VALUES
-(1, 12, '2025-09-22', '2026-12-20', '2026-06-20', 160000, 640000, 2, 0, 0, 0, NULL);
+(1, 12, '2025-09-22', '2026-12-20', '2026-06-20', 160000, 640000, 2, 0, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,27 +185,26 @@ CREATE TABLE `pagos` (
 --
 
 INSERT INTO `pagos` (`idPagos`, `idContratos`, `fechaPago`, `importe`, `concepto`, `numeroCuota`, `mesPago`, `existe`, `usuarioAlta`, `usuarioBaja`) VALUES
-(4, 7, '2025-09-19', 130000, 'Alquiler mes :Septiembre', 1, 9, 0, 0, NULL),
-(5, 7, '2025-09-19', 130000, 'Alquiler mes :Octubre', 2, 10, 0, 0, NULL),
-(6, 7, '2025-09-19', 130000, 'Alquiler mes :Noviembre', 3, 11, 0, 0, NULL),
-(7, 7, '2025-09-19', 130000, 'Alquiler mes :Diciembre', 4, 12, 0, 0, NULL),
-(8, 8, '2025-09-19', 200000, 'Alquiler mes :Septiembre', 1, 9, 0, 0, NULL),
-(9, 8, '2025-09-19', 200000, 'Alquiler mes :Octubre', 2, 10, 0, 0, NULL),
-(10, 8, '2025-09-19', 200000, 'Alquiler mes :Noviembre', 3, 11, 0, 0, NULL),
-(11, 10, '2025-09-20', 200000, 'Alquiler mes :Septiembre', 1, 9, 0, 0, NULL),
-(12, 10, '2025-09-20', 200000, 'Alquiler mes :Octubre', 2, 10, 0, 0, NULL),
-(13, 10, '2025-09-20', 200000, 'Alquiler mes :Noviembre', 3, 11, 0, 0, NULL),
-(14, 10, '2025-09-20', 200000, 'Alquiler mes :Diciembre', 4, 12, 0, 0, NULL),
-(15, 9, '2025-09-20', 160000, 'Alquiler mes :Julio', 1, 7, 0, 0, NULL),
-(16, 13, '2025-09-20', 130000, 'Alquiler mes :Enero', 1, 1, 0, 0, NULL),
-(17, 11, '2025-09-20', 160000, 'Alquiler mes :0', 1, 0, 0, 0, NULL),
-(18, 11, '2025-09-20', 160000, 'Alquiler mes :Enero', 2, 1, 0, 0, NULL),
-(19, 14, '2025-09-21', 200000, 'Alquiler mes :Enero', 1, 1, 0, 0, NULL),
-(20, 14, '2025-09-22', 200000, 'Alquiler mes :Febrero', 2, 2, 0, 0, NULL),
-(21, 12, '2025-09-22', 640000, 'Multa por retiro anticipado', 9, 9, 0, 0, NULL),
-(22, 12, '2025-09-22', 640000, 'Multa por retiro anticipado', 9, 9, 0, 0, NULL),
-(23, 12, '2025-09-22', 640000, 'Multa por retiro anticipado', 9, 9, 0, 0, NULL),
-(24, 12, '2025-09-22', 640000, 'Multa por retiro anticipado', 9, 9, 0, 0, NULL);
+(4, 7, '2025-09-19', 130000, 'Alquiler mes :Septiembre', 1, 9, 0, 1, 1),
+(5, 7, '2025-09-19', 130000, 'Alquiler mes :Octubre', 2, 10, 1, 1, NULL),
+(6, 7, '2025-09-19', 130000, 'Alquiler mes :Noviembre', 3, 11, 1, 1, NULL),
+(7, 7, '2025-09-19', 130000, 'Alquiler mes :Diciembre', 4, 12, 1, 1, NULL),
+(8, 8, '2025-09-19', 200000, 'Alquiler mes :Septiembre', 1, 9, 1, 1, NULL),
+(9, 8, '2025-09-19', 200000, 'Alquiler mes :Octubre', 2, 10, 1, 1, NULL),
+(10, 8, '2025-09-19', 200000, 'Alquiler mes :Noviembre', 3, 11, 1, 1, NULL),
+(11, 10, '2025-09-20', 200000, 'Alquiler mes :Septiembre', 1, 9, 1, 1, NULL),
+(12, 10, '2025-09-20', 200000, 'Alquiler mes :Octubre', 2, 10, 1, 1, NULL),
+(13, 10, '2025-09-20', 200000, 'Alquiler mes :Noviembre', 3, 11, 1, 1, NULL),
+(14, 10, '2025-09-20', 200000, 'Alquiler mes :Diciembre', 4, 12, 1, 1, NULL),
+(15, 9, '2025-09-20', 160000, 'Alquiler mes :Julio', 1, 7, 1, 1, NULL),
+(16, 13, '2025-09-20', 130000, 'Alquiler mes :Enero', 1, 1, 1, 1, NULL),
+(17, 11, '2025-09-20', 160000, 'Alquiler mes :0', 1, 0, 1, 1, NULL),
+(18, 11, '2025-09-20', 160000, 'Alquiler mes :Enero', 2, 1, 1, 1, NULL),
+(19, 14, '2025-09-21', 200000, 'Alquiler mes :Enero', 1, 1, 1, 1, NULL),
+(20, 14, '2025-09-22', 200000, 'Alquiler mes :Febrero', 2, 2, 1, 1, NULL),
+(23, 12, '2025-09-22', 640000, 'Multa por retiro anticipado', 9, 9, 1, 1, NULL),
+(24, 12, '0000-00-00', 640000, 'Multa por retiro anticipado', 9, 9, 1, 1, NULL),
+(25, 15, '2025-09-27', 200000, 'Alquiler mes :Octubre', 1, 10, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -227,12 +228,12 @@ CREATE TABLE `propietario` (
 --
 
 INSERT INTO `propietario` (`idPropietario`, `apellido`, `nombre`, `dni`, `telefono`, `eMail`, `clave`, `existe`) VALUES
-(1, 'Rubira', 'Alejandro', '26833093', '2664313126', 'arubira60@gmail.com', '123', 0),
-(2, 'Barzola', 'Deolinda', '26347384', '1111111111', 'arubira60@gmail.com', '123', 0),
-(4, 'rodreiguez', 'Albert', '26374874', '2536677', 'arubira60@gmail.com', '123', 0),
-(5, 'Rodregues', 'Analia', '29765345', '24354675', 'arubira60@gmail.com', '123', 0),
-(6, 'Lusero', 'Daniel', '284675909', '35467284', 'arubira60@gmail.com', '123', 0),
-(7, 'Andrada', 'juan', '536464757', '746743674374', 'arubira60@gmail.com', '1234', 0);
+(1, 'Rubira', 'Alejandro', '26833093', '2664313126', 'arubira60@gmail.com', '123', 1),
+(2, 'Barzola', 'Deolinda', '26347384', '1111111111', 'arubira60@gmail.com', '123', 1),
+(4, 'rodreiguez', 'Albert', '26374874', '2536677', 'arubira60@gmail.com', '123', 1),
+(5, 'Rodregues', 'Analia', '29765345', '24354675', 'arubira60@gmail.com', '123', 1),
+(6, 'Lusero', 'Daniel', '284675909', '35467284', 'arubira60@gmail.com', '123', 1),
+(7, 'Andrada', 'juan', '536464757', '746743674374', 'arubira60@gmail.com', '1234', 1);
 
 -- --------------------------------------------------------
 
@@ -251,10 +252,10 @@ CREATE TABLE `tipoinmueble` (
 --
 
 INSERT INTO `tipoinmueble` (`idTipoInmueble`, `nombre`, `existe`) VALUES
-(1, 'Local', 0),
-(2, 'Deposito', 0),
-(4, 'Departamento', 0),
-(5, 'Casa', 0);
+(1, 'Local', 1),
+(2, 'Deposito', 1),
+(4, 'Departamento', 1),
+(5, 'Casa', 1);
 
 -- --------------------------------------------------------
 
@@ -269,8 +270,18 @@ CREATE TABLE `usuario` (
   `eMail` varchar(100) NOT NULL,
   `clave` varchar(100) NOT NULL,
   `avatar` varchar(100) NOT NULL,
-  `rol` int(100) NOT NULL
+  `rol` int(100) NOT NULL,
+  `existe` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`idUsuario`, `nombre`, `apellido`, `eMail`, `clave`, `avatar`, `rol`, `existe`) VALUES
+(1, 'Angel Ismael Ezequia', 'Orozco Pauli', 'ismaelaorozco0@gmail.com', 'E7NP32UITW3oT3ltbw/t+1LoAL0RABdnyCWz59qI7kQ=', '/Uploads\\avatar_1.jpg', 1, 1),
+(2, 'empleado', 'Prueba', 'ep@gmail.com', 'E7NP32UITW3oT3ltbw/t+1LoAL0RABdnyCWz59qI7kQ=', '/Uploads/avatar_0.png', 2, 1),
+(4, 'Alejando Gabriel', 'Rubira', 'arubira60@gmail.com', 'E7NP32UITW3oT3ltbw/t+1LoAL0RABdnyCWz59qI7kQ=', '/Uploads/avatar_0.png', 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -280,13 +291,18 @@ CREATE TABLE `usuario` (
 -- Indices de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  ADD PRIMARY KEY (`idContrato`);
+  ADD PRIMARY KEY (`idContrato`),
+  ADD KEY `contratos_ibfk_1` (`idInmuebles`),
+  ADD KEY `contratos_ibfk_2` (`idInquilino`),
+  ADD KEY `contratos_ibfk_3` (`usuarioAlta`);
 
 --
 -- Indices de la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  ADD PRIMARY KEY (`idInmuebles`);
+  ADD PRIMARY KEY (`idInmuebles`),
+  ADD KEY `inmuebles_ibfk_1` (`idTipoInmueble`),
+  ADD KEY `inmuebles_ibfk_2` (`idPropietario`);
 
 --
 -- Indices de la tabla `inquilino`
@@ -298,13 +314,17 @@ ALTER TABLE `inquilino`
 -- Indices de la tabla `multa`
 --
 ALTER TABLE `multa`
-  ADD PRIMARY KEY (`idMulta`);
+  ADD PRIMARY KEY (`idMulta`),
+  ADD KEY `multa_ibfk_1` (`idContrato`),
+  ADD KEY `multa_ibfk_2` (`usuarioAlta`);
 
 --
 -- Indices de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  ADD PRIMARY KEY (`idPagos`);
+  ADD PRIMARY KEY (`idPagos`),
+  ADD KEY `pagos_ibfk_1` (`idContratos`),
+  ADD KEY `pagos_ibfk_2` (`usuarioAlta`);
 
 --
 -- Indices de la tabla `propietario`
@@ -332,13 +352,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `idContrato` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idContrato` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  MODIFY `idInmuebles` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idInmuebles` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilino`
@@ -356,7 +376,7 @@ ALTER TABLE `multa`
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `idPagos` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idPagos` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
@@ -374,7 +394,40 @@ ALTER TABLE `tipoinmueble`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `idUsuario` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `contratos`
+--
+ALTER TABLE `contratos`
+  ADD CONSTRAINT `contratos_ibfk_1` FOREIGN KEY (`idInmuebles`) REFERENCES `inmuebles` (`idInmuebles`),
+  ADD CONSTRAINT `contratos_ibfk_2` FOREIGN KEY (`idInquilino`) REFERENCES `inquilino` (`idInquilino`),
+  ADD CONSTRAINT `contratos_ibfk_3` FOREIGN KEY (`usuarioAlta`) REFERENCES `usuario` (`idUsuario`);
+
+--
+-- Filtros para la tabla `inmuebles`
+--
+ALTER TABLE `inmuebles`
+  ADD CONSTRAINT `inmuebles_ibfk_1` FOREIGN KEY (`idTipoInmueble`) REFERENCES `tipoinmueble` (`idTipoInmueble`),
+  ADD CONSTRAINT `inmuebles_ibfk_2` FOREIGN KEY (`idPropietario`) REFERENCES `propietario` (`idPropietario`);
+
+--
+-- Filtros para la tabla `multa`
+--
+ALTER TABLE `multa`
+  ADD CONSTRAINT `multa_ibfk_1` FOREIGN KEY (`idContrato`) REFERENCES `contratos` (`idContrato`),
+  ADD CONSTRAINT `multa_ibfk_2` FOREIGN KEY (`usuarioAlta`) REFERENCES `usuario` (`idUsuario`);
+
+--
+-- Filtros para la tabla `pagos`
+--
+ALTER TABLE `pagos`
+  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`idContratos`) REFERENCES `contratos` (`idContrato`),
+  ADD CONSTRAINT `pagos_ibfk_2` FOREIGN KEY (`usuarioAlta`) REFERENCES `usuario` (`idUsuario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
