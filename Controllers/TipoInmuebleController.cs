@@ -80,7 +80,7 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
-                repo.Baja(id);
+                repo.Baja(tipoInmueble);
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoInmueble);

@@ -16,17 +16,17 @@ namespace InmobiliariaConlara.Models
 		[Key]
 		[Display(Name = "Código Personal")]
 		public int IdUsuario { get; set; }
-        
-        [Required(ErrorMessage = "El Nombre es obligatorio")]
-		 [StringLength(100, ErrorMessage = "El Nombre no puede superar los 100 caracteres")]
+
+		[Required(ErrorMessage = "El Nombre es obligatorio")]
+		[StringLength(100, ErrorMessage = "El Nombre no puede superar los 100 caracteres")]
 		public string? Nombre { get; set; }
-        
-        [Required(ErrorMessage = "El apellido es obligatorio")]
-		 [StringLength(100, ErrorMessage = "El apellido no puede superar los 100 caracteres")]
+
+		[Required(ErrorMessage = "El apellido es obligatorio")]
+		[StringLength(100, ErrorMessage = "El apellido no puede superar los 100 caracteres")]
 		public string? Apellido { get; set; }
 		[Required, EmailAddress]
 		public string? Email { get; set; }
-			[Required, DataType(DataType.Password)]
+		[Required, DataType(DataType.Password)]
 		public string? Clave { get; set; }
 		public string Avatar { get; set; } = "";
 		[NotMapped]//Para EF
@@ -39,6 +39,7 @@ namespace InmobiliariaConlara.Models
 		[NotMapped]//Para EF
 		public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
 
+
 		public static IDictionary<int, string> ObtenerRoles()
 		{
 			SortedDictionary<int, string> roles = new SortedDictionary<int, string>();
@@ -49,5 +50,8 @@ namespace InmobiliariaConlara.Models
 			}
 			return roles;
 		}
+		
+		public int Existe { get; set; }
+
 	}
 }

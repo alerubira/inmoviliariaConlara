@@ -18,8 +18,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Pagos
-                    ( idContratos, fechaPago, importe,concepto,numeroCuota,mesPago)
-                    VALUES ( @IdContratos, @fechaPago,@importe,@concepto,@numeroCuota,@mesPago);
+                    ( idContratos, fechaPago, importe,concepto,numeroCuota,mesPago,existe,usuarioAlta,usuarioBaja)
+                    VALUES ( @IdContratos, @fechaPago,@importe,@concepto,@numeroCuota,@mesPago,@existe,@usuarioAlta,@usuarioBaja);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -29,6 +29,9 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
                     command.Parameters.AddWithValue("@numeroCuota", pago.NumeroCuota);
                     command.Parameters.AddWithValue("@mesPago", pago.MesPago);
+                    command.Parameters.AddWithValue("@existe", 1);
+                    command.Parameters.AddWithValue("@usuarioAlta", pago.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", pago.UsuarioBaja);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     pago.IdPagos = res;
@@ -38,15 +41,26 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public int Baja(int id)
+        public int Baja(Pagos pago)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM Pagos WHERE IdPagos = @id";
+                string sql = @"UPDATE Pagos SET 
+                        idContratos=@idContratos, fechaPago=@fechaPago, importe=@importe,concepto=@concepto,numeroCuota=@numeroCuota,mesPago=@mesPago,existe=@existe,usuarioBaja=@usuarioBaja
+                        WHERE IdPagos = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", pago.IdPagos);
+                    command.Parameters.AddWithValue("@idContratos", pago.IdContratos);
+                    command.Parameters.AddWithValue("@fechaPago", pago.FechaPago);
+                    command.Parameters.AddWithValue("@importe", pago.Importe);
+                    command.Parameters.AddWithValue("@concepto", pago.Concepto);
+                    command.Parameters.AddWithValue("@numeroCuota", pago.NumeroCuota);
+                    command.Parameters.AddWithValue("@mesPago", pago.MesPago);
+                    command.Parameters.AddWithValue("@existe", 0);
+                    //command.Parameters.AddWithValue("@usuarioAlta", pago.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", pago.UsuarioBaja);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -61,7 +75,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Pagos SET 
-                        idContratos=@idContratos, fechaPago=@fechaPago, importe=@importe,concepto=@concepto,numeroCuota=@numeroCuota,mesPago=@mesPago
+                        idContratos=@idContratos, fechaPago=@fechaPago, importe=@importe,concepto=@concepto,numeroCuota=@numeroCuota,mesPago=@mesPago,existe=@existe,usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
                         WHERE IdPagos = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -72,6 +86,9 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@concepto", pago.Concepto);
                     command.Parameters.AddWithValue("@numeroCuota", pago.NumeroCuota);
                     command.Parameters.AddWithValue("@mesPago", pago.MesPago);
+                    command.Parameters.AddWithValue("@existe", 1);
+                    command.Parameters.AddWithValue("@usuarioAlta", pago.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", pago.UsuarioBaja);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -91,6 +108,7 @@ namespace Inmobiliaria.Models
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
             INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
+            WHERE p.existe=1
             ORDER BY p.idPagos;
         ";
 
@@ -130,7 +148,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdPagos,IdContratos,fechaPago, importe,concepto,numeroCuota,mesPago
                             FROM pagos
-                            WHERE IdPagos = @id";
+                            WHERE IdPagos = @id && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -166,7 +184,7 @@ namespace Inmobiliaria.Models
             FROM pagos p
             INNER JOIN contratos c ON p.idContratos = c.IdContrato
             INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
-            WHERE c.idInquilino = @idInquilino
+            WHERE c.idInquilino = @idInquilino && p.existe=1
             ORDER BY p.fechaPago;";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -208,6 +226,7 @@ namespace Inmobiliaria.Models
                                         FROM pagos p
                                         INNER JOIN contratos c ON p.idContratos = c.IdContrato
                                         INNER JOIN inmuebles i ON c.IdInmuebles = i.idInmuebles
+                                        WHERE p.existe=1
                                         ORDER BY p.idPagos
                                          LIMIT @pageSize OFFSET @offset";
                                     
@@ -245,7 +264,7 @@ namespace Inmobiliaria.Models
                 {
                     using (var connection = new MySqlConnection(connectionString))
                     {
-                        string sql = "SELECT COUNT(*) FROM pagos";
+                        string sql = "SELECT COUNT(*) FROM pagos WHERE existe=1";
                         using (var command = new MySqlCommand(sql, connection))
                         {
                             connection.Open();

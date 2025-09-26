@@ -18,8 +18,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Multa
-                    (idContrato,fechaMulta, fechaHastaContrato,nuevaFechaHastaContrato,importeCuota,importeMulta,cuotasAdeudadas,pagada)
-                    VALUES (@idContrato,@fechaMulta, @fechaHastaContrato, @nuevaFechaHastaContrato,@importeCuota,@importeMulta,@cuotasAdeudadas,@pagada);
+                    (idContrato,fechaMulta, fechaHastaContrato,nuevaFechaHastaContrato,importeCuota,importeMulta,cuotasAdeudadas,pagada,existe,usuarioAlta,usuarioBaja)
+                    VALUES (@idContrato,@fechaMulta, @fechaHastaContrato, @nuevaFechaHastaContrato,@importeCuota,@importeMulta,@cuotasAdeudadas,@pagada,@existe,@usuarioAlta,@usuarioBaja);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -32,6 +32,9 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@importeMulta", multa.ImporteMulta);
                     command.Parameters.AddWithValue("@cuotasAdeudadas", multa.CuotasAdeudadas);
                     command.Parameters.AddWithValue("@pagada", multa.Pagada);
+                    command.Parameters.AddWithValue("@existe", 1);
+                    command.Parameters.AddWithValue("@usuarioAlta",multa.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja",multa.UsuarioBaja);
 
 
                     connection.Open();
@@ -43,30 +46,13 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-          public int Baja(int id)
+        public int Baja(Multas multa)
           {
-              int res = -1;
-              using (var connection = new MySqlConnection(connectionString))
-              {
-                  string sql = "DELETE FROM multa WHERE IdMulta = @id";
-                  using (var command = new MySqlCommand(sql, connection))
-                  {
-                      command.Parameters.AddWithValue("@id", id);
-                      connection.Open();
-                      res = command.ExecuteNonQuery();
-                      connection.Close();
-                  }
-              }
-              return res;
-          }
-
-        public int Modificacion(Multas multa)
-        {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE multa SET 
-                        idContrato=@idContrato, fechaMulta=@fechaMulta, fechaHastaContrato=@fechaHastaContrato, nuevaFechaHastaContrato=@nuevaFechaHastaContrato, importeCuota=@importeCuota, importeMulta=@importeMulta,cuotasAdeudadas=@cuotasAdeudadas,pagada=@pagada
+                        idContrato=@idContrato, fechaMulta=@fechaMulta, fechaHastaContrato=@fechaHastaContrato, nuevaFechaHastaContrato=@nuevaFechaHastaContrato, importeCuota=@importeCuota, importeMulta=@importeMulta,cuotasAdeudadas=@cuotasAdeudadas,pagada=@pagada,existe=@existe,usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
                         WHERE IdMulta = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -79,7 +65,40 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@importeMulta", multa.ImporteMulta);
                     command.Parameters.AddWithValue("@cuotasAdeudadas", multa.CuotasAdeudadas);
                     command.Parameters.AddWithValue("@pagada", multa.Pagada);
+                    command.Parameters.AddWithValue("@existe", 0);
+                    command.Parameters.AddWithValue("@usuarioAlta", multa.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", multa.UsuarioBaja);
 
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+          }
+
+        public int Modificacion(Multas multa)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"UPDATE multa SET 
+                        idContrato=@idContrato, fechaMulta=@fechaMulta, fechaHastaContrato=@fechaHastaContrato, nuevaFechaHastaContrato=@nuevaFechaHastaContrato, importeCuota=@importeCuota, importeMulta=@importeMulta,cuotasAdeudadas=@cuotasAdeudadas,pagada=@pagada,existe=@existe,usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
+                        WHERE IdMulta = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", multa.IdMulta);
+                    command.Parameters.AddWithValue("@idContrato", multa.IdContrato);
+                    command.Parameters.AddWithValue("@fechaMulta", multa.FechaMulta);
+                    command.Parameters.AddWithValue("@fechaHastaContrato", multa.FechaHastaContrato);
+                    command.Parameters.AddWithValue("@nuevaFechaHastaContrato", multa.NuevaFechaHastaContrato);
+                    command.Parameters.AddWithValue("@importeCuota", multa.ImporteCuota);
+                    command.Parameters.AddWithValue("@importeMulta", multa.ImporteMulta);
+                    command.Parameters.AddWithValue("@cuotasAdeudadas", multa.CuotasAdeudadas);
+                    command.Parameters.AddWithValue("@pagada", multa.Pagada);
+                    command.Parameters.AddWithValue("@existe", 1);
+                    command.Parameters.AddWithValue("@usuarioAlta", multa.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioBaja", multa.UsuarioBaja);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -95,7 +114,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdMulta,idContrato, fechaMulta, fechaHastaContrato, nuevaFechaHastaContrato, importeCuota, importeMulta,cuotasAdeudadas,pagada
-                            FROM multa
+                            FROM multa WHERE existe=1
                             
                             ORDER BY fechaMulta";
                 using (var command = new MySqlCommand(sql, connection))
@@ -136,7 +155,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdMulta,IdContrato, fechaMulta, fechaHastaContrato, nuevaFechaHastaContrato, importeCuota, importeMulta,cuotasAdeudadas,pagada
-                            FROM multa
+                            FROM multa WHERE existe=1
                             WHERE IdMulta = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -173,8 +192,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdMulta,IdContrato, fechaMulta, fechaHastaContrato, nuevaFechaHastaContrato, importeCuota, importeMulta,cuotasAdeudadas,pagada
-                            FROM multa
-                            WHERE IdContrato = @id";
+                            FROM multa 
+                            WHERE IdContrato = @id && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);

@@ -18,8 +18,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO Inmuebles
-                    ( direccion, ambientes, superficie, latitud, longitud, idPropietario, IdTipoInmueble,precio,habilitado)
-                    VALUES ( @direccion, @ambientes, @superficie, @latitud, @longitud, @idPropietario, @IdTipoInmueble,@precio,@habilitado);
+                    ( direccion, ambientes, superficie, latitud, longitud, idPropietario, IdTipoInmueble,precio,habilitado,existe)
+                    VALUES ( @direccion, @ambientes, @superficie, @latitud, @longitud, @idPropietario, @IdTipoInmueble,@precio,@habilitado,@existe);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -32,6 +32,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@IdTipoInmueble", inmueble.IdTipoInmueble);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@habilitado", 1);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     inmueble.IdTipoInmueble = res;
@@ -41,15 +42,27 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public int Baja(int id)
+        public int Baja(Inmuebles inmueble)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM Inmuebles WHERE IdInmuebles = @id";
+                string sql = @"UPDATE Inmuebles SET 
+                        direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,habilitado=@habilitado, existe=@existe
+                        WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", inmueble.IdInmuebles);
+                    command.Parameters.AddWithValue("@direccion", inmueble.Direccion);
+                    command.Parameters.AddWithValue("@ambientes", inmueble.Ambientes);
+                    command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
+                    command.Parameters.AddWithValue("@latitud", inmueble.Latitud);
+                    command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
+                    command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
+                    command.Parameters.AddWithValue("@idTipoInmueble", inmueble.IdTipoInmueble);
+                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
+                    command.Parameters.AddWithValue("@habilitado", inmueble.Habilitado);
+                    command.Parameters.AddWithValue("@existe", 0);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -64,7 +77,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Inmuebles SET 
-                        direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,habilitado=@habilitado
+                        direccion=@direccion, ambientes=@ambientes, superficie=@superficie, latitud=@latitud, longitud=@longitud, idPropietario=@idPropietario, IdTipoInmueble=@IdTipoInmueble,precio=@precio,habilitado=@habilitado,existe=@existe
                         WHERE IdInmuebles = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -78,6 +91,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@idTipoInmueble", inmueble.IdTipoInmueble);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@habilitado", inmueble.Habilitado);
+                    command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -92,7 +106,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
-                            FROM Inmuebles
+                            FROM Inmuebles WHERE existe = 1
                             ORDER BY Direccion";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -131,7 +145,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
                             FROM Inmuebles
-                            WHERE IdInmuebles = @id";
+                            WHERE IdInmuebles = @id && existe=1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -168,7 +182,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
                             FROM Inmuebles
-                            WHERE Direccion = @dir";
+                            WHERE Direccion = @dir && existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@dir", dir);
@@ -206,7 +220,7 @@ namespace Inmobiliaria.Models
                 string sql = @"
                             SELECT IdInmuebles, Direccion, Precio,Habilitado
                             FROM Inmuebles
-                            WHERE direccion LIKE @fraccion
+                            WHERE direccion LIKE @fraccion && existe=1
                         ";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -250,7 +264,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
                             FROM Inmuebles
-                            WHERE idPropietario = @idPropietario
+                            WHERE idPropietario = @idPropietario && existe=1
                             ORDER BY Direccion";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -287,7 +301,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdInmuebles,Direccion, Ambientes, Superficie, Latitud, Longitud, idPropietario, IdTipoInmueble,precio,habilitado
                             FROM Inmuebles
-                            where habilitado=1
+                            where habilitado=1 && existe = 1
                             ORDER BY Direccion";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -334,7 +348,7 @@ namespace Inmobiliaria.Models
                                         (YEAR(c.fechaHasta) > YEAR(@fechaDesde) 
                                         OR (YEAR(c.fechaHasta) = YEAR(@fechaDesde) AND MONTH(c.fechaHasta) >= MONTH(@fechaDesde)))
                                     )
-                                WHERE c.IdInmuebles IS NULL
+                                WHERE c.IdInmuebles IS NULL && i.existe = 1
                                 ORDER BY i.Direccion";
 
                 using (var command = new MySqlCommand(sql, connection))
