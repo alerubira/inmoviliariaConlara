@@ -52,7 +52,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Contratos SET 
-                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente,cantidadCuotas=@cantidadCuotas,cuotasPagas=@cuotasPagas,mesInicio=@mesInicio, existe=@existe, usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
+                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente,cantidadCuotas=@cantidadCuotas,cuotasPagas=@cuotasPagas,mesInicio=@mesInicio, existe=@existe, usuarioBaja=@usuarioBaja
                         WHERE IdContrato = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -66,8 +66,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@cantidadCuotas", contrato.CantidadCuotas);
                     command.Parameters.AddWithValue("@cuotasPagas", contrato.CuotasPagas);
                     command.Parameters.AddWithValue("@mesInicio", contrato.MesInicio);
-                    command.Parameters.AddWithValue("@existe", contrato.Existe);
-                    command.Parameters.AddWithValue("@usuarioAlta", contrato.UsuariAlta);
+                    command.Parameters.AddWithValue("@existe", 0);
                     command.Parameters.AddWithValue("@usuarioBaja", contrato.UsuarioBaja);
 
                     connection.Open();

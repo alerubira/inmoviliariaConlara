@@ -303,31 +303,32 @@ namespace Inmobiliaria.Controllers;
         });
 
         return Json(new { success = true, data = resultado });
-    }
-        
-        private int compararFechas(Contratos contrato, IList<Contratos> contratos)
+    }   
+    private int compararFechas(Contratos contrato, IList<Contratos> contratos)
     {
+        if (contrato == null) throw new ArgumentNullException(nameof(contrato));
+
         foreach (var contra in contratos)
         {
-            int contador = contra.FechaDesde.Month;
+            if (contra.IdContrato == contrato.IdContrato) 
+                continue; // no comparar con sí mismo
 
-            for (int i = 1; i <= contra.CantidadCuotas; i++)
+            if (contra.CantidadCuotas <= 0) 
+                continue;
+
+            // Empezamos desde la fecha de inicio y avanzamos mes a mes
+            DateTime current = contra.FechaDesde.Date;
+            for (int i = 0; i < contra.CantidadCuotas; i++)
             {
-                if (contador > 12)
-                {
-                    contador = 1;
-                }
-                if ((contador == contrato.FechaDesde.Month) && (contrato.FechaDesde.Year == contra.FechaDesde.Year) && (contrato.IdContrato != contra.IdContrato))
-                {
-                    return 1;
-                }
-                if ((contador == contrato.FechaHasta.Month) && (contrato.FechaHasta.Year == contra.FechaHasta.Year) && (contrato.IdContrato != contra.IdContrato))
-                {
-                    return 2;
-                }
-                contador++;
+                if (current.Year == contrato.FechaDesde.Year && current.Month == contrato.FechaDesde.Month)
+                    return 1; // coincide con FechaDesde del contrato
+                if (current.Year == contrato.FechaHasta.Year && current.Month == contrato.FechaHasta.Month)
+                    return 2; // coincide con FechaHasta del contrato
+
+                current = current.AddMonths(1);
             }
         }
-        return 3;
+        return 3; // sin coincidencias
     }
+
 }
