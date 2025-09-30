@@ -136,6 +136,7 @@ namespace Inmobiliaria.Controllers{
                     {
                         return NotFound("No se encontro ningun contrato para realizar el pago");
                     }
+                    pago.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
                     repo.Alta(pago);
                     contr.CuotasPagas = pago.NumeroCuota;
                     repositorioContratos.Modificacion(contr);
@@ -153,12 +154,13 @@ namespace Inmobiliaria.Controllers{
                     {
                         return NotFound("No se encontro ninguna multa para realizar el pago");
                     }
-                     repo.Alta(pago);
+                    pago.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
+                    repo.Alta(pago);
                     multa.Pagada = false;
                     repositorioMultas.Modificacion(multa);
                     return RedirectToAction(nameof(Index));
                }   
-              
+
             }
     
             return View(pago);
@@ -236,6 +238,8 @@ namespace Inmobiliaria.Controllers{
 
         {
             var pago = repo.ObtenerPorId(id);
+            var contrato = repositorioContratos.ObtenerPorId(pago.IdContratos);
+            repositorioContratos.RestarCuotaPaga(contrato);
             if (pago == null)
             {
                 return NotFound("No se encontro ningun pago");
@@ -248,7 +252,8 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
-                repo.Baja(id);
+                pago.UsuarioBaja = int.Parse(User.FindFirst("UserId")?.Value);
+                repo.Baja(pago);
                 return RedirectToAction(nameof(Index));
             }
             return View(pago);

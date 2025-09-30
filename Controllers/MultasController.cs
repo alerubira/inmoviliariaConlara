@@ -66,6 +66,7 @@ namespace Inmobiliaria.Controllers{
                     return NotFound("No se encontroningun contrato para realizar la multa");
                 }
                 multa.Pagada = false;
+                multa.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
                 repo.Alta(multa);
                 contr.CuotasPagas =contr.CantidadCuotas;
                 repositorioContratos.Modificacion(contr);
@@ -190,7 +191,7 @@ namespace Inmobiliaria.Controllers{
 
             if (ModelState.IsValid)
             {
-                repo.Baja(id);
+                repo.Baja(multa);
                 return RedirectToAction(nameof(Index));
             }
             return View(multa);
@@ -213,12 +214,5 @@ namespace Inmobiliaria.Controllers{
         }
         
 
-
-
-
     }
     }
-
-
-    
-

@@ -48,6 +48,11 @@ namespace Inmobiliaria.Models
     //	[NotMapped]//Para EF
     public string MesPagoNombre => MesPago > 0 ? ((enMeses)MesPago).ToString() : "";
 
+    [Display(Name = "Usuario que realizo el Alta")]
+    public String? mailUsuarioAlta { get; set; }
+    [Display(Name = "Usuario que realizo la Baja")]
+    public String? mailUsuarioBaja { get; set; }
+
     public static IDictionary<int, string> ObtenerMeses()
     {
       SortedDictionary<int, string> meses = new SortedDictionary<int, string>();

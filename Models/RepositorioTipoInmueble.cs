@@ -19,12 +19,13 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO TipoInmueble
-                    ( Nombre)
-                    VALUES ( @nombre);
+                    ( Nombre,existe)
+                    VALUES ( @nombre,@existe);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@nombre", ti.Nombre);
+                    command.Parameters.AddWithValue("@exise", 1);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     ti.IdTipoInmueble = res;
@@ -34,15 +35,19 @@ namespace Inmobiliaria.Models
             return res;
         }
 
-        public int Baja(int id)
+        public int Baja(TipoInmueble ti)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "DELETE FROM TipoInmueble WHERE IdTipoInmueble = @id";
+                string sql = @"UPDATE TipoInmueble SET 
+                        Nombre=@nombre, existe=@existe
+                        WHERE IdTipoInmueble = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@nombre", ti.Nombre);
+                    command.Parameters.AddWithValue("@id", ti.IdTipoInmueble);
+                    command.Parameters.AddWithValue("@", 0);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -57,12 +62,13 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE TipoInmueble SET 
-                        Nombre=@nombre
+                        Nombre=@nombre,existe=@existe
                         WHERE IdTipoInmueble = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@nombre", ti.Nombre);
                     command.Parameters.AddWithValue("@id", ti.IdTipoInmueble);
+                    command.Parameters.AddWithValue("@", ti.Existe);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -77,7 +83,7 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT IdTipoInmueble, Nombre
-                            FROM TipoInmueble
+                            FROM TipoInmueble WHERE existe=1
                             ORDER BY Nombre";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -105,7 +111,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = @"SELECT IdTipoInmueble, Nombre
                             FROM TipoInmueble
-                            WHERE IdTipoInmueble = @id";
+                            WHERE IdTipoInmueble = @id && existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);

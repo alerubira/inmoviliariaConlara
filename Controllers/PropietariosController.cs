@@ -63,6 +63,14 @@ namespace Inmobiliaria.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Propietario propietario)
         {
+
+             var existente = repo.ObtenerPorDni(propietario.Dni);
+            if (existente != null && existente.IdPropietario != propietario.IdPropietario)
+            {
+                ModelState.AddModelError("Dni", "Ya existe otro propietario con este DNI.");
+                return View(propietario);
+            }
+
             if (id != propietario.IdPropietario)
                 return NotFound();
 
@@ -85,8 +93,21 @@ namespace Inmobiliaria.Controllers
             return View(propietario);
         }
 
+        [Authorize(Roles="Administrador")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
 
-        [Authorize(Roles ="Administrador,Empleado")]
+            var propietario = repo.ObtenerPorId(id);
+
+            repo.Baja(propietario);
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+        [Authorize(Roles = "Administrador,Empleado")]
         [HttpGet]
         public IActionResult BuscarPropietarioPorFraccionApellido( String term)
         {
@@ -107,7 +128,6 @@ namespace Inmobiliaria.Controllers
                         });
 
                 return Json(new { success = true, data = resultado });
-        }
-        
-}
+        }  
     }
+}

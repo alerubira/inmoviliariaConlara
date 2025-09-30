@@ -40,6 +40,7 @@
                          @if (User.IsInRole("Administrador"))
                             {
                                 <a class="nav-link text-dark" asp-area="" asp-controller="TipoInmueble" asp-action="index">Tipos Inmuebles</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auditoria" asp-action="index">Auditar</a>
                             }
                         </li>
                          <li class="nav-item"></li>
@@ -67,8 +68,9 @@
                             <a class="nav-link text-dark" asp-controller="Account" asp-action="Perfil">Mi Perfil</a>
                         </li>
                         <li class="nav-item">
-                            <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
-                                <button type="submit" class="btn btn-link nav-link text-dark" style="display:inline; padding:0;">Cerrar Sesión</button>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger">Cerrar sesión</button>
                             </form>
 
                         </li>
