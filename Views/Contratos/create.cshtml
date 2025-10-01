@@ -111,32 +111,32 @@
                                 }
                             });
                         </script>
-             <div class="form-group">
+            <div class="form-group">
                 <label asp-for="Monto" class="control-label"></label>
                 <input asp-for="Monto" class="form-control" readonly/>
                 <span asp-validation-for="Monto" class="text-danger"></span>
                  <input type="hidden" id="precio" name="precio" />
             </div>  
-             <div class="form-group">
-                <label asp-for="CantidadCuotas" class="control-label"></label>
-                <input asp-for="CantidadCuotas" class="form-control" readonly/>
-                <span asp-validation-for="CantidadCuotas" class="text-danger"></span>
-                
-            </div> 
-             <div class="form-group">
-                <label asp-for="CuotasPagas" class="control-label"></label>
-                <input asp-for="CuotasPagas" class="form-control" readonly/>
-                <span asp-validation-for="CuotasPagas" class="text-danger"></span>
-             <div class="form-group">
+            <div class="form-group">
                 <label asp-for="FechaDesde" class="control-label"></label>
-                <input asp-for="FechaDesde" class="form-control" />
+                <input asp-for="FechaDesde" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")"/>
                 <span asp-validation-for="FechaDesde" class="text-danger"></span>
                   <input type="hidden" id="mesInicio" name="MesInicio" />
             </div>
             <div class="form-group">
                 <label asp-for="FechaHasta" class="control-label"></label>
-                <input asp-for="FechaHasta" class="form-control" />
+                <input asp-for="FechaHasta" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")"/>
                 <span asp-validation-for="FechaHasta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CantidadCuotas" class="control-label"></label>
+                <input asp-for="CantidadCuotas" class="form-control" readonly/>
+                <span asp-validation-for="CantidadCuotas" class="text-danger"></span>   
+            </div> 
+            <div class="form-group">
+                <label asp-for="CuotasPagas" class="control-label"></label>
+                <input asp-for="CuotasPagas" class="form-control" readonly/>
+                <span asp-validation-for="CuotasPagas" class="text-danger"></span>
             </div>
             <script>
                         function calcularMeses() {
@@ -155,14 +155,14 @@
                                document.getElementById("Monto").value = precio;
                                 document.getElementById("CantidadCuotas").value = meses;
                                 document.getElementById("CuotasPagas").value = 0;
-                                document.getElementById("mesInicio").value = fechaDesde.getMonth()+1;
+                                document.getElementById("mesInicio").value = fechaDesde.getMonth();
                             } else {
                                 document.getElementById("Monto").value = "";
                             }
                         }
 
-                        document.getElementById("FechaDesde").addEventListener("change", calcularMeses);
-                        document.getElementById("FechaHasta").addEventListener("change", calcularMeses);
+                        document.getElementById("FechaDesde").addEventListener("input", calcularMeses);
+                        document.getElementById("FechaHasta").addEventListener("input", calcularMeses);
             </script>          
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
