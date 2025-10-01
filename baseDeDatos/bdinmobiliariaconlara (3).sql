@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-10-2025 a las 00:48:54
+-- Tiempo de generación: 02-10-2025 a las 01:37:49
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -50,7 +50,8 @@ CREATE TABLE `contratos` (
 INSERT INTO `contratos` (`idContrato`, `idInquilino`, `idInmuebles`, `monto`, `fechaDesde`, `fechaHasta`, `vigente`, `cantidadCuotas`, `cuotasPagas`, `mesInicio`, `existe`, `usuarioAlta`, `usuarioBaja`) VALUES
 (26, 4, 9, 190000, '2026-01-01', '2026-05-01', 1, 5, 1, 1, 1, 1, NULL),
 (27, 4, 3, 130000, '2025-10-01', '2026-02-01', 1, 5, 5, 10, 1, 1, NULL),
-(28, 15, 5, 360000, '2025-11-01', '2026-01-01', 1, 3, 0, 11, 1, 1, NULL);
+(28, 15, 5, 360000, '2025-11-01', '2026-01-01', 1, 3, 0, 11, 1, 1, NULL),
+(29, 4, 7, 120000, '2025-10-01', '2026-03-01', 1, 6, 6, 10, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -148,6 +149,13 @@ CREATE TABLE `multa` (
   `usuarioBaja` int(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `multa`
+--
+
+INSERT INTO `multa` (`idMulta`, `idContrato`, `fechaMulta`, `fechaHastaContrato`, `nuevaFechaHastaContrato`, `importeCuota`, `importeMulta`, `cuotasAdeudadas`, `pagada`, `existe`, `usuarioAlta`, `usuarioBaja`) VALUES
+(2, 29, '2025-10-01', '2026-03-01', '2026-01-01', 120000, 360000, 2, 0, 1, 1, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -177,7 +185,9 @@ INSERT INTO `pagos` (`idPagos`, `idContratos`, `fechaPago`, `importe`, `concepto
 (35, 27, '2025-10-01', 130000, 'Alquiler mes :Noviembre', 2, 11, 1, 1, NULL),
 (36, 27, '2025-10-01', 130000, 'Alquiler mes :Diciembre', 3, 12, 1, 1, NULL),
 (37, 27, '2025-10-01', 130000, 'Alquiler mes :Enero', 4, 1, 1, 1, NULL),
-(38, 27, '2025-10-01', 130000, 'Alquiler mes :Febrero', 5, 2, 1, 1, NULL);
+(38, 27, '2025-10-01', 130000, 'Alquiler mes :Febrero', 5, 2, 1, 1, NULL),
+(39, 29, '2025-10-01', 120000, 'Alquiler mes :Octubre', 1, 10, 1, 1, NULL),
+(40, 29, '2025-10-01', 120000, 'Alquiler mes :Noviembre', 2, 11, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -325,7 +335,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `idContrato` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `idContrato` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
@@ -343,13 +353,13 @@ ALTER TABLE `inquilino`
 -- AUTO_INCREMENT de la tabla `multa`
 --
 ALTER TABLE `multa`
-  MODIFY `idMulta` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idMulta` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `idPagos` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `idPagos` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
