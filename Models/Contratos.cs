@@ -19,10 +19,14 @@ namespace Inmobiliaria.Models
         public decimal Monto { get; set; }
         [Display(Name = "Ingreso")]
         [Required(ErrorMessage = "La fecha de ingreso es obligatoria")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime FechaDesde { get; set; }
 
         [Display(Name = "Egreso")]
         [Required(ErrorMessage = "La fecha de egreso es obligatoria")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime FechaHasta { get; set; }
         [Display(Name = "Vigente")]
         public bool Vigente { get; set; }

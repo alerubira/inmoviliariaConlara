@@ -74,6 +74,11 @@ namespace Inmobiliaria.Controllers;
             if (contratos.Count == 0)
             {
                 contrato.Vigente = true;
+                contrato.MesInicio = contrato.MesInicio + 2;
+                if (contrato.MesInicio > 12)
+                {
+                    contrato.MesInicio = 1;
+                }
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
             }

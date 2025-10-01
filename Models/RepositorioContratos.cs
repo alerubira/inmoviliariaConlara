@@ -83,7 +83,8 @@ namespace Inmobiliaria.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE Contratos SET 
-                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente,cantidadCuotas=@cantidadCuotas,cuotasPagas=@cuotasPagas,mesInicio=@mesInicio, existe=@existe, usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
+                        idInquilino=@idInquilino, idInmuebles=@idInmuebles, monto=@monto, fechaDesde=@fechaDesde, fechaHasta=@fechaHasta, vigente=@vigente,cantidadCuotas=@cantidadCuotas,
+                        cuotasPagas=@cuotasPagas,mesInicio=@mesInicio, existe=@existe, usuarioAlta=@usuarioAlta,usuarioBaja=@usuarioBaja
                         WHERE IdContrato = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -195,7 +196,7 @@ namespace Inmobiliaria.Models
             Contratos? contrato = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas,mesInicio
+                string sql = @"SELECT IdContrato,IdInquilino, idInmuebles, monto, fechaDesde, fechaHasta, vigente,cantidadCuotas,cuotasPagas,mesInicio, usuarioAlta, existe, usuarioBaja
                             FROM contratos
                             WHERE IdContrato = @id && contratos.existe = 1";
                 using (var command = new MySqlCommand(sql, connection))
@@ -216,9 +217,10 @@ namespace Inmobiliaria.Models
                             Vigente = Convert.ToBoolean(reader["vigente"]),
                             CantidadCuotas = Convert.ToInt32(reader["cantidadCuotas"]),
                             CuotasPagas = Convert.ToInt32(reader["cuotasPagas"]),
-                            MesInicio = Convert.ToInt32(reader["mesInicio"])
-
-
+                            MesInicio = Convert.ToInt32(reader["mesInicio"]),
+                            UsuariAlta = Convert.ToInt32(reader["usuarioAlta"]),
+                            Existe = Convert.ToBoolean(reader["existe"]),
+                            mailUsuarioBaja = Convert.ToString(reader["usuarioBaja"])
                         };
                     }
                     connection.Close();
