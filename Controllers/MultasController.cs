@@ -115,7 +115,10 @@ namespace Inmobiliaria.Controllers{
             {
                 montoProvisorio = contrato.Monto * 2;
             }
-            int cantCuotasProvisoria=multa.NuevaFechaHastaContrato.Month-contrato.FechaDesde.Month+1;
+            int cantCuotasProvisoria = (multa.NuevaFechaHastaContrato.Year - contrato.FechaDesde.Year) * 12 +
+            (multa.NuevaFechaHastaContrato.Month - contrato.FechaDesde.Month)
+            + 1; // incluir ambos meses
+
             int cuotasAdeudadas = cantCuotasProvisoria - contrato.CuotasPagas;
             decimal? prov = montoProvisorio + (cuotasAdeudadas * contrato.Monto);
             multa.ImporteMulta = prov;
