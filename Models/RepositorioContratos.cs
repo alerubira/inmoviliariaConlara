@@ -1,5 +1,6 @@
 using Inmobiliaria.Models;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace Inmobiliaria.Models
 {
@@ -324,7 +325,7 @@ namespace Inmobiliaria.Models
             }
             return res;
         }
-        
+
         public IList<Contratos> ObtenerTodosTodos()
         {
             var res = new List<Contratos>();
@@ -378,6 +379,27 @@ namespace Inmobiliaria.Models
             }
             return res;
         }
+        public int verificarContratoSolapado(Contratos contrato)
+        {
+            int resultado = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var cmd = new MySqlCommand("sp_VerificarContratosSolapados", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@p_idContrato", contrato.IdContrato);
+                cmd.Parameters.AddWithValue("@p_idInmuebles", contrato.IdInmuebles);
+                cmd.Parameters.AddWithValue("@p_fechaDesde", contrato.FechaDesde);
+                cmd.Parameters.AddWithValue("@p_fechaHasta", contrato.FechaHasta);
+
+                connection.Open();
+                resultado = Convert.ToInt32(cmd.ExecuteScalar());
+
+            
+
+            }
+             return resultado;
+           
+        }    
         
     }
     

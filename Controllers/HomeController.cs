@@ -20,7 +20,7 @@ namespace Inmobiliaria.Controllers
             return Content("📌 Solo el administrador puede ver esta página.");
         }
 
-        [Authorize(Roles = "Empleado,Administrador")] // 👨‍💼 empleados y admins
+        [Authorize] // 👨‍💼 empleados y admins
         public IActionResult SoloEmpleado()
         {
             return Content("📌 Empleados y administradores pueden ver esta página.");

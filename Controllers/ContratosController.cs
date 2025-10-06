@@ -16,7 +16,7 @@ namespace Inmobiliaria.Controllers;
             repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
@@ -48,7 +48,7 @@ namespace Inmobiliaria.Controllers;
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Create()
         {
             // var contratos = repositorioTipoInmueble.ObtenerTodos();
@@ -58,7 +58,7 @@ namespace Inmobiliaria.Controllers;
 
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Contratos contrato)
@@ -84,7 +84,7 @@ namespace Inmobiliaria.Controllers;
             }
             else
             {
-                var i = compararFechas(contrato, contratos);
+                var i = repo.verificarContratoSolapado(contrato);
                 if (i == 1)
                 {
                     ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
@@ -159,7 +159,7 @@ namespace Inmobiliaria.Controllers;
                     return RedirectToAction(nameof(Index));
                 }else
                 {
-                    var i = compararFechas(contrato, contratos);
+                    var i = repo.verificarContratoSolapado(contrato);
                     if (i == 1)
                     {
                         ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
@@ -216,7 +216,7 @@ namespace Inmobiliaria.Controllers;
             return View(contrato);
         }
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Renovar(int id)
         {
             var contrato = repo.ObtenerPorId(id);
@@ -267,7 +267,7 @@ namespace Inmobiliaria.Controllers;
             }
             else
             {
-                var i = compararFechas(contrato, contratos);
+                var i = repo.verificarContratoSolapado(contrato);
                 if (i == 1)
                 {
                     ModelState.AddModelError("FechaDesde", "Ya existe un contrato vigente en ese mes");
@@ -291,7 +291,7 @@ namespace Inmobiliaria.Controllers;
 
 
 
-    [Authorize(Roles = "Administrador,Empleado")]
+    [Authorize]
     public IActionResult buscarPorFraccionDireccion(String term)
     { if (string.IsNullOrEmpty(term) || term.Length < 3)
         {
@@ -309,7 +309,7 @@ namespace Inmobiliaria.Controllers;
 
         return Json(new { success = true, data = resultado });
     }   
-    private int compararFechas(Contratos contrato, IList<Contratos> contratos)
+    /*private int compararFechas(Contratos contrato, IList<Contratos> contratos)
     {
         if (contrato == null) throw new ArgumentNullException(nameof(contrato));
 
@@ -334,6 +334,6 @@ namespace Inmobiliaria.Controllers;
             }
         }
         return 3; // sin coincidencias
-    }
+    }*/
 
 }
