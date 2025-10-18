@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
+using InmobiliariaConlara.Services;
 
 
 
@@ -15,9 +16,10 @@ namespace InmobiliariaConlara.Controllers
     {
         private readonly IWebHostEnvironment environment;
         private readonly RepositorioUsuario repositorio;
+        private readonly SeguridadService seguridadService = new SeguridadService();
 
         //  SALT HARDCODEADO (para desarrollo)
-        private const string GlobalSalt = "MiSaltSecreto123";
+        
 
         public UsuarioController(IWebHostEnvironment environment, RepositorioUsuario repositorio)
         {
@@ -63,17 +65,8 @@ namespace InmobiliariaConlara.Controllers
                 return View();
             }
 
-            //  Generar salt fijo
-            byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
-
-            //  Hashear contraseña
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: u.Clave,
-                salt: saltBytes,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-            u.Clave = hashed;
+         
+            u.Clave = seguridadService.HashearContraseña(u.Clave);
 
             //  Asignar rol si no es administrador
             u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
@@ -145,13 +138,13 @@ namespace InmobiliariaConlara.Controllers
             //  Hashear nueva contraseña si se cambió
             if (!string.IsNullOrEmpty(u.Clave))
             {
-                byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
-                u.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: u.Clave,
-                    salt: saltBytes,
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 10000,
-                    numBytesRequested: 256 / 8));
+                u.Clave = seguridadService.HashearContraseña(u.Clave);
+            }
+            else
+            {
+                //  Mantener la clave anterior si no se cambió
+                var usuarioDb = repositorio.ObtenerPorId(u.IdUsuario);
+                u.Clave = usuarioDb.Clave;
             }
 
 
@@ -295,19 +288,10 @@ namespace InmobiliariaConlara.Controllers
                 var returnUrl = string.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
                 if (ModelState.IsValid)
                 {
-                    //  Salt fijo
-                    byte[] saltBytes = Encoding.ASCII.GetBytes(GlobalSalt);
-
-                    //  Hashear clave ingresada
-                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                        password: login.Clave,
-                        salt: saltBytes,
-                        prf: KeyDerivationPrf.HMACSHA1,
-                        iterationCount: 10000,
-                        numBytesRequested: 256 / 8));
+                  
 
                     var e = repositorio.ObtenerPorEmail(login.Usuario);
-                    if (e == null || e.Clave != hashed)
+                    if (e == null || e.Clave == null || !seguridadService.VerificarContraseña(login.Clave, e.Clave) )
                     {
                         ModelState.AddModelError("", "El email o la clave no son correctos");
                         TempData["returnUrl"] = returnUrl;

@@ -1,7 +1,18 @@
+using Microsoft.AspNetCore.using InmobiliariaConlara.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using InmobiliariaConlara.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
+// Cargar variables del archivo .env
+Env.Load();
+
+
 
 // 🔹 Registrar servicios MVC y Session
 builder.Services.AddControllersWithViews()
@@ -21,7 +32,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Home/Restringido"; // Página sin permisos
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // ⏱ Tiempo de expiración
         options.SlidingExpiration = true;           // 🔄 Extiende sesión si hay actividad
-    });
+    })
+    .AddJwtBearer(options =>//la api web valida con token
+    {
+        var secreto = configuration["TokenAuthentication:SecretKey"];
+        if (string.IsNullOrEmpty(secreto))
+            throw new Exception("Falta configurar TokenAuthentication:Secret");
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["TokenAuthentication:Issuer"],
+            ValidAudience = configuration["TokenAuthentication:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(secreto)),
+        };
+        });
 
 // 🔹 Políticas de autorización
 builder.Services.AddAuthorization(options =>

@@ -183,6 +183,37 @@ namespace Inmobiliaria.Models
             }
             return p;
         }
+         public Propietario? ObtenerPorEmail(String eMail)
+        {
+            Propietario? p = null;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, eMail, Clave 
+                    FROM Propietario WHERE eMail=@eMail && existe = 1";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@eMail", eMail);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        p = new Propietario
+                        {
+                            IdPropietario = reader.GetInt32("IdPropietario"),
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido"),
+                            Dni = reader.GetString("Dni"),
+                            Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
+                            eMail = reader.GetString("eMail"),
+                            Clave = reader.GetString("Clave"),
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return p;
+        }
+
         public IList<Propietario> BuscarPorFraccionApellido(string fraccion)
         {
             IList<Propietario> res = new List<Propietario>();
