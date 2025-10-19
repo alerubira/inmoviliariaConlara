@@ -16,7 +16,7 @@ namespace Inmobiliaria.Controllers{
             repoPropietario = new RepositorioPropietario(configuration);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
@@ -31,7 +31,7 @@ namespace Inmobiliaria.Controllers{
             return View(lista);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Create()
         {
             var tiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
@@ -39,7 +39,7 @@ namespace Inmobiliaria.Controllers{
             return View();
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inmuebles inmueble)
@@ -64,7 +64,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var inmueble = repo.ObtenerPorId(id);
@@ -80,7 +80,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Inmuebles inmueble)
@@ -136,7 +136,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult BuscarInmueblePorFraccionDireccion(String term)
         {
             if (string.IsNullOrEmpty(term) || term.Length < 3)
@@ -162,7 +162,7 @@ namespace Inmobiliaria.Controllers{
 
         
         
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult PorPropietario(int? id)
         {
 

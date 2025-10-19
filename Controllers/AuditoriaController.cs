@@ -21,21 +21,21 @@ public class AuditoriaController : Controller
         repositorioInmueble = new RepositorioInmuebles(configuration);
     }
 
-    [Authorize(Roles = "Administrador,Empleado")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Index()
     {
         return View();
     }
 
 
-    [Authorize(Roles = "Administrador,Empleado")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Pagos()
     {
         var pagos = repositorioPagos.ObtenerTodosTodos();
         return View(pagos);
     }
 
-    [Authorize(Roles = "Administrador,Empleado")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Contratos()
     {
         var contratos = repositorioContrato.ObtenerTodosTodos();
@@ -63,7 +63,7 @@ public class AuditoriaController : Controller
         return View(contratos);
     }
 
-    [Authorize(Roles = "Administrador,Empleado")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Multas()
     {
         var multas = repositorioMulta.ObtenerTodosTodos();

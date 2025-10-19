@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using InmobiliariaConlara.Models;
 using Microsoft.AspNetCore.Authorization;
+using InmobiliariaConlara.Services;
 
 namespace InmobiliariaConlara.Controllers
 {
@@ -13,6 +14,7 @@ namespace InmobiliariaConlara.Controllers
     {
         private readonly RepositorioUsuario repositorio;
         private const string GlobalSalt = "MiSaltSecreto123"; // mismo que en Create
+         private readonly SeguridadService seguridadService = new SeguridadService();
 
         public AccountController(RepositorioUsuario repo)
         {

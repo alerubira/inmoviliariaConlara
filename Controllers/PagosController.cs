@@ -20,7 +20,7 @@ namespace Inmobiliaria.Controllers{
 
         
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Index(int pageNumber = 1, int pageSize = 5)
 
         {
@@ -46,7 +46,7 @@ namespace Inmobiliaria.Controllers{
         
 
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Create(int id,bool multa)
 
         {
@@ -121,7 +121,7 @@ namespace Inmobiliaria.Controllers{
             return View(pago);
         }
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Pagos pago)
@@ -167,7 +167,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var pago=repo.ObtenerPorId(id);
@@ -196,7 +196,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Pagos pago)
@@ -260,7 +260,7 @@ namespace Inmobiliaria.Controllers{
         }
 
 
-        [Authorize(Roles ="Administrador,Empleado")]
+        [Authorize]
         public IActionResult PorInquilino(int? id)
         {
             if (id == null || id <= 0)

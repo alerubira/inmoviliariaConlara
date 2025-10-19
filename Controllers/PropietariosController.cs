@@ -15,20 +15,20 @@ namespace Inmobiliaria.Controllers
             repo = new RepositorioPropietario(configuration);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
             return View(lista);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Propietario propietario)
@@ -39,6 +39,12 @@ namespace Inmobiliaria.Controllers
                 ModelState.AddModelError("Dni", "Ya existe un propietario con este DNI.");
                 return View(propietario);
             }
+            var p1=repo.ObtenerPorEmail(propietario.eMail);
+            if (p1 != null)
+            {
+                ModelState.AddModelError("eMail", "Ya existe un propietario con este Email.");
+                return View(propietario);
+            }
             if (ModelState.IsValid)
             {
                 repo.Alta(propietario);
@@ -47,7 +53,7 @@ namespace Inmobiliaria.Controllers
             return View(propietario);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var propietario = repo.ObtenerPorId(id);
@@ -58,7 +64,7 @@ namespace Inmobiliaria.Controllers
             return View(propietario);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Propietario propietario)
@@ -107,7 +113,7 @@ namespace Inmobiliaria.Controllers
 
 
 
-        [Authorize(Roles = "Administrador,Empleado")]
+        [Authorize]
         [HttpGet]
         public IActionResult BuscarPropietarioPorFraccionApellido( String term)
         {

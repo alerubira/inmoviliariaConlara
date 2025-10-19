@@ -21,7 +21,7 @@ namespace Inmobiliaria.Controllers
             return View(lista);
         }*/
         
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Index(int pageNumber = 1, int pageSize = 5)
         {
             var lista = repo.ObtenerPaginado(pageNumber, pageSize);
@@ -35,14 +35,14 @@ namespace Inmobiliaria.Controllers
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Inquilino inquilino)
@@ -62,7 +62,7 @@ namespace Inmobiliaria.Controllers
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var propietario = repo.ObtenerPorId(id);
@@ -74,7 +74,7 @@ namespace Inmobiliaria.Controllers
         }
 
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Inquilino inquilino)
@@ -125,7 +125,7 @@ namespace Inmobiliaria.Controllers
             return View(inquilino);
         }
 
-        [Authorize(Roles="Administrador,Empleado")]
+        [Authorize]
          [HttpGet]
         public IActionResult BuscarInquilinoPorFraccionApellido( String term)
         {

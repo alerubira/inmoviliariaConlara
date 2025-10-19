@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 namespace Inmobiliaria.Controllers{
     public class MultasController : Controller
     {
@@ -16,7 +17,7 @@ namespace Inmobiliaria.Controllers{
             repositorioContratos = new RepositorioContratos(configuration);
             repositorioInmuebles = new RepositorioInmuebles(configuration);
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             var lista = repo.ObtenerTodos();
@@ -31,6 +32,7 @@ namespace Inmobiliaria.Controllers{
 
             return View(lista);
         }
+        [Authorize]
         public IActionResult Create(int id)
         {
             var contrato = repositorioContratos.ObtenerPorId(id);
@@ -52,6 +54,7 @@ namespace Inmobiliaria.Controllers{
 
             return View(multa);
         }
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Multas multa)
@@ -76,6 +79,7 @@ namespace Inmobiliaria.Controllers{
             }
              return View(multa);
         }
+        [Authorize]
         public IActionResult Calcular(int id)
         {
             var contrato = repositorioContratos.ObtenerPorId(id);
@@ -97,6 +101,7 @@ namespace Inmobiliaria.Controllers{
             multa.ImporteMulta = 0;
             return View(multa);
         }
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Calcular(Multas multa)
@@ -127,25 +132,27 @@ namespace Inmobiliaria.Controllers{
             ModelState.Clear();
             return View("Calculado", multa);
         }
+        [Authorize]
           public IActionResult Edit(int id)
         {
-            var multa=repo.ObtenerPorId(id);
-            if(multa==null){
+            var multa = repo.ObtenerPorId(id);
+            if (multa == null)
+            {
                 return NotFound("No se encontro ninguna multa");
             }
-             var contrato=repositorioContratos.ObtenerPorId(multa.IdContrato);
+            var contrato = repositorioContratos.ObtenerPorId(multa.IdContrato);
 
             if (contrato == null)
             {
                 return NotFound("No se encontro ningun contrato ligado a esa multa");
             }
-             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
+            var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
             multa.DireccionInmueble = contrato.DireccionInmueble;
-            
+
             return View(multa);
         }
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit( Multas multa)
@@ -167,6 +174,7 @@ namespace Inmobiliaria.Controllers{
             
             return View(multa);
         }
+        [Authorize("Administrador")]
         public IActionResult Delete(int id)
         {
             var multa = repo.ObtenerPorId(id);
@@ -176,6 +184,7 @@ namespace Inmobiliaria.Controllers{
             }
             return View(multa);
         }
+        [Authorize(Roles="Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, String bandera)
