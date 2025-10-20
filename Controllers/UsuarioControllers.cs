@@ -37,13 +37,13 @@ namespace InmobiliariaConlara.Controllers
         }
 
         [Authorize(Roles = "Administrador")]
-        // GET: Usuario/Details/5
+        // GET: Usuario/Details/5      // //    NO se usó, fue de prueba
         public ActionResult Details(int id)
         {
             var e = repositorio.ObtenerPorId(id);
             return View(e);
         }
-
+        
 
         [Authorize(Roles = "Administrador")]
         // GET: Usuario/Create

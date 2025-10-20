@@ -5,22 +5,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
-    [Authorize] // 🔒 por defecto todas las acciones requieren login
+    [Authorize] 
     public class HomeController : Controller
     {
-        [AllowAnonymous] // 🚪 cualquiera puede entrar, esté logueado o no
+        [AllowAnonymous] // sin restriccion
         public IActionResult Restringido()
         {
             return View();
         } 
 
-        [Authorize(Roles = "Administrador")] // 👑 solo admins
+        [Authorize(Roles = "Administrador")] // solo admin
         public IActionResult SoloAdmin()
         {
             return Content("📌 Solo el administrador puede ver esta página.");
         }
 
-        [Authorize] // 👨‍💼 empleados y admins
+        [Authorize(Roles = "Empleado,Administrador")] // los dos roles
         public IActionResult SoloEmpleado()
         {
             return Content("📌 Empleados y administradores pueden ver esta página.");

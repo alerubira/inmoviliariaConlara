@@ -31,10 +31,7 @@ namespace InmobiliariaConlara.Models
 		public string Avatar { get; set; } = "";
 		[NotMapped]//Para EF
 		public IFormFile? AvatarFile { get; set; }
-		//[NotMapped]//Para EF
-		//public byte[] AvatarFileContent { get; set; }
-		//[NotMapped]//Para EF
-		//public string AvatarFileName { get; set; }
+
 		public int Rol { get; set; }
 		[NotMapped]//Para EF
 		public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
