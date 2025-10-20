@@ -1,16 +1,14 @@
-using Microsoft.AspNetCore.using InmobiliariaConlara.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+using InmobiliariaConlara.Models;
 using DotNetEnv;
-
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
 // Cargar variables del archivo .env
-Env.Load();
+Env.Load("claves.env");
 
 
 
@@ -48,10 +46,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             ValidAudience = configuration["TokenAuthentication:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(secreto)),
         };
-        });
+    });
 
 // 🔹 Políticas de autorización
-builder.Services.AddAuthorization(options =>
+    builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
     options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));

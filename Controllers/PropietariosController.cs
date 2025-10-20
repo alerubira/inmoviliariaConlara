@@ -3,12 +3,14 @@ using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using InmobiliariaConlara.Services;
 
 namespace Inmobiliaria.Controllers
 {
     public class PropietariosController : Controller
     {
         private readonly RepositorioPropietario repo;
+        private readonly SeguridadService seguridadService = new SeguridadService();
 
         public PropietariosController(IConfiguration configuration)
         {
@@ -47,6 +49,7 @@ namespace Inmobiliaria.Controllers
             }
             if (ModelState.IsValid)
             {
+                propietario.Clave=seguridadService.HashearContraseña(propietario.Clave);
                 repo.Alta(propietario);
                 return RedirectToAction(nameof(Index));
             }
