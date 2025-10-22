@@ -49,11 +49,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // 🔹 Políticas de autorización
-    builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
-    options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
+options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 });
+builder.Services.AddControllers(); // ← agrega soporte para controladores API
+builder.Services.AddEndpointsApiExplorer(); // ← necesario para Swagger
+//builder.Services.AddSwaggerGen(); // ← genera la documentación
+
 
 var app = builder.Build();
 
@@ -62,6 +66,7 @@ app.UseSession();
 
 // Middleware de errores
 app.UseMiddleware<Inmobiliaria.Middleware.ErrorHandlingMiddleware>();
+
 
 if (!app.Environment.IsDevelopment())
 {
@@ -82,5 +87,12 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+app.MapControllers();
+var endpointDataSource = app.Services.GetRequiredService<Microsoft.AspNetCore.Routing.EndpointDataSource>();
+foreach (var endpoint in endpointDataSource.Endpoints)
+{
+    Console.WriteLine(endpoint.DisplayName);
+}
+
 
 app.Run();
