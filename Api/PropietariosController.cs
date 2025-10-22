@@ -25,18 +25,29 @@ namespace InmobiliariaConlara.Api
         [HttpPost("login")]
         public IActionResult Login([FromForm] string Usuario, [FromForm] string Clave)
         {
+           /* {
+
+
+                return Ok(new { UsuarioRecibido = Usuario, ClaveRecibida = Clave });
+
+            }*/
             try
             {
                 // Buscar propietario por email
                 var propietario = repo.ObtenerPorEmail(Usuario);
                 if (propietario == null)
-                    return Unauthorized("Usuario o clave incorrectos");
+                    return Unauthorized("El Usuario no existe");
 
-                var hashed = seguridadService.HashearContraseña(Clave);
+                //var hashed = seguridadService.HashearContraseña(Clave);
+                var hashed = seguridadService.HashearContraseña(Clave).Trim();
+                var claveGuardada = propietario.Clave.Trim();
 
                 // Comparar hash con el guardado
-                if (hashed != propietario.Clave)
-                    return Unauthorized("Usuario o clave incorrectos");
+                if (hashed != claveGuardada)
+                {
+                    return Unauthorized("Usuario o clave incorrectos "+hashed+" - "+propietario.Clave);
+                }
+                    
 
                 // Si todo ok, generar el token
                 var secretKey = configuration["TokenAuthentication:SecretKey"];
@@ -69,5 +80,6 @@ namespace InmobiliariaConlara.Api
                 return BadRequest("desde api" + ex.Message);
             }
         }
+        }
     }
-}
+
