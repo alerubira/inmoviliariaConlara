@@ -2,14 +2,28 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
+using Inmobiliaria.Models;
 using InmobiliariaConlara.Models;
+using InmobiliariaConlara.Services;  // <--- esto es necesario
+
+
 using DotNetEnv;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 // Cargar variables del archivo .env
 Env.Load("claves.env");
 
+builder.Configuration.AddEnvironmentVariables();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddSingleton<SeguridadService>();
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
 
 
 // 🔹 Registrar servicios MVC y Session

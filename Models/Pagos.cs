@@ -21,6 +21,7 @@ namespace Inmobiliaria.Models
 	}
   public class Pagos
   {
+    [Key]
     [Display(Name = "Numero de Pago")]
     public int IdPagos { get; set; }
     //[Required]

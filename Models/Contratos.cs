@@ -5,6 +5,7 @@ namespace Inmobiliaria.Models
 
     public class Contratos
     {
+        [Key]
         [Display(Name = "Codigo Interno")]
         public int IdContrato { get; set; }
         //[Required]

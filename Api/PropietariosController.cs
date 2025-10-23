@@ -3,65 +3,75 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Inmobiliaria.Models; // ajustá el namespace
+using Inmobiliaria.Models;
 using InmobiliariaConlara.Services;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+
 namespace InmobiliariaConlara.Api
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class PropietariosController : ControllerBase
     {
-        private readonly IConfiguration configuration;
-        private readonly RepositorioPropietario repo; // tu clase que accede a la BD
-        private readonly SeguridadService seguridadService = new SeguridadService();
+        private readonly DataContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly SeguridadService _seguridadService;
 
-        public PropietariosController(IConfiguration configuration)
+        public PropietariosController(DataContext context, IConfiguration config, SeguridadService seguridadService)
         {
-            this.configuration = configuration;
-            this.repo = new RepositorioPropietario(configuration);
+            _context = context;
+            _configuration = config;
+            _seguridadService = seguridadService;
         }
-
+[HttpGet]
+		public async Task<ActionResult<Propietario>> Get()
+		{
+			try
+			{
+				
+				string usuario = User?.Identity?.Name ?? "";
+				
+				var res = await _context.Propietario.SingleOrDefaultAsync(x => x.eMail == usuario);
+				return Ok(res);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
         [HttpPost("login")]
+        [AllowAnonymous]
         public IActionResult Login([FromForm] string Usuario, [FromForm] string Clave)
         {
-           /* {
-
-
-                return Ok(new { UsuarioRecibido = Usuario, ClaveRecibida = Clave });
-
-            }*/
             try
             {
-                // Buscar propietario por email
-                var propietario = repo.ObtenerPorEmail(Usuario);
+                var propietario = _context.Propietario
+                    .FirstOrDefault(p => p.eMail == Usuario);
+
                 if (propietario == null)
                     return Unauthorized("El Usuario no existe");
 
-                //var hashed = seguridadService.HashearContraseña(Clave);
-                var hashed = seguridadService.HashearContraseña(Clave).Trim();
+                var hashed = _seguridadService.HashearContraseña(Clave).Trim();
                 var claveGuardada = propietario.Clave.Trim();
 
-                // Comparar hash con el guardado
                 if (hashed != claveGuardada)
-                {
-                    return Unauthorized("Usuario o clave incorrectos "+hashed+" - "+propietario.Clave);
-                }
-                    
+                    return Unauthorized("Usuario o clave incorrectos");
 
-                // Si todo ok, generar el token
-                var secretKey = configuration["TokenAuthentication:SecretKey"];
-                var issuer = configuration["TokenAuthentication:Issuer"];
-                var audience = configuration["TokenAuthentication:Audience"];
+                var secretKey = _configuration["TokenAuthentication:SecretKey"];
+                var issuer = _configuration["TokenAuthentication:Issuer"];
+                var audience = _configuration["TokenAuthentication:Audience"];
 
                 var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var claims = new[]
                 {
-                new Claim(ClaimTypes.Name, propietario.eMail),
-                new Claim("id", propietario.IdPropietario.ToString())
-            };
+                    new Claim(ClaimTypes.Name, propietario.eMail),
+                    new Claim("id", propietario.IdPropietario.ToString())
+                };
 
                 var token = new JwtSecurityToken(
                     issuer: issuer,
@@ -77,9 +87,8 @@ namespace InmobiliariaConlara.Api
             }
             catch (Exception ex)
             {
-                return BadRequest("desde api" + ex.Message);
+                return BadRequest("desde api: " + ex.Message);
             }
         }
-        }
     }
-
+}
