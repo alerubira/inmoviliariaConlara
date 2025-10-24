@@ -13,9 +13,9 @@
             <th>@Html.DisplayNameFor(m => m.First().Direccion)</th>
             <th>@Html.DisplayNameFor(m => m.First().Ambientes)</th>
             <th>@Html.DisplayNameFor(m => m.First().Superficie)</th>
-            <th>@Html.DisplayNameFor(m => m.First().Precio)</th>
-            <th>@Html.DisplayNameFor(m => m.First().TipoInmueble)</th>
-            <th>@Html.DisplayNameFor(m => m.First().Habilitado)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Valor)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Tipo)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Disponible)</th>
         </tr>
     </thead>
     <tbody>
@@ -26,9 +26,9 @@
                 <td>@item.Direccion</td>
                 <td>@item.Ambientes</td>
                 <td>@item.Superficie m²</td>
-                <td>@item.Precio.ToString("C")</td>
-                <td>@item.TipoInmueble</td>
-                <td>@(item.Habilitado ? "Sí" : "No")</td>
+                <td>@item.Valor.ToString("C")</td>
+                <td>@item.Tipo</td>
+                <td>@(item.Disponible ? "Sí" : "No")</td>
             </tr>
         }
     </tbody>

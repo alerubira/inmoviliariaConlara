@@ -25,7 +25,7 @@ namespace Inmobiliaria.Controllers{
             foreach (var inmueble in lista)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+                inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
 
             return View(lista);
@@ -55,7 +55,7 @@ namespace Inmobiliaria.Controllers{
             }
             if (ModelState.IsValid)
             {
-                inmueble.Habilitado = true;
+                inmueble.Disponible = true;
                 repo.Alta(inmueble);
                 return RedirectToAction(nameof(Index));
             }
@@ -73,7 +73,7 @@ namespace Inmobiliaria.Controllers{
                 return NotFound("No se encontro ningun Inmueble para editar");
             }
             inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-            inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+            inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
 
             ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
@@ -153,7 +153,7 @@ namespace Inmobiliaria.Controllers{
             {
                 id = i.IdInmuebles,
                 direccion = i.Direccion,
-                precio = i.Precio
+                precio = i.Valor
             });
 
             return Json(new { success = true, data = resultado });
@@ -176,7 +176,7 @@ namespace Inmobiliaria.Controllers{
             foreach (var inmueble in lista)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+                inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
            // Console.WriteLine("Propietario ID: " + id);
             ViewBag.Propietario = repoPropietario.ObtenerPorId(id.Value);
@@ -190,7 +190,7 @@ namespace Inmobiliaria.Controllers{
             foreach (var inmueble in lista)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+                inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
 
             return View("Index", lista);
@@ -205,7 +205,7 @@ namespace Inmobiliaria.Controllers{
             foreach (var inmueble in lista)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+                inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
             if (!fechaDesde.HasValue || !fechaHasta.HasValue)
             {
@@ -224,7 +224,7 @@ namespace Inmobiliaria.Controllers{
                  foreach (var inmueble in desocupados)
             {
                 inmueble.Duenio = repoPropietario.ObtenerPorId(inmueble.IdPropietario);
-                inmueble.TipoInmueble = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
+                inmueble.Tipo = repositorioTipoInmueble.ObtenerPorId(inmueble.IdTipoInmueble)?.Nombre;
             }
 
                 return View("Index", desocupados);

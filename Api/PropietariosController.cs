@@ -36,7 +36,7 @@ namespace InmobiliariaConlara.Api
                 string usuario = User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
 
 				
-				var res = await _context.Propietario.SingleOrDefaultAsync(x => x.eMail == usuario);
+				var res = await _context.Propietario.SingleOrDefaultAsync(x => x.email == usuario);
 				return Ok(res);
 			}
 			catch (Exception ex)
@@ -51,7 +51,7 @@ namespace InmobiliariaConlara.Api
             try
             {
                 var propietario = _context.Propietario
-                    .FirstOrDefault(p => p.eMail == Usuario);
+                    .FirstOrDefault(p => p.email == Usuario);
 
                 if (propietario == null)
                     return Unauthorized("El Usuario no existe");
@@ -71,7 +71,7 @@ namespace InmobiliariaConlara.Api
 
                 var claims = new[]
                 {
-                    new Claim(ClaimTypes.Name, propietario.eMail),
+                    new Claim(ClaimTypes.Name, propietario.email),
                     new Claim("id", propietario.IdPropietario.ToString())
                 };
 
@@ -99,13 +99,17 @@ namespace InmobiliariaConlara.Api
             {
                 // Obtener el email del propietario autenticado desde el token
                 string usuario = User?.Identity?.Name ?? "";
+               
                 if (string.IsNullOrEmpty(usuario))
                     return Unauthorized("Token inválido o expirado.");
 
                 //  Buscar el propietario actual en la base de datos
-                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.eMail == usuario);
+                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.email == usuario);
                 if (propietario == null)
                     return NotFound("Propietario no encontrado.");
+                var idClaim=User?.Claims?.FirstOrDefault(c=>c.Type=="id")?.Value;    
+                if(propietario.IdPropietario.ToString() != idClaim)
+                    return Unauthorized("No tienes permiso para actualizar este propietario.");    
 
                 //  Actualizar los campos permitidos
                 propietario.Nombre = datosActualizados.Nombre;
@@ -141,7 +145,7 @@ namespace InmobiliariaConlara.Api
                     return Unauthorized("Usuario no autenticado.");
 
                 // Buscar al propietario
-                var propietario = await _context.Propietario.SingleOrDefaultAsync(p => p.eMail == email);
+                var propietario = await _context.Propietario.SingleOrDefaultAsync(p => p.email == email);
                 if (propietario == null)
                     return NotFound("Propietario no encontrado.");
 

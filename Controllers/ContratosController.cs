@@ -41,7 +41,7 @@ namespace Inmobiliaria.Controllers;
                 //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
                 var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
                 contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-                contrato.Precio = inm != null ? inm.Precio : 0;
+                contrato.Precio = inm != null ? inm.Valor : 0;
             }
 
             return View(lista);
@@ -128,7 +128,7 @@ namespace Inmobiliaria.Controllers;
             //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-            contrato.Precio = inm != null ? inm.Precio : 0;
+            contrato.Precio = inm != null ? inm.Valor : 0;
 
             // ViewBag.TipoInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(contrato);
@@ -237,8 +237,8 @@ namespace Inmobiliaria.Controllers;
             //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
             var inm = repositorioInmuebles.ObtenerPorId(contrato.IdInmuebles);
             contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-            contrato.Precio = inm != null ? inm.Precio : 0;
-            contrato.Monto = inm != null ? inm.Precio : 0;
+            contrato.Precio = inm != null ? inm.Valor : 0;
+            contrato.Monto = inm != null ? inm.Valor : 0;
             contrato.CantidadCuotas = 0;
             contrato.CuotasPagas = 0;
             contrato.FechaDesde=contrato.FechaHasta;

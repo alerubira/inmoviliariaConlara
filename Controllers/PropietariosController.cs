@@ -41,7 +41,7 @@ namespace Inmobiliaria.Controllers
                 ModelState.AddModelError("Dni", "Ya existe un propietario con este DNI.");
                 return View(propietario);
             }
-            var p1=repo.ObtenerPorEmail(propietario.eMail);
+            var p1=repo.ObtenerPorEmail(propietario.email);
             if (p1 != null)
             {
                 ModelState.AddModelError("eMail", "Ya existe un propietario con este Email.");

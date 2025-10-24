@@ -17,6 +17,7 @@ namespace Inmobiliaria.Models
 		public DbSet<Propietario> Propietario { get; set; }
 		public DbSet<Inquilino> Inquilinos { get; set; }
 		public DbSet<Inmuebles> Inmuebles { get; set; }
+		public DbSet<TipoInmueble> TipoInmueble { get; set; }
         public DbSet<Contratos> Contratos { get; set; }
         public DbSet<Pagos> Pagos { get; set; }
 		

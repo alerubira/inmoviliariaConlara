@@ -22,7 +22,7 @@ namespace Inmobiliaria.Models
 		 [StringLength(100, ErrorMessage = "El teléfono no puede superar los 100 caracteres")]
 		public string Telefono { get; set; } = string.Empty;
 		[Required, EmailAddress]
-		public string eMail { get; set; } = string.Empty;
+		public string email { get; set; } = string.Empty;
 		[Required(ErrorMessage = "La clave es obligatoria"), DataType(DataType.Password)]
 		public string Clave { get; set; } = string.Empty;
 

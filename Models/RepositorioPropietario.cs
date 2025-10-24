@@ -29,7 +29,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@apellido", p.Apellido);
                     command.Parameters.AddWithValue("@dni", p.Dni);
                     command.Parameters.AddWithValue("@telefono", p.Telefono ?? "");
-                    command.Parameters.AddWithValue("@email", p.eMail);
+                    command.Parameters.AddWithValue("@email", p.email);
                     command.Parameters.AddWithValue("@clave", p.Clave);
                     command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
@@ -55,7 +55,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@nombre", p.Nombre);
                     command.Parameters.AddWithValue("@dni", p.Dni);
                     command.Parameters.AddWithValue("@telefono", p.Telefono ?? "");
-                    command.Parameters.AddWithValue("@email", p.eMail);
+                    command.Parameters.AddWithValue("@email", p.email);
                     //command.Parameters.AddWithValue("@clave", p.Clave);
                     command.Parameters.AddWithValue("@existe",0);
                     command.Parameters.AddWithValue("@id", p.IdPropietario);
@@ -81,7 +81,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@nombre", p.Nombre);
                     command.Parameters.AddWithValue("@dni", p.Dni);
                     command.Parameters.AddWithValue("@telefono", p.Telefono ?? "");
-                    command.Parameters.AddWithValue("@email", p.eMail);
+                    command.Parameters.AddWithValue("@email", p.email);
                     //command.Parameters.AddWithValue("@clave", p.Clave);
                     command.Parameters.AddWithValue("@existe",1);
                     command.Parameters.AddWithValue("@id", p.IdPropietario);
@@ -112,7 +112,7 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString("Apellido"),
                             Dni = reader.GetString("Dni"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
-                            eMail = reader.GetString("eMail"),
+                            email = reader.GetString("eMail"),
                             Clave = reader.GetString("Clave"),
                         };
                         res.Add(p);
@@ -144,7 +144,7 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString("Apellido"),
                             Dni = reader.GetString("Dni"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
-                            eMail = reader.GetString("eMail"),
+                            email = reader.GetString("eMail"),
                             Clave = reader.GetString("Clave"),
                         };
                     }
@@ -174,7 +174,7 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString("Apellido"),
                             Dni = reader.GetString("Dni"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
-                            eMail = reader.GetString("eMail"),
+                            email = reader.GetString("eMail"),
                             Clave = reader.GetString("Clave"),
                         };
                     }
@@ -204,7 +204,7 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString("Apellido"),
                             Dni = reader.GetString("Dni"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? "" : reader.GetString("Telefono"),
-                            eMail = reader.GetString("eMail"),
+                            email = reader.GetString("eMail"),
                             Clave = reader.GetString("Clave"),
                         };
                     }

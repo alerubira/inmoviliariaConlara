@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Inmobiliaria.Models
 {
@@ -30,16 +32,21 @@ namespace Inmobiliaria.Models
     public int IdPropietario { get; set; }
     [Display(Name = "Tipo de Inmueble")]
     [Required(ErrorMessage = "El tipo de inmueble es obligatorio")]
+    [ForeignKey(nameof(IdTipoInmueble))]
     public int IdTipoInmueble { get; set; }
     [Required(ErrorMessage = "El precio es obligatorio")]
-    public decimal Precio { get; set; }
-    public bool Habilitado { get; set; }
+    public decimal Valor { get; set; }
+    public bool Disponible { get; set; }
     [Display(Name = "Dueño")]
+     [ForeignKey(nameof(IdPropietario))]
     public Propietario? Duenio { get; set; }
     [Display(Name = "Tipo de Inmueble")]
-    public String? TipoInmueble { get; set; }
+    [NotMapped]
+       
+    public String? Tipo { get; set; }
     [Required]
     public bool Existe { get; set; }
+    public String? imagen{ get; set; }
 		/*[ForeignKey(nameof(idPropietario))]
    [BindNever]
     public Propietario? Duenio { get; set; }

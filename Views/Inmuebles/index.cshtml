@@ -81,13 +81,13 @@
 				@Html.DisplayNameFor(model => model.Duenio)
 			</th>
             <th>
-				@Html.DisplayNameFor(model => model.TipoInmueble)
+				@Html.DisplayNameFor(model => model.Tipo)
 			</th>
             <th>
-                @Html.DisplayNameFor(model => model.Precio)
+                @Html.DisplayNameFor(model => model.Valor)
 			<th>
               <th>
-                @Html.DisplayNameFor(model => model.Habilitado)
+                @Html.DisplayNameFor(model => model.Disponible)
 			<th>    
 		</tr>
 	</thead>
@@ -117,13 +117,13 @@
 				     @(item.Duenio != null ? item.Duenio.ToString() : "Sin propietario")
 				</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TipoInmueble)
+                    @Html.DisplayFor(modelItem => item.Tipo)
 				<td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Precio)
+                    @Html.DisplayFor(modelItem => item.Valor)
 				<td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Habilitado)
+                    @Html.DisplayFor(modelItem => item.Disponible)
 				<td>        
 
 					<div class="btn-group" role="group">

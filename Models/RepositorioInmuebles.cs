@@ -30,7 +30,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
                     command.Parameters.AddWithValue("@IdTipoInmueble", inmueble.IdTipoInmueble);
-                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
+                    command.Parameters.AddWithValue("@precio", inmueble.Valor);
                     command.Parameters.AddWithValue("@habilitado", 1);
                     command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
@@ -60,8 +60,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
                     command.Parameters.AddWithValue("@idTipoInmueble", inmueble.IdTipoInmueble);
-                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
-                    command.Parameters.AddWithValue("@habilitado", inmueble.Habilitado);
+                    command.Parameters.AddWithValue("@precio", inmueble.Valor);
+                    command.Parameters.AddWithValue("@habilitado", inmueble.Disponible);
                     command.Parameters.AddWithValue("@existe", 0);
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -89,8 +89,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@idPropietario", inmueble.IdPropietario);
                     command.Parameters.AddWithValue("@idTipoInmueble", inmueble.IdTipoInmueble);
-                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
-                    command.Parameters.AddWithValue("@habilitado", inmueble.Habilitado);
+                    command.Parameters.AddWithValue("@precio", inmueble.Valor);
+                    command.Parameters.AddWithValue("@habilitado", inmueble.Disponible);
                     command.Parameters.AddWithValue("@existe", 1);
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -124,8 +124,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["idPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                         res.Add(inmueble);
@@ -163,8 +163,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                     }
@@ -200,8 +200,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                     }
@@ -240,8 +240,8 @@ namespace Inmobiliaria.Models
                             {
                                 IdInmuebles = reader.GetInt32("IdInmuebles"),
                                 Direccion = reader.GetString("Direccion"),
-                                Precio = reader.GetDecimal("Precio"),
-                                Habilitado = reader.GetBoolean("Habilitado")
+                                Valor = reader.GetDecimal("Precio"),
+                                Disponible = reader.GetBoolean("Habilitado")
                             };
                             res.Add(i);
                         }
@@ -283,8 +283,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["idPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                         res.Add(inmueble);
@@ -319,8 +319,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["idPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                         res.Add(inmueble);
@@ -369,8 +369,8 @@ namespace Inmobiliaria.Models
                             Longitud = Convert.ToDecimal(reader["Longitud"]),
                             IdPropietario = Convert.ToInt32(reader["idPropietario"]),
                             IdTipoInmueble = Convert.ToInt32(reader["IdTipoInmueble"]),
-                            Precio = Convert.ToDecimal(reader["precio"]),
-                            Habilitado = Convert.ToBoolean(reader["habilitado"])
+                            Valor = Convert.ToDecimal(reader["precio"]),
+                            Disponible = Convert.ToBoolean(reader["habilitado"])
 
                         };
                         res.Add(inmueble);

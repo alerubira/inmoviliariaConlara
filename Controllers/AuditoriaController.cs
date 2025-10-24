@@ -58,7 +58,7 @@ public class AuditoriaController : Controller
                 //  contrato.NombreInquilino=RepositorioInquilino.ObtenerPorId(contrato.IdInquilino).ToString() ?? "";
                 var inm = repositorioInmueble.ObtenerPorId(contrato.IdInmuebles);
                 contrato.DireccionInmueble = inm != null ? inm.Direccion : "";
-                contrato.Precio = inm != null ? inm.Precio : 0;
+                contrato.Precio = inm != null ? inm.Valor : 0;
             }
         return View(contratos);
     }
