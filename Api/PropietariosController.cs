@@ -108,7 +108,7 @@ namespace InmobiliariaConlara.Api
                 if (propietario == null)
                     return NotFound("Propietario no encontrado.");
                 var idClaim=User?.Claims?.FirstOrDefault(c=>c.Type=="id")?.Value;    
-                if(propietario.IdPropietario.ToString() != idClaim)
+                if(datosActualizados.IdPropietario.ToString() != idClaim)
                     return Unauthorized("No tienes permiso para actualizar este propietario.");    
 
                 //  Actualizar los campos permitidos

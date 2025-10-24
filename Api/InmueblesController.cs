@@ -66,6 +66,44 @@ namespace InmobiliariaConlara.Api
                 return BadRequest("desdede api :"+ex.Message);
             }
         }
+         [HttpPut("actualizar")]
+        public async Task<ActionResult<Inmuebles>> Actualizar([FromBody] Inmuebles datosActualizados)
+        {
+            try
+            {
+                // Obtener el email del propietario autenticado desde el token
+                string usuario = User?.Identity?.Name ?? "";
+               
+                if (string.IsNullOrEmpty(usuario))
+                    return Unauthorized("Token inválido o expirado.");
+
+                //  Buscar el propietario actual en la base de datos
+                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.email == usuario);
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado.");
+                var idClaim=User?.Claims?.FirstOrDefault(c=>c.Type=="id")?.Value;    
+                if(datosActualizados.IdPropietario.ToString() != idClaim)
+                    return Unauthorized("No tienes permiso para actualizar este Inmueble.");    
+                var inmueble = await _context.Inmuebles.FirstOrDefaultAsync(i => i.IdInmuebles == datosActualizados.IdInmuebles);
+                if (inmueble == null)
+                    return NotFound("Inmueble no encontrado.");    
+
+                //  Actualizar los campos permitidos
+                   inmueble.Disponible = datosActualizados.Disponible;
+
+
+                //  Guardar cambios
+                _context.Inmuebles.Update(inmueble);
+                await _context.SaveChangesAsync();
+
+                // Devolver el inmueble actualizado
+                return Ok(inmueble);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error al actualizar: " + ex.Message);
+            }
+        }
 
     }
 }
