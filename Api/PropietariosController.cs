@@ -30,9 +30,11 @@ namespace InmobiliariaConlara.Api
 		public async Task<ActionResult<Propietario>> Get()
 		{
 			try
-			{
+            {
 				
-				string usuario = User?.Identity?.Name ?? "";
+				//string usuario = User?.Identity?.Name ?? "";
+                string usuario = User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
+
 				
 				var res = await _context.Propietario.SingleOrDefaultAsync(x => x.eMail == usuario);
 				return Ok(res);
@@ -90,5 +92,76 @@ namespace InmobiliariaConlara.Api
                 return BadRequest("desde api: " + ex.Message);
             }
         }
+        [HttpPut("actualizar")]
+        public async Task<ActionResult<Propietario>> Actualizar([FromBody] Propietario datosActualizados)
+        {
+            try
+            {
+                // Obtener el email del propietario autenticado desde el token
+                string usuario = User?.Identity?.Name ?? "";
+                if (string.IsNullOrEmpty(usuario))
+                    return Unauthorized("Token inválido o expirado.");
+
+                //  Buscar el propietario actual en la base de datos
+                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.eMail == usuario);
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado.");
+
+                //  Actualizar los campos permitidos
+                propietario.Nombre = datosActualizados.Nombre;
+                propietario.Apellido = datosActualizados.Apellido;
+                propietario.Telefono = datosActualizados.Telefono;
+                propietario.Dni = datosActualizados.Dni;
+
+
+                //  Si quisieras actualizar la clave:
+                // if (!string.IsNullOrEmpty(datosActualizados.Clave))
+                //     propietario.Clave = _seguridadService.HashearContraseña(datosActualizados.Clave);
+
+                //  Guardar cambios
+                _context.Propietario.Update(propietario);
+                await _context.SaveChangesAsync();
+
+                // Devolver el propietario actualizado
+                return Ok(propietario);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error al actualizar: " + ex.Message);
+            }
+        }
+         [HttpPut("cambiarClave")]
+        public async Task<IActionResult> CambiarClave([FromForm] string claveActual, [FromForm] string claveNueva)
+        {
+            try
+            {
+                // Obtener el email del propietario desde el token
+                var email = User?.Identity?.Name;
+                if (string.IsNullOrEmpty(email))
+                    return Unauthorized("Usuario no autenticado.");
+
+                // Buscar al propietario
+                var propietario = await _context.Propietario.SingleOrDefaultAsync(p => p.eMail == email);
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado.");
+
+                // Verificar contraseña actual
+                var hashedClaveActual = _seguridadService.HashearContraseña(claveActual).Trim();
+                if (hashedClaveActual != propietario.Clave.Trim())
+                    return Unauthorized("La contraseña actual es incorrecta.");
+
+                // Actualizar a la nueva contraseña
+                propietario.Clave = _seguridadService.HashearContraseña(claveNueva).Trim();
+                _context.Propietario.Update(propietario);
+                await _context.SaveChangesAsync();
+
+                return NoContent(); // Devuelve 204, sin contenido
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
