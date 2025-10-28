@@ -8,6 +8,9 @@ using InmobiliariaConlara.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using Microsoft.AspNetCore.Hosting; // para IWebHostEnvironment
+
 
 namespace InmobiliariaConlara.Api
 {
@@ -19,12 +22,14 @@ namespace InmobiliariaConlara.Api
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
         private readonly SeguridadService _seguridadService;
+        private readonly IWebHostEnvironment _environment; // <-- agregar
 
-        public InmueblesController(DataContext context, IConfiguration config, SeguridadService seguridadService)
+        public InmueblesController(IWebHostEnvironment environment,DataContext context, IConfiguration config, SeguridadService seguridadService)
         {
             _context = context;
             _configuration = config;
             _seguridadService = seguridadService;
+             _environment = environment; // <-- asignar
         }
       
     
@@ -104,6 +109,61 @@ namespace InmobiliariaConlara.Api
                 return BadRequest("Error al actualizar: " + ex.Message);
             }
         }
+        [HttpPost("cargar")]
+     public async Task<ActionResult<Inmuebles>> CargarInmueble(
+    [FromForm] IFormFile imagen, 
+    [FromForm] string inmueble) // JSON como string
+    {
+            try
+            {
+                // Obtener propietario del token
+                string usuario = User?.Identity?.Name ?? "";
+                if (string.IsNullOrEmpty(usuario))
+                    return Unauthorized("Token inválido o expirado.");
+
+                var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.email == usuario);
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado.");
+
+                // Convertir JSON string a objeto Inmuebles
+                var datosInmueble = JsonSerializer.Deserialize<Inmuebles>(inmueble);
+                if (datosInmueble == null)
+                    return BadRequest("Datos de inmueble inválidos.");
+                datosInmueble.IdPropietario = propietario.IdPropietario;
+                 _context.Inmuebles.Add(datosInmueble);
+                await _context.SaveChangesAsync();
+
+                //  insertar foto al inmueble
+                   //  Guardar la imagen en wwwroot/Uploads
+                string wwwPath = _environment.WebRootPath; // asegúrate de inyectar IWebHostEnvironment _environment
+                string uploadPath = Path.Combine(wwwPath, "Uploads");
+
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                // Nombre único de la imagen: "inmueble_<Id>.ext"
+                string fileName = $"inmueble_{datosInmueble.IdInmuebles}{Path.GetExtension(imagen.FileName)}";
+                string filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imagen.CopyToAsync(stream);
+                }
+
+                // Guardar la ruta relativa en el objeto Inmuebles
+                datosInmueble.imagen = Path.Combine("/Uploads", fileName);
+
+                //  Actualizar el inmueble con la URL de la imagen
+                _context.Inmuebles.Update(datosInmueble);
+                await _context.SaveChangesAsync();
+
+                return Ok(datosInmueble);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error al cargar inmueble: " + ex.Message);
+            }
+    }
 
     }
 }
