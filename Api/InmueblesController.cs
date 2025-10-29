@@ -110,10 +110,10 @@ namespace InmobiliariaConlara.Api
             }
         }
         [HttpPost("cargar")]
-     public async Task<ActionResult<Inmuebles>> CargarInmueble(
-    [FromForm] IFormFile imagen, 
+        public async Task<ActionResult<Inmuebles>> CargarInmueble(
+    [FromForm] IFormFile imagen,
     [FromForm] string inmueble) // JSON como string
-    {
+        {
             try
             {
                 // Obtener propietario del token
@@ -124,32 +124,34 @@ namespace InmobiliariaConlara.Api
                 var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.email == usuario);
                 if (propietario == null)
                     return NotFound("Propietario no encontrado.");
-                    
+
                 var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true,
-                        AllowTrailingCommas = true
-                    };
+                {
+                    PropertyNameCaseInsensitive = true,
+                    AllowTrailingCommas = true
+                };
 
-                    Inmuebles datosInmueble;
-                    try
-                    {
+                Inmuebles datosInmueble;
+                try
+                {
+                    
                         datosInmueble = JsonSerializer.Deserialize<Inmuebles>(inmueble, options);
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest($"Error interno del servidor");
-                    }
+                  
+                }
+                catch (Exception )
+                {
+                    return BadRequest($"Error interno del servidor");
+                }
 
-                    if (datosInmueble == null)
-                        return BadRequest("Datos de inmueble inválidos.");
+                if (datosInmueble == null)
+                    return BadRequest("Datos de inmueble inválidos.");
                 datosInmueble.IdPropietario = propietario.IdPropietario;
-                    _context.Inmuebles.Add(datosInmueble);
-                        await _context.SaveChangesAsync();
+                _context.Inmuebles.Add(datosInmueble);
+                await _context.SaveChangesAsync();
 
-                                    //  insertar foto al inmueble
+                //  insertar foto al inmueble
                 //  Guardar la imagen en wwwroot/Uploads
-                string wwwPath = _environment.WebRootPath; 
+                string wwwPath = _environment.WebRootPath;
                 string uploadPath = Path.Combine(wwwPath, "Uploads");
 
                 if (!Directory.Exists(uploadPath))
@@ -178,7 +180,49 @@ namespace InmobiliariaConlara.Api
                 var inner = ex.InnerException?.Message ?? ex.Message;
                 return BadRequest("Error al cargar inmueble: " + inner);
             }
-    }
+        }
+     [HttpGet("GetContratoVigente")]
+        public async Task<ActionResult<List<Inmuebles>>> GetContratoVigente ()
+        {
+            try
+            {
+                string usuario = User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
+
+                var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.email == usuario);
+                if (propietario == null) return NotFound("Propietario no encontrado");
+               var inmuebles = await (
+                                    from i in _context.Inmuebles
+                                    join t in _context.TipoInmueble on i.IdTipoInmueble equals t.IdTipoInmueble
+                                    join c in _context.Contratos on i.IdInmuebles equals c.IdInmuebles
+                                    where i.IdPropietario == propietario.IdPropietario
+                                        && c.Vigente == true   //  solo contratos vigentes
+                                    select new Inmuebles
+                                    {
+                                        IdInmuebles = i.IdInmuebles,
+                                        Direccion = i.Direccion,
+                                        IdPropietario = i.IdPropietario,
+                                        Tipo = t.Nombre,
+                                        imagen = i.imagen,
+                                        Valor = i.Valor,
+                                        Disponible = i.Disponible,
+                                        Latitud = i.Latitud,
+                                        Longitud = i.Longitud,
+                                        Ambientes = i.Ambientes,
+                                        Superficie = i.Superficie,
+                                        Existe = i.Existe,
+                                        IdTipoInmueble = i.IdTipoInmueble
+                                    }
+                                ).Distinct().ToListAsync();
+
+
+
+                return Ok(inmuebles);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("desdede api :"+ex.Message);
+            }
+        }
 
     }
 }

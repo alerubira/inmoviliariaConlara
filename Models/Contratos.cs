@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inmobiliaria.Models
 {
@@ -11,8 +12,10 @@ namespace Inmobiliaria.Models
         //[Required]
         //[Display(Name = "Dirección")]
         //[Required(ErrorMessage = "La dirección es requerida")]
+        [ForeignKey("Inquilinos")]
         [Required(ErrorMessage = "El inquilino es obligatorio")]
         public int? IdInquilino { get; set; }
+        [ForeignKey("Inmuebles")]
         [Required(ErrorMessage = " El inmueble es obligatorio")]
         public int IdInmuebles { get; set; }
         [Required(ErrorMessage = "El monto es obligatorio")]
