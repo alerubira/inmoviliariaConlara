@@ -35,7 +35,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@cuotasPagas", contrato.CuotasPagas);
                     command.Parameters.AddWithValue("@mesInicio", contrato.MesInicio);
                     command.Parameters.AddWithValue("@existe", contrato.Existe);
-                    command.Parameters.AddWithValue("@usuarioAlta", contrato.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioAlta", contrato.UsuarioAlta);
                     command.Parameters.AddWithValue("@usuarioBaja", contrato.UsuarioBaja);
 
                     connection.Open();
@@ -100,7 +100,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@cuotasPagas", contrato.CuotasPagas);
                     command.Parameters.AddWithValue("@mesInicio", contrato.MesInicio);
                     command.Parameters.AddWithValue("@existe", contrato.Existe);
-                    command.Parameters.AddWithValue("@usuarioAlta", contrato.UsuariAlta);
+                    command.Parameters.AddWithValue("@usuarioAlta", contrato.UsuarioAlta);
                     command.Parameters.AddWithValue("@usuarioBaja", contrato.UsuarioBaja);
 
                     connection.Open();
@@ -219,7 +219,7 @@ namespace Inmobiliaria.Models
                             CantidadCuotas = Convert.ToInt32(reader["cantidadCuotas"]),
                             CuotasPagas = Convert.ToInt32(reader["cuotasPagas"]),
                             MesInicio = Convert.ToInt32(reader["mesInicio"]),
-                            UsuariAlta = Convert.ToInt32(reader["usuarioAlta"]),
+                            UsuarioAlta = Convert.ToInt32(reader["usuarioAlta"]),
                             Existe = Convert.ToBoolean(reader["existe"]),
                             mailUsuarioBaja = Convert.ToString(reader["usuarioBaja"])
                         };

@@ -52,12 +52,27 @@ namespace InmobiliariaConlara.Api
                 }
                 var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.email == usuario);
                 if (propietario == null) return NotFound("Propietario no encontrado");
-               var pagos = await _context.Pagos
-                        .Where(p => p.IdContratos == idContrato)
-                        .ToListAsync();
+              var pagos = await (
+                            from p in _context.Pagos
+                            join c in _context.Contratos on p.IdContratos equals c.IdContrato
+                            join i in _context.Inmuebles on c.IdInmuebles equals i.IdInmuebles
+                            where p.IdContratos == idContrato
+                            select new
+                            {
+                                p.IdPagos,
+                                p.IdContratos,
+                                p.FechaPago,
+                                p.Importe,
+                                p.Concepto,
+                                p.NumeroCuota,
+                                DireccionInmueble = i.Direccion,
+                                FechaInicioContrato = c.FechaDesde,
+                                FechaFinContrato = c.FechaHasta
+                            }
+                        ).ToListAsync();
 
+return Ok(pagos);
 
-                return Ok(pagos);
             }
             catch (Exception ex)
             {

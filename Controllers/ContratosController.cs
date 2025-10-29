@@ -66,7 +66,7 @@ namespace Inmobiliaria.Controllers;
 
 
         contrato.Existe = true;
-        contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
+        contrato.UsuarioAlta = int.Parse(User.FindFirst("UserId")?.Value);
 
         if (ModelState.IsValid)
         {
@@ -261,7 +261,7 @@ namespace Inmobiliaria.Controllers;
             {
                 contrato.Vigente = true;
                 contrato.Existe = true;
-                contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value);
+                contrato.UsuarioAlta = int.Parse(User.FindFirst("UserId")?.Value);
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));
             }
@@ -280,7 +280,7 @@ namespace Inmobiliaria.Controllers;
                 }
             }
                 contrato.Existe = true;
-                contrato.UsuariAlta = int.Parse(User.FindFirst("UserId")?.Value); // TODO: intentar simplificar
+                contrato.UsuarioAlta = int.Parse(User.FindFirst("UserId")?.Value); // TODO: intentar simplificar
                 contrato.Vigente = true;
                 repo.Alta(contrato);
                 return RedirectToAction(nameof(Index));

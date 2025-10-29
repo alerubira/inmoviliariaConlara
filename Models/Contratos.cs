@@ -42,21 +42,25 @@ namespace Inmobiliaria.Models
         public Int32 CuotasPagas { get; set; }
         [Required(ErrorMessage = "El mes de inicio es obligatorio")]
         public Int32 MesInicio { get; set; }
-
+        [NotMapped]
         public decimal? Precio { get; set; }
+        [NotMapped]
         [Display(Name = "Inquilino")]
         public String? NombreInquilino { get; set; }
+        [NotMapped]
         [Display(Name = "Direccion del Inmueble")]
         public String? DireccionInmueble { get; set; }
+        
         [Display(Name = "Usuario que realizo el Alta")]
         [Required(ErrorMessage = "El usuario que realiza el alta es obligatorio")]
-        public int UsuariAlta { get; set; }
+        public int UsuarioAlta { get; set; }
         [Display(Name = "Usuario que realizo la Baja")]
         public int? UsuarioBaja { get; set; }
         public bool Existe { get; set; }
-        
+        [NotMapped]
         [Display(Name = "Usuario que realizo el Alta")]
         public String? mailUsuarioAlta { get; set; }
+        [NotMapped]
         [Display(Name = "Usuario que realizo la Baja")]
         public String? mailUsuarioBaja { get; set; }
     }
