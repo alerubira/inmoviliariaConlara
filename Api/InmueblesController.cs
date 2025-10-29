@@ -124,18 +124,32 @@ namespace InmobiliariaConlara.Api
                 var propietario = await _context.Propietario.FirstOrDefaultAsync(p => p.email == usuario);
                 if (propietario == null)
                     return NotFound("Propietario no encontrado.");
+                    
+                var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        AllowTrailingCommas = true
+                    };
 
-                // Convertir JSON string a objeto Inmuebles
-                var datosInmueble = JsonSerializer.Deserialize<Inmuebles>(inmueble);
-                if (datosInmueble == null)
-                    return BadRequest("Datos de inmueble inválidos.");
+                    Inmuebles datosInmueble;
+                    try
+                    {
+                        datosInmueble = JsonSerializer.Deserialize<Inmuebles>(inmueble, options);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest($"Error interno del servidor");
+                    }
+
+                    if (datosInmueble == null)
+                        return BadRequest("Datos de inmueble inválidos.");
                 datosInmueble.IdPropietario = propietario.IdPropietario;
-                 _context.Inmuebles.Add(datosInmueble);
-                await _context.SaveChangesAsync();
+                    _context.Inmuebles.Add(datosInmueble);
+                        await _context.SaveChangesAsync();
 
-                //  insertar foto al inmueble
-                   //  Guardar la imagen en wwwroot/Uploads
-                string wwwPath = _environment.WebRootPath; // asegúrate de inyectar IWebHostEnvironment _environment
+                                    //  insertar foto al inmueble
+                //  Guardar la imagen en wwwroot/Uploads
+                string wwwPath = _environment.WebRootPath; 
                 string uploadPath = Path.Combine(wwwPath, "Uploads");
 
                 if (!Directory.Exists(uploadPath))
@@ -161,7 +175,8 @@ namespace InmobiliariaConlara.Api
             }
             catch (Exception ex)
             {
-                return BadRequest("Error al cargar inmueble: " + ex.Message);
+                var inner = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest("Error al cargar inmueble: " + inner);
             }
     }
 
