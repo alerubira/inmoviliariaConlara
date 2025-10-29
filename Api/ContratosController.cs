@@ -36,10 +36,19 @@ namespace InmobiliariaConlara.Api
         {
             try
             {
+                if (idInmueble <= 0) return BadRequest("Id Inmueble no valido");
+            
                 string usuario = User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
-
+                Inmuebles inmueble = await _context.Inmuebles.SingleOrDefaultAsync(x => x.IdInmuebles == idInmueble);
+                if (inmueble == null) return NotFound("Inmueble no encontrado");
+                var idClaim = User?.Claims?.FirstOrDefault(c => c.Type == "id")?.Value; 
+                if(inmueble.IdPropietario.ToString() != idClaim)
+                {
+                    return Forbid("No tiene permiso para ver los contratos de este inmueble");
+                }
                 var propietario = await _context.Propietario.SingleOrDefaultAsync(x => x.email == usuario);
                 if (propietario == null) return NotFound("Propietario no encontrado");
+
                 var contratos = await (from i in _context.Inmuebles
                                      join t in _context.TipoInmueble on i.IdTipoInmueble equals t.IdTipoInmueble
                                      join c in _context.Contratos on i.IdInmuebles equals c.IdInmuebles
@@ -51,12 +60,21 @@ namespace InmobiliariaConlara.Api
                                          IdContrato = c.IdContrato,
                                          IdInmuebles = c.IdInmuebles,
                                          IdInquilino = c.IdInquilino,
+                                         DireccionInmueble = i.Direccion,
+                                         NombreInquilino = (from inq in _context.Inquilino
+                                                            where inq.IdInquilino == c.IdInquilino
+                                                            select inq.Nombre + " " + inq.Apellido).FirstOrDefault(),
                                          FechaDesde = c.FechaDesde,
                                          FechaHasta = c.FechaHasta,
                                          Monto = c.Monto,
-                                         Vigente = c.Vigente
+                                         Vigente = c.Vigente,
+                                         Existe = c.Existe,
+                                         CantidadCuotas = c.CantidadCuotas,
+                                         CuotasPagas = c.CuotasPagas,
+                                         MesInicio = c.MesInicio
+                                         
+
                                      }).ToListAsync();
-               //nesecito el nimbre del inquilino y la direccion del inmueble
 
 
                 return Ok(contratos);

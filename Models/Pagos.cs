@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inmobiliaria.Models
 {
@@ -25,6 +26,7 @@ namespace Inmobiliaria.Models
     [Display(Name = "Numero de Pago")]
     public int IdPagos { get; set; }
     //[Required]
+    [ForeignKey("Contratos")]
     [Display(Name = "Codigo de Contrato")]
     [Required(ErrorMessage = "El contrato es obligatorio")]
     public int IdContratos { get; set; }
