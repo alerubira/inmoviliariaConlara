@@ -170,11 +170,11 @@ namespace InmobiliariaConlara.Api
                 datosInmueble.imagen = Path.Combine("/Uploads", fileName);
                 datosInmueble.Disponible = false;
                 datosInmueble.Existe = true;
-                datosInmueble.Duenio.Clave = null;//por seguridad
+                
                 //  Actualizar el inmueble con la URL de la imagen
                 _context.Inmuebles.Update(datosInmueble);
                 await _context.SaveChangesAsync();
-
+                  datosInmueble.Duenio.Clave = null;//por seguridad
                 return Ok(datosInmueble);
             }
             catch (Exception ex)
