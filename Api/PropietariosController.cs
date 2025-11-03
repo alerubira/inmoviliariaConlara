@@ -79,7 +79,7 @@ namespace InmobiliariaConlara.Api
                     issuer: issuer,
                     audience: audience,
                     claims: claims,
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddHours(5),
                     signingCredentials: creds
                 );
 

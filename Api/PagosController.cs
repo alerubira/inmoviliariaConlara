@@ -22,14 +22,14 @@ namespace InmobiliariaConlara.Api
         private readonly DataContext _context;
         private readonly IConfiguration _configuration;
         private readonly SeguridadService _seguridadService;
-        private readonly IWebHostEnvironment _environment; // <-- agregar
+        private readonly IWebHostEnvironment _environment; 
 
         public PagosController(IWebHostEnvironment environment, DataContext context, IConfiguration config, SeguridadService seguridadService)
         {
             _context = context;
             _configuration = config;
             _seguridadService = seguridadService;
-            _environment = environment; // <-- asignar
+            _environment = environment; 
         }
         [HttpGet("Contrato")]
         public async Task<ActionResult<List<Pagos>>> Get(int idContrato)
@@ -71,13 +71,13 @@ namespace InmobiliariaConlara.Api
                             }
                         ).ToListAsync();
 
-return Ok(pagos);
+                       return Ok(pagos);
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("desdede api :"+ex.Message);
-            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest("desdede api :"+ex.Message);
+                        }
         }
     }
 }

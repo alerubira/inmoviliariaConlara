@@ -77,12 +77,12 @@ namespace InmobiliariaConlara.Api
                                      }).ToListAsync();
 
 
-                return Ok(contratos);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("desdede api :"+ex.Message);
-            }
+                                        return Ok(contratos);
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest("desdede api :"+ex.Message);
+                        }
         }
     }
 }
